@@ -1,0 +1,30 @@
+.redux-group-tab-link-a i.el.el-icon-chevron-down{font-size: 8px;top: 16px;}
+.redux-main .field-desc {font-size: 12px!important;}
+.redux-main span.description {font-size: 12px!important;}
+.redux-sidebar .redux-group-menu li a{font-weight: 600!important;}
+.description-img{
+margin-right: 10px;
+float:left;
+clear:right;
+}
+.descriptionpf{background-color:#fff;padding:10px;
+border:1px solid #f7f7f7}
+.descriptionpfimg{min-height: 151px;}
+.redux-custom-slides-accordion-group h3{margin:0!important;}
+.redux-container-sorter ul{width: 340px!important;}
+.redux-container-sorter ul li{text-align: left;}
+.pfwidthfix {
+width: 90%!important;
+}
+.rtl .redux-sidebar .redux-group-tab-link-a span + i {
+  display: none;
+}
+.rtl .description-img{
+margin-right: 10px;
+float:left;
+clear:left;
+}
+.wp-admin .redux-container .rAds {
+    visibility: hidden;
+}
+#info-stp_hlplt1{margin-bottom:20px}

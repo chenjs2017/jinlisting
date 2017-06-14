@@ -1,0 +1,11 @@
+#pfstatusofsystemwidget .hndle{background-color:#20303A; color:#B3B3B3}
+#pfstatusofsystemwidget.postbox .inside{padding:0; margin:0}
+.pfawidget{ margin:0 auto;  width:100%;  position:relative}
+.pfawidget-body{ font-family:'Helvetica Neue',Helvetica,sans-serif;  -webkit-font-smoothing:antialiased;  background:#fff;  padding:0}
+.pfaflash{ font-family:'Helvetica Neue',Helvetica,sans-serif;  -webkit-font-smoothing:antialiased;  background:#8EC34B;  color:white;  padding:15px 20px;  font-size:14px}
+.pfawidget .accordion-header{ font-family:'Helvetica Neue',Helvetica,sans-serif;  -webkit-font-smoothing:antialiased;  text-transform:uppercase;  font-size:11px;  font-weight:bold;  padding:12px 20px;  background:#f7f7f7;  border-bottom:1px solid #ECF2F6}
+.pfawidget .accordion-header h2{font-size:11px; margin:0; padding:0; font-weight:bold; color:#494949}
+.pfawidget .accordion-mainit{ font-family:'Helvetica Neue',Helvetica,sans-serif;  color:#797979;  -webkit-font-smoothing:antialiased;  margin:0 60px 0 20px;  padding:20px 0;  border-bottom:1px dotted #D0DAE0;  font-size:12px;  position:relative}
+.pfawidget .accordion-mainit:last-child{ border-bottom:none}
+.pfawidget .accordion-status-text{ font-family:'Helvetica Neue',Helvetica,sans-serif;  -webkit-font-smoothing:antialiased;  color:#BA3C3C;  font-size:22px;  position:absolute;  top:16px;  right:-42px}
+.updatenotpf1 a {padding: 15px 20px;display: block;background: #D3E777;}

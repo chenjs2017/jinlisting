@@ -1,0 +1,11 @@
+.pointfinder-tax-header span{
+    color: #fff;
+    font-size: 18px;
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 8px;
+    z-index: 999;
+    cursor: pointer;
+}
+.pointfinder-tax-header{position: relative;}

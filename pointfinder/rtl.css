@@ -1,0 +1,68 @@
+.pfuaformsidebar .pf-sidebar-menu li, #pfsearch-draggable .pfitemlist-content{text-align:right}
+.pf-sidebar-menu li a .pfbadge{left:15px; right:auto!important}
+.golden-forms .toggle-switch >label:after{left:2px; right:auto!important}
+.golden-forms .toggle-switch >label:after, .wpfinfowindow .wpf-closeicon, .wpfinfowindow2 .wpf-closeicon{left:0; right:auto!important}
+.golden-forms .pflabelfixsearch.search >.input{padding:0 40px 0 9px!important}
+.select2-results ul.select2-result-sub{padding-right:0}
+ul.pfmu-userbuttonlist{text-align:right}
+.golden-forms .select:before, .golden-forms .select:after{left:10px; right:auto!important}
+#pf-ajax-itemrefine-button{margin-left:10px}
+.pflistgridview .pflistcommonview-header .searchformcontainer-filters-right li:last-child{margin-right:5px!important}
+.pfshowmaplink, 
+.pflist-itemdetails .pflist-itemtitle a, 
+.pflist-itemdetails >.pflist-address, .pflist-customfields{text-align:right}
+.pfnavmenu li{float:right; text-align:right!important}
+.wpf-header #pf-primary-nav .pfnavmenu .pfnavsub-menu li a{ text-align:right}
+.pflist-itemdetails .pflist-itemtitle a{ display:block}
+.pfribbon-featured{right:-30px; left:auto}
+.pfribbon-featured:before{ right:0;  left:auto}
+.pfribbon-featured:after{ left:0;  right:auto}
+.wpfinfowindow .pfribbon-featured2{text-align:right;  padding-right:5px}
+.pflistingitem-subelement.pf-price:last-child{margin-right:0}
+#pf-ajax-uploaditem-button, #pf-ajax-profileupdate-button{float:right; clear:left}
+
+.wpfinfowindow .wpfimage{float:right}
+.wpfimage-wrapper{ float:right;  margin-left:15px;  margin-right:0}
+.pfmaptype-control .pfmaptype-control-ul .pfmaptype-control-li{margin-right:8px}
+.sub-menu-link span{left:10px; right:auto}
+.wpf-header .pfnavmenu ul li ul li a .pfadmicon-glyph-860:before{content:'\eb59'!important}
+.pfdetailitem-subelement .pfdetail-ftext, .pf-itempage-ohours .pfdetail-ftext{ float:left}
+.ui-tabgroup >.ui-tabs, .ui-tabgroup >.ui-tabs >[class^="ui-tab"]{ float:right}
+.pf-item-slider .pf-item-slider-ex-container{float:right!important;}
+.widget_pfitem_recent_entries ul li{text-align: right!important;}
+.widget_pfitem_recent_entries ul li img {float: right;margin-left: 10px;}
+html[dir="rtl"] .select2-search-choice-close {left: 20px!important;right: auto!important;}
+.sub-menu-link .pfadmicon-glyph-860:before {content: '\eb59'!important;}
+.widget_recent_entries ul li:after {content: '\e821';font-family: "fontello";margin-left: .3em;}
+.widget_recent_entries ul li:before {content: '';margin-left: 0;}
+.widget_categories ul li a:after {content: '\e9fe';font-family: "fontello";margin-left: .4em;}
+.widget_categories ul li a:before {content: '';margin-right: 0;}
+.widget_recent_comments ul li:after {content: '\e97e';font-family: "fontello";margin-left: .3em;}
+.widget_recent_comments ul li:before {content: '';margin-right: 0;}
+.pfsearchformerrors ul li{text-align: right!important;right:0;}
+#pfuaprofileform .pfsearchformerrors .pfsearch-err-button{  margin-right: 25px!important;  margin-left: auto!important;}
+.pfsearchformerrors ul li:before{content: '';margin-right: 0;width: 0;right: 0;}
+.pfuaformsidebar .pf-sidebar-menu li { text-align: right }
+.pull-right {margin-left: 5px;}
+#pf-itempage-page-map-directions #gdlocations {margin-right: 30px;}
+.pfdetailitem-subelement .pfdetail-ftext, .pf-itempage-ohours .pfdetail-ftext {white-space: pre;}
+#pf-primary-search-button{ left:95px;  right:auto!important}
+#pf-topprimary-nav-button2{ left:55px;  right:auto!important}
+#pf-topprimary-nav-button{ right:auto!important;  left:15px}
+#pf-primary-nav-button{ right:auto!important;  left:55px}
+@media (max-width:568px){/*.wpf-header .pf-menu-container{ margin-top:60px}*/
+.pf_language_selects img{margin-left:5px}
+#pf-topprimary-navmobi2 li a, .wpf-header #pf-primary-nav li a, .wpf-header #pf-primary-nav.pfmobileview .pfnavmenu .main-menu-item >a, #pf-topprimary-navmobi .pf-nav-dropdownmobi li a{ text-align:right!important}
+}
+@media (max-width:992px){.pf_language_selects img{margin-left:5px}
+#pf-topprimary-navmobi2 li a, .wpf-header #pf-primary-nav li a, .wpf-header #pf-primary-nav.pfmobileview .pfnavmenu .main-menu-item >a, #pf-topprimary-navmobi .pf-nav-dropdownmobi li a{ text-align:right!important}
+}
+.wpfinfowindow .wpftext > .wpftitle {text-align: right;}
+.wpfinfowindow .wpftext > .wpfaddress {text-align: right;}
+.wpfinfowindow .wpftext > .wpfdetail > .pfinfowindowdlist {text-align: right;}
+@media (max-width: 992px){
+	.wpf-header .pf-logo-container {position: absolute;}
+}
+.pfdetailitem-subelement .pfdetail-ftext, .pf-itempage-ohours .pfdetail-ftext {
+    white-space: normal!important;
+}

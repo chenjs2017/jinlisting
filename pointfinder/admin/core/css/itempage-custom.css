@@ -1,0 +1,99 @@
+.pforders-orderdetails-ul{margin:0; padding:0;}
+.pforders-orderdetails-ul li{font-weight:700;font-size:12px;}
+.pforders-orderdetails-ul li .pforders-orderdetails-lbltext{font-weight:400;font-size:12px; display:block;}
+ .pforders-orderdetails-ul li .pforders-orderdetails-lbltext a{text-decoration:none;}
+#pointfinder_orders_info h3, #pointfinder_orders_details h3, #pointfinder_orders_trans h3{font-weight:500;font-size:14px;}
+.pforders-orderdetails-lblcompleted{color:#2db82d;font-weight:600;}
+.pforders-orderdetails-lblpending{color:#e4bb42;font-weight:600;}
+.pforders-orderdetails-lblcancel{color:#cd3b3b;font-weight:600;}
+/*#redux-pointfinderthemefmb_options-metabox-pf_item_streetview .hndle,#attachment-upload .hndle, #pointfinder_itemdetailcf_process_fe .hndle,#pointfinder_itemdetailcf_process_lt .hndle,#pointfinder_itemdetailcf_process .hndle,#authordiv .hndle,#gallery .hndle,#pointfinder_reviews_status .hndle,#item-gallery .hndle, #pf_item_custom_details .hndle, #pointfinder_map .hndle, #pointfinder_openinghours .hndle,#pointfinder_orders_status .hndle,#featured-pointoptional .hndle, #submitdiv .hndle,#pointfinderltypesdiv .hndle, #pointfinderitypesdiv .hndle, #pointfinderlocationsdiv .hndle, #pointfinderfeaturesdiv .hndle, #postimagediv .hndle, #featured-video .hndle, #postexcerpt .hndle, #slider-image .hndle,#pf_reviewer_message_metabox_id .hndle,#pointfinder_itemdetailoh_process_fe .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_featuredpoint .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_verifiedpoint .hndle,#tagsdiv-post_tag .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_featuredvideo .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_sliderimage .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_headerimage .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_settings .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_agents .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_custombox1 .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_custombox2 .hndle,#redux-pointfinderthemefmb_options-metabox-pf_item_custombox3 .hndle,#pointfinder_itemdetailcf_process_co .hndle{background: #222222;color: #ffffff;}*/
+#pointfinder_reviews_status .pf-seeallrevs{text-decoration:none; background:#1b7aa6; border-color:#005684; color:rgb(255,255,255);color:rgba(255,255,255,.95); -webkit-box-shadow:inset 0 1px 0 rgba(0,0,0,.1); box-shadow:inset 0 1px 0 rgba(0,0,0,.1); vertical-align:middle; height:20px; padding:5px 8px; border-radius:3px; position:relative; margin-top:10px; line-height:18px; display:inline-block}
+#pointfinder_reviews_status .pf-seeallrevs:hover{color:#f7f7f7; background:#005684}
+#pointfinder_reviews_status .inside{padding:15px 15px}
+/*------------------------------------*\
+    LOADING ANIMATION
+\*------------------------------------*/
+.pfloadingimg{background-image: url(../../../images/info-loading.gif)!important;background-size:24px 24px!important; background-repeat:no-repeat!important; background-position:center!important;}
+.pfloadingmessage {display: block;text-align: center;position: relative;top: 80px;font-size: 12px;font-weight: 600;}
+.pfloadingmessageex{display: block;text-align: center;position: relative;top: 55%;font-size: 12px;font-weight: 600;margin: 0 auto;}
+/*usersystem loading*/
+.pfuserloading{width: 100%;height: 100%; background-color:#ffffff; z-index:12000;position: absolute; display: block;top:0;right:0;left:0;}
+
+.pointfinder-upload-page .select2-results-dept-0 >.select2-result-label{ background-color:#efefef;  margin-right:7px;  padding:6px 20px 7px}
+.pointfinder-upload-page li.select2-results-dept-0{ width:25%;  display:inline-block;  vertical-align:text-top;  margin-bottom:22px}
+.pointfinder-upload-page .select2-results .select2-highlighted {margin-right: 7px;}
+@media (max-width: 1200px) {
+	.pointfinder-upload-page li.select2-results-dept-0{ width:33.3333334%;}
+}
+@media (max-width: 568px) {
+	.pointfinder-upload-page li.select2-results-dept-0{ width:50%;}
+}
+@media (max-width: 480px) {
+	.pointfinder-upload-page li.select2-results-dept-0{ width:100%;}
+}
+
+.pf-cf-inner-elements .pf_fr_inner {padding: 0 5px;}
+section.pf-cf-inner-elements {width: 33.333333334%;display: inline-block;}
+@media (max-width: 768px) {section.pf-cf-inner-elements {width: 50%;}}
+@media (max-width: 568px) {section.pf-cf-inner-elements {width: 100%;display:block;}}
+.pfsubmit-inner {
+  margin-top: 15px;
+}
+.pfsubmit-inner-sub .goption {
+  margin-right: 20px;
+}
+.pfitemdetailcheckall,.pfitemdetailuncheckall{cursor: pointer;}
+#pf_iconwidth_of_listing {width: 50px!important;}
+.pfsubmit-inner-sub .goption {display: inline-block!important;margin-bottom: 10px!important;padding-bottom: 10px!important;}
+.pfsubmit-inner-sub .goption {  display: inline-block!important;margin-bottom: 10px!important;padding-bottom: 10px!important;width: 25%;  margin-right: 0!important;}
+@media (max-width: 992px){.pfsubmit-inner-sub .goption {width: 33.3333334%;}}
+@media screen and (max-width: 768px){.pfsubmit-inner-sub .goption {width: 50%;}}
+@media (max-width: 568px){.pfsubmit-inner-sub .goption {width: 100%;display: block;}}
+.pointfinderlistthumbimg{width: 101px; height: 67px;}
+ul.pointfinderpflistterms {margin: 0;padding: 0;}
+ul.pointfinderpflistterms li {display: inline-block;}
+ul.pointfinderpflistterms li:before {content: '\00a0';}
+ul.pointfinderpflistterms li:first-child:before {content: '';}
+
+/* Taxonomy */
+.pointfinder-tax-header h3{ background:#222;  color:#fff;  font-size:14px;  padding:8px 12px;  margin:0;  line-height:1.4}
+.pointfinder-tax-header-body{ min-width:255px;  border:1px solid #e5e5e5;  box-shadow:0 1px 1px rgba(0,0,0,.04);  background:#fff;  margin-top:0}
+.pointfinder-tax-header-body-inside{ padding:4px 8px}
+.pointfinder-tax-header {margin-top: 20px;}
+
+
+/* New Listing Type module */
+.pflistingtype-selector-main{ display:inline}
+.pflistingtype-selector-main label{ width:23%;  border-radius:0;  border-width:1px;  border-style:solid;  margin-top:10px;  margin-left:1%}
+.pflistingtype-selector-main label:focus, input.pflistingtypeselector:focus{ outline:none}
+.pf-sub-listingtypes-container .pfsublistingtypes{ margin-bottom:10px}
+.pflistingtype-selector-main-top{margin-bottom:10px!important; margin-left:3px!important}
+
+input.pflistingtypeselector:empty{ margin-left:-999px;  visibility:hidden}
+input.pflistingtypeselector:empty ~ label{ position:relative;  float:left;  line-height:1em; padding: 10px 0; text-indent:3.25em;  margin-top:10px;  cursor:pointer;  -webkit-user-select:none;  -moz-user-select:none;  -ms-user-select:none;  user-select:none}
+input.pflistingtypeselector:empty ~ label:before{padding: 10px 0;position:absolute;  display:block;  top:0;  bottom:0;  left:0;  content:'';  width:2.5em;  background:#f9f9f9;  border-radius:0;  content:'\e85f';  text-indent:.8em;  color:#E2E2E2;  font-family:"fontello"}
+input.pflistingtypeselector:hover:not(:checked) ~ label:before{ content:'\e85f';  text-indent:.8em;  color:#494949}
+input.pflistingtypeselector:hover:not(:checked) ~ label{ color:#888}
+input.pflistingtypeselector:checked ~ label:before{ content:'\e85f';  text-indent:.8em;  color:#f9f9f9;  background-color:#494949}
+input.pflistingtypeselector:checked ~ label{ color:#777}
+input.pflistingtypeselector:focus ~ label:before{ box-shadow:0 0 0 3px #999}
+
+.pfsublistingtypes label, .pfsubsublistingtypes label{display:block; font-weight:bold;margin-bottom: 5px;}
+.pfsublistingtypes .select2-container, .pfsubsublistingtypes .select2-container{width: 100%;}
+.pflistingtype-selector-main label{border-color:#dedede}
+
+@media (max-width:1024px){.pflistingtype-selector-main label{ width:32%; }}
+@media (max-width:640px){.pflistingtype-selector-main label{ width:49%; }}
+@media (max-width:568px){.pflistingtype-selector-main label{ width:100%; }}
+#pf_categoryprice{width:50px!important;}
+.pfsubmit-inner-customfields .option-group .goption {
+    width: 48%;
+    display: inline-block;
+    margin-right: 1%;
+}
+.pfsubmit-inner-customfields .pf-cf-inner-elements {
+    vertical-align: top;
+}
+.pointfinder-current-auth {
+    padding: 10px;
+}

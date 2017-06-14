@@ -1,0 +1,38 @@
+.golden-forms .select,.golden-forms .button,.golden-forms a.button,.golden-forms input:checked+.checkbox {
+	border:1px solid #BBB;
+	border-bottom-color:#aaa;
+
+}
+.golden-forms input:checked+.radio,.golden-forms .toggle-switch>label:before,.golden-forms .toggle-switch>input:checked+label:before {
+	background-color:#fafafa;
+	filter:none;
+	box-shadow:inset 0 -6px 6px rgba(0,0,0,0.07),0 1px 0 rgba(255,255,255,1),inset 0 1px 0 rgba(255,255,255,1)
+}
+.golden-forms .toggle-switch>label:after {
+	top:1px
+}
+.golden-forms .round>label:before {
+	font:34px/19px Arial,Helvetica,sans-serif!important
+}
+.golden-forms .round>label {
+	top:-1px
+}
+.golden-forms .button.search-icon,.golden-forms .search.rnd .button.round {
+	filter:none;
+	background-color:#FBFBFB;
+	box-shadow:inset 0 -15px 15px rgba(0,0,0,0.07)
+}
+.golden-forms .button.search-icon:hover,.golden-forms .search.rnd .button.round:hover,.golden-forms .button.search-icon:focus,.golden-forms .search.rnd .button.round:focus {
+	background-color:#dae5ed;
+	box-shadow:inset 15px 15px 15px rgba(255,255,255,0.75)
+}
+.golden-forms form fieldset legend {
+	top:0;
+	display: block
+}
+
+/*Custom IE Styles*/
+.clearfix {
+    zoom: 1;    
+    display: block;
+    } 

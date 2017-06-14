@@ -1,0 +1,4 @@
+.pfextendvc_select1 ul li{font-size:24px; display:inline-block; width:42px; height:42px; background:#E6E6E6; text-align:center; line-height:40px; border:1px solid #ccc; cursor:pointer; margin:5px}
+.pfextendvc_select1 ul li:hover{color:#E20D0D; border-color:#E20D0D}
+.pfextendvc_select1 ul{display:block; position:relative; width:93%; height:250px; list-style:none; overflow:auto!important;border:1px solid #efefef;}
+.pfextendvc_select1 ul li[data-pfa-status="active"]{ background-color:#E20D0D; color:#fff; border-color:#E20D0D}

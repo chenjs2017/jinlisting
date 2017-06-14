@@ -1,0 +1,106 @@
+.redux-container-extension_custom_sorter {
+    margin-right: -20px;
+}
+
+.redux-container-extension_custom_sorter ul h3{text-transform: capitalize;}
+
+.redux-container-extension_custom_sorter ul {
+    background: #F9F9F9;
+    border: 1px solid #E3E3E3;
+    min-height: 40px;
+    padding: 10px 10px 0;
+    width: 290px;
+    float: left;
+    margin: 0 15px 0 0;
+}
+
+.redux-container-extension_custom_sorter ul.filled {
+    opacity: .7;
+    filter: alpha(opacity=70);
+    background: #efecec;
+}
+
+.redux-container-extension_custom_sorter ul li {
+    border: 1px solid #DFDFDF;
+    cursor: move;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+    padding: 0;
+    /*height: 40px;*/
+    line-height: 40px !important;
+    background-color: #F1F1F1;
+    background-image: -ms-linear-gradient(top, #f9f9f9, #ececec);
+    background-image: -moz-linear-gradient(top, #f9f9f9, #ececec);
+    background-image: -o-linear-gradient(top, #f9f9f9, #ececec);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#ececec));
+    background-image: -webkit-linear-gradient(top, #f9f9f9, #ececec);
+    background-image: linear-gradient(top, #f9f9f9, #ececec);
+    overflow: hidden;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: inset 0 1px 0 #fff;
+    -webkit-box-shadow: inset 0 1px 0 #fff;
+    box-shadow: inset 0 1px 0 #fff;
+    text-align: left;
+}
+
+.redux-container-extension_custom_sorter ul li h3 {
+    margin: 0 0 10px;
+    text-align: center;
+    color: #777;
+    text-transform: capitalize;
+    word-wrap: break-word;
+}
+
+.redux-container-extension_custom_sorter ul li.placeholder {
+    height: 40px;
+}
+
+.redux-container-extension_custom_sorter .pfclassic{padding-left: 10px;}
+.redux-container-extension_custom_sorter .pfdouble.pfinnersorter {
+display: inline-block;
+
+}
+
+.redux-container-extension_custom_sorter .pfdouble.pfinnersorter span {padding-left: 10px;}
+
+.redux-container-extension_custom_sorter ul li .pfdouble.pfinnersorter:first-of-type,
+.redux-container-extension_custom_sorter ul li .pftriple1.pfinnersorter:first-of-type {
+border-right: 1px dotted #A1A1A1;
+width: 142px;
+float: left;
+text-align: left;
+}
+
+.redux-container-extension_custom_sorter ul li .pftriple1.pfinnersorter:last-of-type{
+display: inline-block;
+}
+.redux-container-extension_custom_sorter ul li .pftriple1.pfinnersorter:last-of-type span{padding-left: 10px;}
+
+.redux-container-extension_custom_sorter ul li .pftriple2.pfinnersorter:first-of-type{
+float: left;
+}
+.redux-container-extension_custom_sorter ul li .pftriple2.pfinnersorter:first-of-type span{padding-left: 10px;}
+
+.redux-container-extension_custom_sorter ul li .pftriple2.pfinnersorter:last-of-type {
+border-left: 1px dotted #A1A1A1;
+width: 142px;
+float: right;
+}
+
+
+.redux-container-extension_custom_sorter ul li .pftriple2.pfinnersorter .pftripleinner:first-of-type,
+.redux-container-extension_custom_sorter ul li .pftriple1.pfinnersorter .pftripleinner:first-of-type {
+display: block;
+border-bottom: 1px dotted #a1a1a1;
+text-align: left;
+padding-left: 10px;
+}
+
+.redux-container-extension_custom_sorter ul li .pftriple2.pfinnersorter .pftripleinner:last-of-type,
+.redux-container-extension_custom_sorter ul li .pftriple1.pfinnersorter .pftripleinner:last-of-type {
+display: block;
+text-align: left;
+padding-left: 10px;
+}

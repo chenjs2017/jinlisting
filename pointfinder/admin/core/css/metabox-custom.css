@@ -1,0 +1,40 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700,500|Roboto+Condensed:400,700);
+.pforders-orderdetails-ul{margin:0; padding:0;}
+.pforders-orderdetails-ul li{font-family:Roboto;font-weight:700;font-size:12px;}
+.pforders-orderdetails-ul .uppcase{text-transform:uppercase;}
+.pforders-orderdetails-ul li .pforders-orderdetails-lbltext, .postbox .inside{font-family:Roboto;font-weight:400;font-size:12px; display:block;}
+ .pforders-orderdetails-ul li .pforders-orderdetails-lbltext a, .postbox .inside a{text-decoration:none;}
+#pointfinder_orders_info h3, #pointfinder_orders_details h3, #pointfinder_orders_trans h3, .postbox h3{font-family:Roboto;font-weight:500;font-size:14px;}
+.pforders-orderdetails-lblcompleted{color:#2db82d;font-weight:600;}
+.pforders-orderdetails-lblpending{color:#e4bb42;font-weight:600;}
+.pforders-orderdetails-lblcancel{color:#cd3b3b;font-weight:600;}
+/*Define Accordion box*/
+.accordion { width:100%; overflow:hidden; margin:10px auto; color:#474747;}
+
+/*General Accordion****************************************************************************/
+/*Set style of open slide*/
+.accordion section:target{background:#fafafa; padding:10px; border:1px solid #ebebeb}
+.accordion section:target:hover{background:#FFF}
+.accordion section:target h2{width:100%}
+.accordion section:target h2 a{color:#333; padding:0}
+.accordion section:target p{display:block; border-top:1px solid #ccc; margin:0; padding:10px 5px}
+.accordion section h2 a{padding:0 10px; display:block; font-family:Roboto; font-size:13px; font-weight:400; color:#eee; text-decoration:none}
+
+.accordion section{float:left; overflow:hidden; color:#333; cursor:pointer; background:#333; margin:3px}
+.accordion section:hover{background:#444}
+.accordion section p{display:none; font-family:Roboto}
+.vertical section{width:100%; height:40px; -webkit-transition:height 0.2s ease-out; -moz-transition:height 0.2s ease-out;  -o-transition:height 0.2s ease-out; -ms-transition:height 0.2s ease-out;  transition:height 0.2s ease-out}
+.vertical:target{min-height:250px; height:100%!important; width:97%}
+#poststuff .vertical section h2{position:relative; left:0; top:-15px; margin-top:20px; font-size:1.5em; margin-bottom:0; padding:0 0 3px}
+.pf-bank-approval{ background-color:#B10E0E;  color:#fff;  padding:10px;  display:block;  width:92%;  text-align:center;  margin:5px 0 0 0;  font-size:14px}
+.pf-bank-approval:hover{color:#efefef;}
+#pointfinder_invoices_process .pforders-orderdetails-lbltext{display:inline-block;}
+.post-type-pointfinderreviews .row-actions span.view a {background: #64BF42;}
+.post-type-pointfinderreviews .row-actions span.trash a {background: #BF4242;}
+.post-type-pointfinderreviews .row-actions span.edit a {background: #BF7942;}
+.post-type-pointfinderreviews .row-actions span.edit a, 
+.post-type-pointfinderreviews .row-actions span.trash a,
+.post-type-pointfinderreviews .row-actions span.view a{color: #FFFFFF!important;padding: 2px 8px;border-radius: 4px;}
+.post-type-pointfinderreviews .row-actions span.edit a:hover,
+.post-type-pointfinderreviews .row-actions span.trash a:hover,
+.post-type-pointfinderreviews .row-actions span.view a:hover {opacity: 0.7;}

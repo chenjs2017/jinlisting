@@ -1,0 +1,15 @@
+.pfdateshow{margin-bottom:10px;font-size:12px;font-weight: 600;}
+.pfmsgshow{margin-bottom: 20px;font-size: 12px;border-bottom: 1px dashed #efefef;padding-bottom:20px;}
+.pf-rating-block{margin-bottom:15px; display:block; border-bottom:1px dashed #ccc;padding-bottom:10px;}
+.pf-rating-block:last-child{border-bottom:0;}
+.pf-rating-block:first-child{margin-top:20px;}
+.pf-rev-stars,.pf-rev-cr-text{display: block;}
+.pf-rev-cr-text{margin-bottom:3px;}
+.pf-single-rev{display:block;margin-top:20px;border-bottom:1px dashed #ccc;padding-bottom:10px;}
+.pf-rating-block .pf-rev-stars i.nostarp{color: #D0D0D0;}
+.pf-rating-block .pf-rev-stars i{color:#FFB400;font-size:17px;}
+.vc_edit-form-tab {border: 0!important;border-radius: 0!important;-webkit-border-radius: 0!important;background: transparent!important;}
+.vc_panel-tabs > ul,.vc_panel-tabs {border: 0!important;border-radius: 0!important;}
+.ui_tpicker_unit_hide{display:none!important;}
+.vc_general.vc_ui-control-button{background: transparent!important;}
+div#setting-error-tgmpa {display: block;clear: both;}
