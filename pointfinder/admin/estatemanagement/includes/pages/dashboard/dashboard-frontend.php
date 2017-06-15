@@ -2373,6 +2373,63 @@ if ( ! class_exists( 'PF_Frontend_Fields' ) ){
 																		
 																	});
 
+function getOrientation(file, callback) {
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    var view = new DataView(event.target.result);
+    if (view.getUint16(0, false) != 0xFFD8) return callback(-2);
+    var length = view.byteLength,
+        offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) {
+          return callback(-1);
+        }
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++)
+          if (view.getUint16(offset + (i * 12), little) == 0x0112)
+            return callback(view.getUint16(offset + (i * 12) + 8, little));
+      }
+      else if ((marker & 0xFF00) != 0xFF00) break;
+      else offset += view.getUint16(offset, false);
+    }
+    return callback(-1);
+  };
+  reader.readAsArrayBuffer(file.slice(0, 64 * 1024));
+};
+
+
+myDropzone.on("addedfile", function(origFile) {
+        getOrientation(origFile, function(orientation) {
+                var reader = new FileReader();
+                reader.addEventListener("load", function(event) {
+                        var origImg = new Image();
+                        origImg.src = event.target.result;
+                        origImg.addEventListener("load", function(event) {
+                                var w = event.target.width;
+                                var h = event.target.height;
+
+                                if ([5,6,7,9].indexOf(orientation) > -1) {
+                                        var t = w; w = h; h = t;
+                                }
+                                if (w > h ) {
+                                } else {
+                                        alert("为了保证显示效果，请选择横向的图片。如果您用手机拍摄图片，请横向拍摄图片");
+                                        myDropzone.removeFile(origFile);
+                                }
+                        });
+                });
+                reader.readAsDataURL(origFile);
+         });
+});
+
+
+
 																	myDropzone.on("totaluploadprogress",function(uploadProgress,totalBytes,totalBytesSent){
 																		
 																		if (uploadProgress > 0 ) {
