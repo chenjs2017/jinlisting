@@ -1918,10 +1918,11 @@ if ( ! class_exists( 'PF_Frontend_Fields' ) ){
 											
 												$setup4_submitpage_maparea_title = PFSAIssetControl('setup4_submitpage_maparea_title','','');
 												$setup4_submitpage_maparea_tooltip = PFSAIssetControl('setup4_submitpage_maparea_tooltip','','');
-												
+/*jschen , remove lat and lng verification												
 
 												$this->PFValidationCheckWrite($st4_sp_med2,$setup4_submitpage_maparea_verror,'pfupload_lat');
 												$this->PFValidationCheckWrite($st4_sp_med2,$setup4_submitpage_maparea_verror,'pfupload_lng');
+*/
 												$this->PFValidationCheckWrite($st4_sp_med2,esc_html__('Please enter an address','pointfindert2d'),'pfupload_address');
 
 
