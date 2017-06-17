@@ -1,4 +1,5 @@
 <?php
+require_once('location_check.php');
 function pf_itemgrid2_func_new( $atts ) {
   extract( shortcode_atts( array(
     'listingtype' => '',
@@ -33,6 +34,19 @@ function pf_itemgrid2_func_new( $atts ) {
 	'infinite_scroll_lm' => 0
   ), $atts ) );
   
+	$has_location = false;
+  $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
+	if ($cookie !='') {
+		$cookie = str_replace('\"', '"', $cookie);
+		$vals = json_decode($cookie, true);
+		$latitude = $vals['latitude'];
+		$longitude = $vals['longitude'];
+		$has_location = true;
+	}
+	
+ //	  var $agl = json_decode($_COOKIE["agl-values"]);
+//		var_dump($agl);
+
   	$template_directory_uri = get_template_directory_uri();
   	$pfgrid = $pfg_ltype = $pfg_itype = $pfg_lotype = $pfitemboxbg = $pf1colfix = $pf1colfix2 ='';
 
@@ -960,6 +974,17 @@ function pf_itemgrid2_func_new( $atts ) {
 										$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
 										$ItemDetailArr['if_address'] = esc_html(get_post_meta( $pfitemid, 'webbupointfinder_items_address', true ));
 										$ItemDetailArr['featured_video'] =  get_post_meta( $pfitemid, 'webbupointfinder_item_video', true );
+
+										if ($has_location) {
+											$long = esc_html(get_post_meta( $pfitemid, 'longitude', true ));
+											$lat = esc_html(get_post_meta( $pfitemid, 'latitude', true ));
+
+											$disobj = new DistanceCheck;
+											$dis = $disobj->Calculate($lat, $long, $latitude, $longitude);
+											$dis = number_format($dis, 2, ',', ' ');
+											$ItemDetailArr['if_address'] = '  ['.  $dis .'英里]  '. $ItemDetailArr['if_address'];
+										}
+
 									/* End: Setup Featured Image */
 
 									/* Start: Setup Details */
