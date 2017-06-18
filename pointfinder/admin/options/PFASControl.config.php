@@ -129,7 +129,23 @@ if (!class_exists("Redux_Framework_PF_AScontrol_Config")) {
                                 'step'      => '1',
                                 'max'       => '100'
                             ),
+                            array(
+                                'id'        => 'as_anonymous_id',
+                                'type'      => 'text',
+                                'title'     => esc_html__('匿名用户User ID', 'pointfindert2d'),
+                                'desc'      => esc_html__('匿名用户User ID', 'pointfindert2d')
+                            ),
 
+														array(
+                                'id'        => 'as_search_distance',
+                                'type'      => 'spinner',
+                                'title'     => esc_html__('显示商家范围', 'pointfindert2d'),
+                                'desc'      => esc_html__('显示商家范围.', 'pointfindert2d'),
+                                'default'   => '1',
+                                'min'       => '1',
+                                'step'      => '1',
+                                'max'       => '10'
+                            ),
                         )
 
                 );
