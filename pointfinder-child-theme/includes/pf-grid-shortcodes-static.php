@@ -34,18 +34,8 @@ function pf_itemgrid2_func_new( $atts ) {
 	'infinite_scroll_lm' => 0
   ), $atts ) );
   
-	$has_location = false;
-  $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
-	if ($cookie !='') {
-		$cookie = str_replace('\"', '"', $cookie);
-		$vals = json_decode($cookie, true);
-		$latitude = $vals['latitude'];
-		$longitude = $vals['longitude'];
-		$has_location = true;
-	}
+
 	
- //	  var $agl = json_decode($_COOKIE["agl-values"]);
-//		var_dump($agl);
 
   	$template_directory_uri = get_template_directory_uri();
   	$pfgrid = $pfg_ltype = $pfg_itype = $pfg_lotype = $pfitemboxbg = $pf1colfix = $pf1colfix2 ='';
@@ -297,24 +287,26 @@ function pf_itemgrid2_func_new( $atts ) {
 			if($pfg_orderby != ''){
 				if($pfg_orderby == 'date' || $pfg_orderby == 'title'){
 					
-					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
-					$args['meta_key'] = $meta_key_featured;
+					$args['orderby'] = array($pfg_orderby => $pfg_order);
+//					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
+//					$args['meta_key'] = $meta_key_featured;
 					
 					if (!empty($pfgetdata['manual_args'])) {
-						$args['meta_key'] = $meta_key_featured;
-						$pfgetdata['manual_args']['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
+//						$args['meta_key'] = $meta_key_featured;
+//						$pfgetdata['manual_args']['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
+						$pfgetdata['manual_args']['orderby'] = array($pfg_orderby => $pfg_order);
 					}
 
 				}else{
 					
-					$args['meta_key']='webbupointfinder_item_'.$pfg_orderby;
-					
+//					$args['meta_key']='webbupointfinder_item_'.$pfg_orderby;
+/*					
 					if(PFIF_CheckFieldisNumeric_ld($pfg_orderby) == false){
 						$args['orderby']= array('meta_value' => $pfg_order);
 					}else{
 						$args['orderby']= array('meta_value_num' => $pfg_order);
 					}
-					
+*/					
 					if (!empty($pfgetdata['manual_args'])) {
 						$pfgetdata['manual_args']['meta_key']='webbupointfinder_item_'.$pfg_orderby;
 						if(PFIF_CheckFieldisNumeric_ld($pfg_orderby) == false){
@@ -326,13 +318,14 @@ function pf_itemgrid2_func_new( $atts ) {
 					
 				}
 			}else{
-				
+			//jschen	
 				if($pfgetdata['orderby'] != ''){
-					$args['meta_key'] = $meta_key_featured;
-					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfgetdata['orderby'] => $pfgetdata['sortby']);
+//					$args['meta_key'] = $meta_key_featured;
+					$args['orderby'] = array( $pfgetdata['orderby'] => $pfgetdata['sortby']);
 				}else{
-					$args['meta_key'] = $meta_key_featured;
-					$args['orderby'] = array('meta_value_num' => 'DESC' , $setup22_searchresults_defaultsortbytype => $setup22_searchresults_defaultsorttype);
+//					$args['meta_key'] = $meta_key_featured;
+//jschen empty means defult order, means 2 features, then orderby distance
+//					$args['orderby'] = array('meta_value_num' => 'DESC' , $setup22_searchresults_defaultsortbytype => $setup22_searchresults_defaultsorttype);
 				}
 			}
 			
@@ -453,18 +446,15 @@ function pf_itemgrid2_func_new( $atts ) {
             'operator' => 'IN'
         );
     }
-
-		/* Start: Coordinate Filter */
-			if (empty($pfgetdata['manual_args'])) {
-				$loop = new WP_Query( $args );
-			}else{
-
-
-
-				$loop = new WP_Query( $pfgetdata['manual_args'] );
-			}
-		/* End: Coordinate Filter */
-
+			if (!empty($pfgetdata['manual_args'])) {
+				$args = $pfgetdata['manual_args'];
+			}	
+			//jschen, begin build sql
+			global $wpdb;
+			$sql = pf_build_sql($args);
+			$loop = $wpdb->get_results($sql, OBJECT);
+			$sql = "select found_rows() as count";
+			$find = $wpdb->get_results($sql, OBJECT)[0]->count;
 
 		/* Start: Image Settings and hover elements */
 			$setup22_searchresults_animation_image  = PFSAIssetControl('setup22_searchresults_animation_image','','WhiteSquare');
@@ -560,43 +550,10 @@ function pf_itemgrid2_func_new( $atts ) {
 		
 /* jschen, to debug search sql
 		print_r($loop->query).PHP_EOL;
-		echo $loop->request.PHP_EOL;
-
 */
-		
 
-		if (!empty($pfgetdata['manual_args'])) {
-			if($loop->post_count == 1) {
-				$pf_found_text = $loop->found_posts.' '.esc_html__('item found','pointfindert2d');
-			}elseif($loop->post_count > 1) {
-				$pf_found_text = $loop->found_posts.' '.esc_html__('筆','pointfindert2d');
-			}
-
-            $zipcode=$_REQUEST['field296725954161956900000'];
-
-            if ((empty($zipcode))&&(empty($_REQUEST['jobskeyword'])))
-            {
-
-                $zipcode=get_zip();
-            }
-            $radius=$_REQUEST['pointfinder_radius_search'];
-            if (($_REQUEST['pointfinder_radius_search']=='')||($_REQUEST['pointfinder_radius_search']=='0'))
-            {
-                $radius=25;
-            }
-			if ($loop->post_count == 0) {
-				$wpflistdata .= do_shortcode('[pftext_separator title="'.esc_html__('No matching listings','pointfindert2d').'" title_align="separator_align_left"]');
-			} else {
-			    if ($zipcode<>'') {
-                    $wpflistdata .= do_shortcode('[pftext_separator title="' . esc_html__('郵編 : ', 'pointfindert2d') . $zipcode . ' &nbsp;' . $radius . '英哩內  ' . esc_html__('  搜索結果 : ', 'pointfindert2d') . ' ' . $pf_found_text . '" title_align="separator_align_left"]');
-                }
-                else
-                {
-                    $wpflistdata .= do_shortcode('[pftext_separator title="' . esc_html__('  搜索結果 : ', 'pointfindert2d') . ' ' . $pf_found_text . '" title_align="separator_align_left"]');
-                }
-			}
-			
-		}
+		$pf_found_text = $find . '条';	
+    $wpflistdata .= do_shortcode('[pftext_separator title="' . esc_html__(' 共: ', 'pointfindert2d') . ' ' . $pf_found_text . '" title_align="separator_align_left"]');
 
 		$setup22_searchresults_showmapfeature = PFSAIssetControl('setup22_searchresults_showmapfeature','','1');
 		$setup42_searchpagemap_headeritem = PFSAIssetControl('setup42_searchpagemap_headeritem','','1');
@@ -916,20 +873,14 @@ function pf_itemgrid2_func_new( $atts ) {
 		
 					$wpflistdata_output = '';	
 					
-					if($loop->post_count > 0){
-				
-						while ( $loop->have_posts() ) : $loop->the_post();
-						
-						$post_id = get_the_id();
-
-							
+					if($find > 0){
+						foreach($loop as $lo) {
+							$post_id = $lo->ID; 
 								/* Start: Prepare Item Elements */				
 									$ItemDetailArr = array();
-									
 									/* Get Item's WPML ID */
 									
 									if (!empty($pflang)) {$pfitemid = PFLangCategoryID_ld($post_id,$pflang);}else{$pfitemid = $post_id;}
-
 									/* Start: Setup Featured Image */
 										$featured_image = '';
 										$featured_image = wp_get_attachment_image_src( get_post_thumbnail_id( $pfitemid ), 'full' );
@@ -970,23 +921,11 @@ function pf_itemgrid2_func_new( $atts ) {
 											$ItemDetailArr['featured_image'] = $template_directory_uri.'/images/noimg.png';
 										}
 										$ItemDetailArr['if_title'] = get_the_title($pfitemid);
-										$ItemDetailArr['if_excerpt'] = get_the_excerpt();
+										$ItemDetailArr['if_excerpt'] = get_the_excerpt($pfitemid);
 										$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
-										$ItemDetailArr['if_address'] = esc_html(get_post_meta( $pfitemid, 'webbupointfinder_items_address', true ));
+										$ItemDetailArr['if_address'] = esc_html(pf_get_address_with_distance($pfitemid));
 										$ItemDetailArr['featured_video'] =  get_post_meta( $pfitemid, 'webbupointfinder_item_video', true );
-
-										if ($has_location) {
-											$long = esc_html(get_post_meta( $pfitemid, 'longitude', true ));
-											$lat = esc_html(get_post_meta( $pfitemid, 'latitude', true ));
-
-											$disobj = new DistanceCheck;
-											$dis = $disobj->Calculate($lat, $long, $latitude, $longitude);
-											$dis = number_format($dis, 2, ',', ' ');
-											$ItemDetailArr['if_address'] = '  ['.  $dis .'英里]  '. $ItemDetailArr['if_address'];
-										}
-
 									/* End: Setup Featured Image */
-
 									/* Start: Setup Details */
 
 										$output_data = PFIF_DetailText_ld($pfitemid);
@@ -1257,14 +1196,9 @@ function pf_itemgrid2_func_new( $atts ) {
 									$wpflistdata_output .= '</li>';
 
 								/* End: Item Box */
-							
-						
-							
-							
-						endwhile;
-						
+						}
 						$wpflistdata .= $wpflistdata_output;               
-			            $wpflistdata .= '</ul>';
+			      $wpflistdata .= '</ul>';
 					}else{
 						$setup3_modulessetup_authornrf = PFSAIssetControl('setup3_modulessetup_authornrf','','0');
 						$wpflistdata .= $wpflistdata_output;               
@@ -1289,7 +1223,7 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= '<div class="pfstatic_paginate" >';
 					
 					$big = 999999999;
-					$maxpages = $loop->max_num_pages;
+					$maxpages = ($find -1 ) / $args['posts_per_page']  + 1;//$loop->max_num_pages;
 					$wpflistdata .= paginate_links(array(
 						'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
 						'format' => '?page=%#%',
@@ -1311,7 +1245,6 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= "<input type='hidden' value='".$pfgrid."' name='pfsearch-filter-col'>";
 					$wpflistdata .= $pfgetdata['hidden_output'];
 					$wpflistdata .= "</form></div></div> ";/*Form End . List Data End*/
-
 					
 					if ($infinite_scroll == 1) {
 						$wpflistdata .='<script>
