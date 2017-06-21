@@ -24,7 +24,157 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 	return $user_ids;
 } 
 
+function pf_build_sql($args) {
+//jschen, begin build sql
+			global $wpdb;
+			print_r($args);
 
+			$loc ="'0'";
+			$term_ids = $args['tax_query'][1]['terms'];
+			for ($i = 0; $i < sizeof($term_ids); $i++) {
+				$loc = $loc .",'" . $term_ids[$i] . "'"; 
+			}
+
+			$orderbys = $args['orderby'];
+			$has_distance = false;
+			if ($orderbys == null || sizeof($orderbys) ==0) {
+				$has_distance = true;	
+				$orderbys = array('distance' => 'asc');
+			} 
+
+			$str_orderby = 'order by ';
+			foreach ($orderbys as $key => $value) {
+				$order = $key;
+				if ($order == 'date') {
+					$order = 'post_date';
+				}elseif($key =='distance'){
+					$has_distance = true;
+					$vals = pf_get_location();
+					$lat = $vals['lat'];
+					$lon = $vals['lon'];	
+
+					$order = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(lat.meta_value,0) / 57.29577951)) +
+        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(lat.meta_value,0) / 57.29577951) *
+         COS(ifnull(lon.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
+				}
+				$str_orderby .= $order . ' ' . $value . ',';
+				
+			}
+			$str_orderby = trim($str_orderby, ',');
+
+			
+			$sql = "
+								SELECT SQL_CALC_FOUND_ROWS $wpdb->posts.ID 
+								FROM $wpdb->posts 
+								INNER JOIN $wpdb->term_relationships ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id) 
+								INNER JOIN $wpdb->term_relationships AS tt1 ON ($wpdb->posts.ID = tt1.object_id) 
+						";
+			if ($has_distance){
+				
+				$sql .= "
+								inner join wp_postmeta as lat on (wp_posts.id=lat.post_id and lat.meta_key='latitude')
+								inner join wp_postmeta as lon on (wp_posts.id=lon.post_id and lon.meta_key='longitude')
+							";
+			}
+			$sql .=	"
+								WHERE 1=1 
+								AND ( $wpdb->term_relationships.term_taxonomy_id IN (".$args['tax_query'][0]['terms'][0] .") 
+										AND tt1.term_taxonomy_id IN 
+											(select term_id from wp_term_taxonomy where 
+													term_id in (select term_id from  wp_term_taxonomy where  parent in (". $loc .")) 
+													or  parent in (select term_id from  wp_term_taxonomy where  parent in (". $loc .")) 
+													or term_id in(". $loc .")
+											) 
+								) 
+								AND $wpdb->posts.post_type = '". $args['post_type']."' 
+								AND ($wpdb->posts.post_status = '". $args['post_status']."') 
+								group by $wpdb->posts.id
+								";
+			
+			$sql .= $str_orderby;
+			$sql .= " LIMIT " . ($args['paged'] - 1) * $args['posts_per_page'] . ", " . $args['posts_per_page'];
+	echo $sql;
+	return $sql;			
+}
+function pf_get_location() {
+  $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
+	if ($cookie !='') {
+		$cookie = stripslashes($cookie) ;
+		$vals = json_decode($cookie, true);
+		return $vals;
+	}else {
+		if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    $url = 'http://ip-api.com/json/' . $ip;
+    $json = json_decode($content, true);
+		return $json;
+	}
+}
+function get_near_by() {
+	$cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
+	$cookie = stripslashes($cookie);
+//jschen, return nearby info
+  if ($cookie !='') {
+		//require_once(get_theme_root() . '/pointfinder-child-theme/includes/location_check.php');
+    $vals = json_decode($cookie, true);
+    $latitude = $vals['lat'];
+    $longitude = $vals['lon'];
+    $has_location = true;
+		$miles=PFASSIssetControl('as_search_distance','',1);;
+  	$zcdRadius = new RadiusCheck($latitude, $longitude, $miles);
+                  $minLat = $zcdRadius->MinLatitude();
+                  $maxLat = $zcdRadius->MaxLatitude();
+                  $minLong = $zcdRadius->MinLongitude();
+                  $maxLong = $zcdRadius->MaxLongitude();
+		if ($minLong < 0  and $maxLong < 0) {
+			$temp = $minLong;
+			$minLong = $maxLong;
+			$maxLong = $temp;
+		}
+		if ($minLat < 0  and $maxLat < 0) {
+			$temp = $minLat;
+			$minLat = $maxLat;
+			$maxLat = $temp;
+		}
+		global $wpdb;
+		$sql = "SELECT  count(*) as post_count, $wpdb->terms.term_id as term_id, name FROM $wpdb->posts 
+				INNER JOIN $wpdb->term_relationships ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id) 
+				inner join $wpdb->term_taxonomy on ($wpdb->term_relationships.term_taxonomy_id=$wpdb->term_taxonomy.term_taxonomy_id)
+				INNER JOIN $wpdb->terms on ($wpdb->terms.term_id= $wpdb->term_taxonomy.term_id)
+				INNER JOIN $wpdb->postmeta AS mt1 ON ( $wpdb->posts.ID = mt1.post_id ) 
+				INNER JOIN $wpdb->postmeta AS mt2 ON ( $wpdb->posts.ID = mt2.post_id ) 
+				WHERE taxonomy='pointfinderltypes'
+				AND  ( mt1.meta_key = 'latitude' AND CAST(mt1.meta_value AS CHAR) BETWEEN '" . $minLat . "' AND '" . $maxLat . "' ) 
+				AND ( mt2.meta_key = 'longitude' AND CAST(mt2.meta_value AS CHAR) BETWEEN '" . $minLong . "' AND '" . $maxLong . "' ) 
+				AND $wpdb->posts.post_type = 'listing' AND $wpdb->posts.post_status = 'publish'
+				group by $wpdb->terms.term_id,name";
+		$result = $wpdb->get_results($sql, OBJECT);
+		$output ="在您身边发现：";
+		foreach( $result as $obj ) {
+				$url = '/?field_listingtype='. $obj->term_id .'&pointfinder_radius_search=1&ne=&ne2=&sw=&sw2=&s=&serialized=1&action=pfs';
+				$output .= '<a href="'. $url .'">'. $obj->name .'&nbsp;'.  $obj->post_count .'个 </a> &nbsp;&nbsp;|&nbsp;&nbsp;';
+    }
+  }
+	return $output;
+}
+function pf_get_address_with_distance($pfitemid) {
+	$addr = get_post_meta( $pfitemid, 'webbupointfinder_items_address', true );
+	$vals = pf_get_location();
+	if (vals != false) {
+			$long = esc_html(get_post_meta( $pfitemid, 'longitude', true ));
+			$lat = esc_html(get_post_meta( $pfitemid, 'latitude', true ));
+
+			$disobj = new DistanceCheck;
+			$dis = $disobj->Calculate($lat, $long, $vals['lat'], $vals['lon']);
+			$dis = number_format($dis, 2, '.', ' ');
+			$addr = '[' . $dis . '英里]' . $addr;
+	}	
+	return $addr;
+}
 function pointfinder_agentitemcount_calc($agent_id, $setup3_pointposttype_pt1,$request_type){
 
 	global $wpdb;
