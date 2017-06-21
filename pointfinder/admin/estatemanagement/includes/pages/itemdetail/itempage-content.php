@@ -15,8 +15,20 @@ function PFGetItemPageCol1(){
 
 	global $claim_list_permission;
 	global $ohour_list_permission;
-
-
+//-jschen, add location me button
+echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
+	<a href="#" id="aglId"><img src="/ge.png" width="25px" heigh="25px"></img> </a> 
+	<span id="aglResult"></span>
+</div>';
+/*
+echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
+<input name="field296725954161956900000" id="field296725954161956900000" class="input" placeholder="输入地址，查看附近商家" value="" autocomplete="off" type="search">
+<input name="pointfinder_google_search_coord" id="pointfinder_google_search_coord" class="input" value="" type="hidden">
+	<a href="#" id="aglSearch"><img src="/se.png" width="25px" heigh="25px"></img></a> 
+	<a href="#" id="aglId"><img src="/ge.png" width="25px" heigh="25px"></img> </a> 
+	<br><span id="aglResult"></span>
+</div>';
+*/
 	$claim_list_permission = 1;
 	$review_list_permission = 1;
 	$comment_list_permission = 1;
@@ -134,12 +146,13 @@ function PFGetItemPageCol1(){
 		$postd_text = '';
 	}
 
+
 	if ($setup3_modulessetup_headersection == 1 || $setup3_modulessetup_headersection == 2 ) {
-		echo '<div class="pf-item-title-bar"><span class="pf-item-title-text" itemprop="name">'.get_the_title().'</span> <span class="pf-item-subtitle"> '.esc_html(get_post_meta( get_the_id(), 'webbupointfinder_items_address', true )).'</span></div><div class="pf-item-extitlebar"><div class="pf-itemdetail-pdate">'.$postd_text.$viewcount_text.' '.$verified_badge_text.'</div></div>'; 
+		echo '<div class="pf-item-title-bar"><span class="pf-item-title-text" itemprop="name">'.get_the_title().'</span> <span class="pf-item-subtitle"> '.esc_html(pf_get_address_with_distance( get_the_id())).'</span></div><div class="pf-item-extitlebar"><div class="pf-itemdetail-pdate">'.$postd_text.$viewcount_text.' '.$verified_badge_text.'</div></div>'; 
 	}elseif($setup3_modulessetup_headersection == 0){
 		echo '<div class="pf-item-title-bar">'.$verified_badge_text.'<div class="pf-itemdetail-pdate">'.$postd_text.$viewcount_text.'</div></div>'; 
 	}
-   
+  
 
 	$i = 1;
 	$tabinside = $tabinsidesp = $tabinside_output = $tabinside_first = $taboutside_w1 = $taboutside_w2 = '';
