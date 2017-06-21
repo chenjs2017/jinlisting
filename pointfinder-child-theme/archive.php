@@ -184,7 +184,7 @@ get_header();
 	        echo '<div class="pf-container"><div class="pf-row clearfix">';
 	        	if ($setup_item_catpage_sidebarpos == 3) {
 	        		echo '<div class="col-lg-12"><div class="pf-page-container">';
-						echo do_shortcode('[pf_itemgrid2 listingtypefilters="'.$listing_cat_filter.'" itemtypefilters="'.$item_cat_filter.'" locationfilters="'.$loc_cat_filter.'" orderby="'.$setup22_searchresults_defaultsortbytype.'" sortby="'.$setup22_searchresults_defaultsorttype.'" items="'.$setup42_authorpagedetails_defaultppptype.'" cols="'.$setup22_searchresults_defaultlistingtype.'" grid_layout_mode="'.$setup42_authorpagedetails_grid_layout_mode.'" filters="'.$filters_text.'" itemboxbg="'.$setup22_searchresults_background2.'" infinite_scroll="'.$stp22_infscrl_c.'" infinite_scroll_lm="'.$stp22_infscrl_c2.'" '.$filter_text.']' );
+						echo do_shortcode('[pf_itemgrid2 listingtypefilters="'.$listing_cat_filter.'" itemtypefilters="'.$item_cat_filter.'" locationfilters="'.$loc_cat_filter.'" orderby="" sortby="" items="'.$setup42_authorpagedetails_defaultppptype.'" cols="'.$setup22_searchresults_defaultlistingtype.'" grid_layout_mode="'.$setup42_authorpagedetails_grid_layout_mode.'" filters="'.$filters_text.'" itemboxbg="'.$setup22_searchresults_background2.'" infinite_scroll="'.$stp22_infscrl_c.'" infinite_scroll_lm="'.$stp22_infscrl_c2.'" '.$filter_text.']' );
 					echo '</div></div>';
 	        	}else{
 	        		if($setup_item_catpage_sidebarpos == 1){
@@ -457,7 +457,7 @@ get_header();
                         <?php
                     }
 
-		            echo do_shortcode('[pf_itemgrid2 listingtypefilters="'.$listing_cat_filter.'" itemtypefilters="'.$item_cat_filter.'" locationfilters="'.$loc_cat_filter.'" orderby="'.$setup22_searchresults_defaultsortbytype.'" sortby="'.$setup22_searchresults_defaultsorttype.'" items="'.$setup42_authorpagedetails_defaultppptype.'" cols="'.$setup22_searchresults_defaultlistingtype.'" grid_layout_mode="'.$setup42_authorpagedetails_grid_layout_mode.'" filters="'.$filters_text.'" itemboxbg="'.$setup22_searchresults_background2.'" infinite_scroll="'.$stp22_infscrl_c.'" infinite_scroll_lm="'.$stp22_infscrl_c2.'" '.$filter_text.']' );
+		            echo do_shortcode('[pf_itemgrid2 listingtypefilters="'.$listing_cat_filter.'" itemtypefilters="'.$item_cat_filter.'" locationfilters="'.$loc_cat_filter.'" orderby="" sortby="" items="'.$setup42_authorpagedetails_defaultppptype.'" cols="'.$setup22_searchresults_defaultlistingtype.'" grid_layout_mode="'.$setup42_authorpagedetails_grid_layout_mode.'" filters="'.$filters_text.'" itemboxbg="'.$setup22_searchresults_background2.'" infinite_scroll="'.$stp22_infscrl_c.'" infinite_scroll_lm="'.$stp22_infscrl_c2.'" '.$filter_text.']' );
 
 		            echo '</div></div>';
 		            if($setup_item_catpage_sidebarpos == 2){
