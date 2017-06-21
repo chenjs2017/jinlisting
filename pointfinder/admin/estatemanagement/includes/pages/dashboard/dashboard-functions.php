@@ -658,6 +658,8 @@
 				}
 
 				wp_set_post_terms( $post_id, $pftax_terms, 'pointfinderlocations');
+				//set_lat_lng($post_id)
+
 			}
 
 
@@ -736,6 +738,8 @@
 			/*Location*/
 				if(isset($vars['pfupload_lat']) && isset($vars['pfupload_lng'])){
 					update_post_meta($post_id, 'webbupointfinder_items_location', $vars['pfupload_lat'].','.$vars['pfupload_lng']);	
+    			update_post_meta($post_id, 'latitude', $vars['pfupload_lat']);
+    			update_post_meta($post_id, 'longitude', $vars['pfupload_lng']);
 				}
 
 			/*Addrress*/
