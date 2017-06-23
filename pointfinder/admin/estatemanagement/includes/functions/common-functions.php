@@ -27,9 +27,21 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 function pf_build_sql($args) {
 //jschen, begin build sql
 			global $wpdb;
+/*
+			echo '<br/>';
 			print_r($args);
+			echo '<br/>';
+*/
 
-			$loc ="'0'";
+			$vals = pf_get_location();
+			$lat = $vals['lat'];
+			$lon = $vals['lon'];	
+
+			$distance_field = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(lat.meta_value,0) / 57.29577951)) +
+        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(lat.meta_value,0) / 57.29577951) *
+         COS(ifnull(lon.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
+			
+			$loc ="'-1'";
 			$term_ids = $args['tax_query'][1]['terms'];
 			for ($i = 0; $i < sizeof($term_ids); $i++) {
 				$loc = $loc .",'" . $term_ids[$i] . "'"; 
@@ -47,72 +59,131 @@ function pf_build_sql($args) {
 				$order = $key;
 				if ($order == 'date') {
 					$order = 'post_date';
+					if (strlen($value) == 0) {
+						$value='desc';
+					}
 				}elseif($key =='distance'){
 					$has_distance = true;
-					$vals = pf_get_location();
-					$lat = $vals['lat'];
-					$lon = $vals['lon'];	
-
-					$order = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(lat.meta_value,0) / 57.29577951)) +
-        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(lat.meta_value,0) / 57.29577951) *
-         COS(ifnull(lon.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
+					$order = $distance_field;
+				}else if ($key =='meta_value') {
+					$order = 'meta.meta_value';
+				}else if ($key =='title') {
+					$order = 'p.post_title';
+				}elseif ($key == 'reviewcount') {
+					if (strlen($value) == 0) {
+						$value='desc';
+					}
+				}elseif ($key == 'meta_value_num') {
+					$order ='meta.meta_value * 1';
 				}
+
 				$str_orderby .= $order . ' ' . $value . ',';
-				
-			}
+			}			
 			$str_orderby = trim($str_orderby, ',');
 
 			
 			$sql = "
-								SELECT SQL_CALC_FOUND_ROWS $wpdb->posts.ID 
-								FROM $wpdb->posts 
-								INNER JOIN $wpdb->term_relationships ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id) 
-								INNER JOIN $wpdb->term_relationships AS tt1 ON ($wpdb->posts.ID = tt1.object_id) 
+								SELECT SQL_CALC_FOUND_ROWS p.ID 
+								FROM $wpdb->posts  as p
+								INNER JOIN $wpdb->term_relationships as r ON (p.ID = r.object_id) 
 						";
+/*
+			$sql .=	"
+								INNER JOIN $wpdb->term_relationships AS tt1 ON (p.ID = tt1.object_id) 
+						";
+*/
+
+			if ($args['meta_key'] != null) {
+				$sql .= "
+								inner join $wpdb->postmeta as meta on(p.id=meta.post_id and meta.meta_key='" . $args['meta_key'] . "')	
+								";
+			}
 			if ($has_distance){
 				
 				$sql .= "
-								inner join wp_postmeta as lat on (wp_posts.id=lat.post_id and lat.meta_key='latitude')
-								inner join wp_postmeta as lon on (wp_posts.id=lon.post_id and lon.meta_key='longitude')
+								inner join $wpdb->postmeta as lat on (p.id=lat.post_id and lat.meta_key='latitude')
+								inner join $wpdb->postmeta as lon on (p.id=lon.post_id and lon.meta_key='longitude')
 							";
 			}
 			$sql .=	"
-								WHERE 1=1 
-								AND ( $wpdb->term_relationships.term_taxonomy_id IN (".$args['tax_query'][0]['terms'][0] .") 
+								where (1=1) 
+							";
+			$termid =$args['tax_query'];
+			if (is_array($termid)) {
+				$termid=$termid[0];
+			}
+			$termid = $termid['terms'];
+			if (is_array($termid)) {
+				$termid = $termid[0];
+			}
+			$sql .= "
+								and  r.term_taxonomy_id IN (".$termid.") 
+							";
+/*jschen location is redundant
 										AND tt1.term_taxonomy_id IN 
 											(select term_id from wp_term_taxonomy where 
 													term_id in (select term_id from  wp_term_taxonomy where  parent in (". $loc .")) 
 													or  parent in (select term_id from  wp_term_taxonomy where  parent in (". $loc .")) 
 													or term_id in(". $loc .")
 											) 
-								) 
-								AND $wpdb->posts.post_type = '". $args['post_type']."' 
-								AND ($wpdb->posts.post_status = '". $args['post_status']."') 
-								group by $wpdb->posts.id
+								 ";
+*/
+			$sql .="
+								AND p.post_type = '". $args['post_type']."' 
+								AND (p.post_status = '". $args['post_status']."') 
+							";
+			if ($args['keyword'] != '') {
+					$k = $wpdb->esc_like($args['keyword']);
+					$sql .= " and (p.post_title like '%".$k."%' or p.post_excerpt like '%.".$k.".%' )";
+			}
+			if ($args['distance'] != 0) {
+				$sql .= " and (" . $distance_field . "<" . $args['distance'] . ")"; 
+			}
+			$sql .="
+								group by p.id
 								";
 			
 			$sql .= $str_orderby;
-			$sql .= " LIMIT " . ($args['paged'] - 1) * $args['posts_per_page'] . ", " . $args['posts_per_page'];
-	echo $sql;
+			$posts = $args['showposts'];
+			if (!isset($posts)) {
+				$posts = $args['posts_per_page']; 
+			}
+			
+			$page = isset($args['paged']) ? $args['paged'] : 1;
+			 
+			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
+	
+	//echo '<br/>' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
+	if (isset($_SESSION['agl-values']))
+	{
+		return $_SESSION ['agl-values'];
+	}
   $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
 	if ($cookie !='') {
 		$cookie = stripslashes($cookie) ;
 		$vals = json_decode($cookie, true);
-		return $vals;
-	}else {
+		$lon = isset($vals['lon']) ? $vals['lon']:'';
+		$lat = isset($vals['lat']) ? $vals['lat']:'';
+		if (strlen($lat) > 0 && strlen($lon) >0 )
+		{
+			$_SESSION['agl-values'] = $vals;	
+			return $vals;
+		}
+	}
+	
 		if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
         $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
     } else {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
-
     $url = 'http://ip-api.com/json/' . $ip;
+    $content = file_get_contents($url);
     $json = json_decode($content, true);
+		$_SESSION['agl-values'] = $json;	
 		return $json;
-	}
 }
 function get_near_by() {
 	$cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
