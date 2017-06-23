@@ -11,7 +11,21 @@
 	License URI: 
 */
 
-
+/*jschen added*/
+.center-container {
+    text-align: center;
+    height: 100%; }
+.center-span { 
+    height: 100%;
+    vertical-align: middle;
+    display: inline-block; }
+.center-outer {
+    padding: 0;
+    vertical-align: middle;
+    display: inline-block; }
+.center-inner {
+    vertical-align: middle;
+    display: inline-block; }
 
 
 /*------------------------------------*\
@@ -317,7 +331,7 @@
 	.pfsearch-content .option-group .goption {display: block!important; margin-bottom: 0!important;}
 	.pfsearch-content .select2-container{display:block}
 	.select2-no-results{ content:'nothing found.'}
-	#pfsearch-filter-number,#pfsearch-filter-order {width: 160%;}
+	#pfsearch-filter-number,#pfsearch-filter-order,#pfsearch-filter-distance {width: 160%;}
 	
 	.golden-forms .pflabelfixsearch.search:before{ top:0;  left:0;  width:0;  height:0;  border:0}
 	.golden-forms .pflabelfixsearch.search >.input{padding:0 50px 0 9px}
@@ -1130,7 +1144,8 @@
 	.pflistgridview .pflistcommonview-header .searchformcontainer-filters .pfgridlist6:hover{background-color: #ffffff;}
 	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-right li:last-child{margin-right:0!important}
 	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left li .pfsortby{min-width:100px}
-	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left li .pforderby{min-width:70px}
+	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left li .pforderby{min-width:80px}
+	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left li .pfdistance{min-width:90px}
 	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left li .pfnumberby{min-width:50px}
 	.pflistgridview .pflistcommonview-header .searchformcontainer-filters-left .pfgridlist6{display:none;}
 	.pflistgridview .pflistcommonview-header .pfgridlist6{background-color: #fafafa!important;}
