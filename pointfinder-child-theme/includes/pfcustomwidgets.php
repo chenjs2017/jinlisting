@@ -503,6 +503,7 @@ function pointfinder_extrafunction_03_new(){
                             echo '<div class="pf-recent-items-title">';
                                 
                                 if ( $mytitle ){ 
+	
                                     if (strlen($mytitle) > 34) {
                                         echo mb_substr($mytitle, 0, 34,'UTF-8').'...';
                                     } else {
@@ -641,7 +642,7 @@ function pointfinder_extrafunction_03_new(){
                 'nopaging' => 0, 
                 'post_status' => 'publish', 
                 'ignore_sticky_posts' => true, 
-                'post_type' => array($setup3_pointposttype_pt1),
+                'post_type' => $setup3_pointposttype_pt1,
                 'orderby'=>'date',
                 'order'=>'DESC',
                 //'meta_query' => array(array('key' => 'webbupointfinder_item_featuredmarker','value' => '1','compare' => '='))
@@ -669,60 +670,53 @@ function pointfinder_extrafunction_03_new(){
 
             /*Sense Category*/
            
-            if ((is_single() || is_category() || is_archive()) && $sense == 1) {
+            if ((is_single() ) && $sense == 1) {
                 $current_post_id = get_the_id();
-
                 if (!empty($current_post_id)) {
                     $current_post_terms = get_the_terms( $current_post_id, 'pointfinderltypes');
                     if (isset($current_post_terms) && $current_post_terms != false) {
                         foreach ($current_post_terms as $key => $value) {
-                            if ($value->parent == 0) {
-                                $args2['tax_query']=
-                                    array(
-                                        'relation' => 'AND',
-                                        array(
+                                $args2['tax_query'][]=
+                                   array(
                                             'taxonomy' => 'pointfinderltypes',
                                             'field' => 'id',
-                                            'terms' => $key,
+                                            'terms' => $value->term_id,
                                             'operator' => 'IN'
-                                        )
                                     );
-                            }else{
-                                $args2['tax_query']=
-                                    array(
-                                        'relation' => 'AND',
-                                        array(
-                                            'taxonomy' => 'pointfinderltypes',
-                                            'field' => 'id',
-                                            'terms' => $value->parent,
-                                            'operator' => 'IN'
-                                        )
-                                    );
-                            }
-                        }
+                       }
                         
                     }
                 }
-            }
+            }else {
+							$args2['tax_query'] = $_SESSION['tax_query'];
+						}
+				
+					$meta_key_featured = 'webbupointfinder_item_featuredmarker';
+					$args2['orderby'] = array('meta_value_num' => 'DESC' , 'distance' => 'asc');
+					$args2['meta_key'] = $meta_key_featured;
+           
+				 global $wpdb;
+				$sql = pf_build_sql($args2);
+				$r = $wpdb->get_results($sql, OBJECT);
+
             
-            
-            $r = new WP_Query($args2);
-            if ($r->have_posts()) {
+//            if ($r->have_posts()) {
             echo '<ul class="pf-widget-itemlist">';
-                while ($r->have_posts()) : $r->the_post(); 
+ //               while ($r->have_posts()) : $r->the_post(); 
+						foreach($r as $lo) {
                     echo '<li class="clearfix">';
-                        $mytitle = get_the_title();
-                        $myid = get_the_ID();
+                        $myid = $lo->ID;
+                        $mytitle = get_the_title($myid);
                         echo '<a href="'.get_the_permalink().'" title="';
                                 esc_attr($mytitle ? $mytitle : $myid); 
                                 echo '">';
                         if($limage == 1){
                         
-                            if ( has_post_thumbnail()) {
+                            if ( has_post_thumbnail($myid)) {
 
                                     $general_retinasupport = PFSAIssetControl('general_retinasupport','','0');
                                     
-                                    $attachment_img_pf = wp_get_attachment_image_src(get_post_thumbnail_id(get_the_ID()),'thumbnail');
+                                    $attachment_img_pf = wp_get_attachment_image_src(get_post_thumbnail_id($myid),'thumbnail');
                                     if($general_retinasupport != 1){
                                         $attachment_img_pf_url = aq_resize($attachment_img_pf[0],70,70,true);
                                     }else{
@@ -737,7 +731,7 @@ function pointfinder_extrafunction_03_new(){
                         }
                             
                             
-                        echo '<div class="pf-recent-items-title">';
+                        echo '<div class="pf-recent-items-title"> ';
                             if ( $mytitle ){ 
                                 if (strlen($mytitle) > 34) {
                                     echo mb_substr($mytitle, 0, 34,'UTF-8').'...';
@@ -761,22 +755,22 @@ function pointfinder_extrafunction_03_new(){
                         }
                         if($ltype == 1){
                         echo '<div class="pf-recent-items-terms">';
-                        echo GetPFTermInfo(get_the_ID(),'pointfinderltypes');
+                        echo GetPFTermInfo($myid,'pointfinderltypes');
                         echo '</div>';
                         echo '<div class="pf-recent-items-terms">';
-                        echo GetPFTermInfo(get_the_ID(),'pointfinderitypes');
+                        echo GetPFTermInfo($myid,'pointfinderitypes');
                         echo '</div>';
                         }
                     echo '</a>';
                     echo '</li>';
                 
-                endwhile; 
+								}
             echo '</ul>';
            
             
-            wp_reset_postdata();
+            //wp_reset_postdata();
 
-            }
+            //}
             echo $args['after_widget'];
         }
 
