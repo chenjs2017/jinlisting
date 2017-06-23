@@ -17,7 +17,7 @@ function PFGetItemPageCol1(){
 	global $ohour_list_permission;
 //-jschen, add location me button
 echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
-	<a href="#" id="aglId"><img src="/ge.png" width="25px" heigh="25px"></img> </a> 
+	<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位位置</img> </a> 
 	<span id="aglResult"></span>
 </div>';
 /*
