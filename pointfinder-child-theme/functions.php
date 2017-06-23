@@ -335,7 +335,7 @@ function get_zip()
     }
 
     $url = 'http://ip-api.com/json/' . $ip;
-    //$content = file_get_contents($url);
+    $content = file_get_contents($url);
     $json = json_decode($content, true);
     $zipcode = $json[zip];
 return $zipcode;
