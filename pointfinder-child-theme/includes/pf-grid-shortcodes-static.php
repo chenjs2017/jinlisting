@@ -1,4 +1,5 @@
 <?php
+
 require_once('location_check.php');
 function pf_itemgrid2_func_new( $atts ) {
   extract( shortcode_atts( array(
@@ -31,7 +32,9 @@ function pf_itemgrid2_func_new( $atts ) {
 	'locationfilters'=>'',
 	'tag' => '',
 	'infinite_scroll' => 0,
-	'infinite_scroll_lm' => 0
+	'infinite_scroll_lm' => 0,
+	'keyword' => '',
+	'distance' => 0
   ), $atts ) );
   
 
@@ -121,6 +124,8 @@ function pf_itemgrid2_func_new( $atts ) {
 		if(isset($_GET['pfsearch-filter-location']) && !empty($_GET['pfsearch-filter-location'])){$pfg_lotype = esc_attr($_GET['pfsearch-filter-location']);}
 
 		
+		if(isset($_GET['pfsearch-filter-distance']) && $_GET['pfsearch-filter-distance']!=''){$pfg_distance = esc_attr($_GET['pfsearch-filter-distance']);}else{$pfg_distance = '';}
+		if(isset($_GET['pfsearch-filter-keyword']) && $_GET['pfsearch-filter-keyword']!=''){$pfg_keyword = esc_attr($_GET['pfsearch-filter-keyword']);}else{$pfg_keyword = '';}
 		
 		if ( is_front_page() ) {
 	        $pfg_paged = (esc_sql(get_query_var('page'))) ? esc_sql(get_query_var('page')) : 1;   
@@ -285,7 +290,7 @@ function pf_itemgrid2_func_new( $atts ) {
 
 
 			if($pfg_orderby != ''){
-				if($pfg_orderby == 'date' || $pfg_orderby == 'title'){
+				if($pfg_orderby == 'date' || $pfg_orderby == 'distance'){
 					
 					$args['orderby'] = array($pfg_orderby => $pfg_order);
 //					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
@@ -298,15 +303,15 @@ function pf_itemgrid2_func_new( $atts ) {
 					}
 
 				}else{
-					
-//					$args['meta_key']='webbupointfinder_item_'.$pfg_orderby;
-/*					
-					if(PFIF_CheckFieldisNumeric_ld($pfg_orderby) == false){
+					$args['meta_key']='webbupointfinder_item_'.$pfg_orderby;
+					if ($pfg_orderby =='reviewcount'&& $pfg_order=='') {
+						$pfg_order = 'desc';
+					}
+					if(($pfg_orderby !='reviewcount') && PFIF_CheckFieldisNumeric_ld($pfg_orderby) == false){
 						$args['orderby']= array('meta_value' => $pfg_order);
 					}else{
 						$args['orderby']= array('meta_value_num' => $pfg_order);
 					}
-*/					
 					if (!empty($pfgetdata['manual_args'])) {
 						$pfgetdata['manual_args']['meta_key']='webbupointfinder_item_'.$pfg_orderby;
 						if(PFIF_CheckFieldisNumeric_ld($pfg_orderby) == false){
@@ -320,12 +325,10 @@ function pf_itemgrid2_func_new( $atts ) {
 			}else{
 			//jschen	
 				if($pfgetdata['orderby'] != ''){
-//					$args['meta_key'] = $meta_key_featured;
+					$args['meta_key'] = $meta_key_featured;
 					$args['orderby'] = array( $pfgetdata['orderby'] => $pfgetdata['sortby']);
 				}else{
-//					$args['meta_key'] = $meta_key_featured;
-//jschen empty means defult order, means 2 features, then orderby distance
-//					$args['orderby'] = array('meta_value_num' => 'DESC' , $setup22_searchresults_defaultsortbytype => $setup22_searchresults_defaultsorttype);
+					$args['orderby'] =  array( 'distance' => 'asc');
 				}
 			}
 			
@@ -341,6 +344,18 @@ function pf_itemgrid2_func_new( $atts ) {
 				}else{
 					$args['posts_per_page'] = $setup22_searchresults_defaultppptype;
 				}
+			}
+			
+			//jschen keyword and distance
+			$pfg_distance = $pfg_distance =='' ? 0 : $pfg_distance;
+			$args['distance'] = $pfg_distance;
+			if(!empty($pfgetdate['manual_args'])) {
+				$pfgetdate['manual_args']['distance'] = $pfg_distance;
+			}
+
+			$args['keyword'] = $pfg_keyword;
+			if(!empty($pfgetdate['manual_args'])) {
+				$pfgetdate['manual_args']['keyword'] = $pfg_keyword;
 			}
 			
 			if($pfg_paged != ''){
@@ -419,7 +434,7 @@ function pf_itemgrid2_func_new( $atts ) {
     $term_parent= $term->parent;
     if ($term_parent<>0)
     {
-        $tax_id=   $term_parent;
+        $tax_id= $term_parent;
     }
 
     if (($tax_id<>'114')&&($taxonomy<>'pointfinderlocations')) {
@@ -449,9 +464,11 @@ function pf_itemgrid2_func_new( $atts ) {
 			if (!empty($pfgetdata['manual_args'])) {
 				$args = $pfgetdata['manual_args'];
 			}	
+			
 			//jschen, begin build sql
 			global $wpdb;
 			$sql = pf_build_sql($args);
+			$_SESSION['tax_query'] = $args['tax_query'];
 			$loop = $wpdb->get_results($sql, OBJECT);
 			$sql = "select found_rows() as count";
 			$find = $wpdb->get_results($sql, OBJECT)[0]->count;
@@ -579,19 +596,22 @@ function pf_itemgrid2_func_new( $atts ) {
 								    $wpflistdata .= '<li>';
 								    	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby">';
 		                            		$wpflistdata .= '<select class="pfsearch-filter" name="pfsearch-filter" id="pfsearch-filter">';
-											
+										/*jschen remark, defalut should be distance	
+					
 												if($args['orderby'] == 'ID' && $args['orderby'] != 'meta_value_num' && $args['orderby'] != 'meta_value'){
 														$wpflistdata .= '<option value="" selected>'.esc_html__('SORT BY','pointfindert2d').'</option>';
 												}else{
 													$wpflistdata .= '<option value="">'.esc_html__('SORT BY','pointfindert2d').'</option>';
 												}
+*/
+		
 
-												$pfgform_values3 = array('title','date');
-												$pfgform_values3_texts = array('title'=>esc_html__('Title','pointfindert2d'),'date'=>esc_html__('Date','pointfindert2d'));
+												$pfgform_values3 = array('distance','date');
+												$pfgform_values3_texts = array('distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
 											
 												if ($review_system_statuscheck == 1) {
 													array_push($pfgform_values3, 'reviewcount');
-													$pfgform_values3_texts['reviewcount'] = esc_html__('Review','pointfindert2d');
+													$pfgform_values3_texts['reviewcount'] = esc_html__('评论多至少','pointfindert2d');
 												}
 											
 											
@@ -631,27 +651,23 @@ function pf_itemgrid2_func_new( $atts ) {
 		                        */
 
 		                        /*
-	                            * Start: ASC/DESC Section
+	                            * Start: distance fileter
 	                            */
 									$wpflistdata .= '
 		                            <li>
-		                                <label for="pfsearch-filter-order" class="lbl-ui select pforderby">
-		                            	<select class="pfsearch-filter-order" name="pfsearch-filter-order" id="pfsearch-filter-order" >';
-										$pfgform_values2 = array('ASC','DESC');
-										$pfgform_values2_texts = array('ASC'=>esc_html__('ASC','pointfindert2d'),'DESC'=>esc_html__('DESC','pointfindert2d'));
+		                                <label for="pfsearch-filter-distance" class="lbl-ui select pfdistance">
+		                            	<select class="pfsearch-filter-distance" name="pfsearch-filter-distance" id="pfsearch-filter-distance" >';
+										$pfgform_values2 = array('0','1','3','5');
+										$pfgform_values2_texts = array('0'=>esc_html__('不限距离','pointfindert2d'),
+													'1'=>esc_html__('1英里内','pointfindert2d'),
+													'3'=>esc_html__('3英里内','pointfindert2d'),
+													'5'=>esc_html__('5英里内','pointfindert2d')
+													);
 										foreach($pfgform_values2 as $pfgform_value2){
-											if(isset($pfg_order)){
-												if(strcmp($pfgform_value2,$pfg_order) == 0){
+											if(isset($pfg_distance) &&  (strcmp($pfgform_value2,$pfg_distance) == 0)){
 												   $wpflistdata .= '<option value="'.$pfgform_value2.'" selected>'.$pfgform_values2_texts[$pfgform_value2].'</option>';
-												}else{
-													$wpflistdata .= '<option value="'.$pfgform_value2.'">'.$pfgform_values2_texts[$pfgform_value2].'</option>';
-												}
 											}else{
-												if(strcmp($pfgform_value2,$setup22_searchresults_defaultsorttype) == 0){
-												   $wpflistdata .= '<option value="'.$pfgform_value2.'" selected>'.$pfgform_values2_texts[$pfgform_value2].'</option>';
-												}else{
 													$wpflistdata .= '<option value="'.$pfgform_value2.'">'.$pfgform_values2_texts[$pfgform_value2].'</option>';
-												}
 											}
 										}
 										$wpflistdata .= '</select>
@@ -659,7 +675,7 @@ function pf_itemgrid2_func_new( $atts ) {
 		                            </li>
 									';
 								/*
-	                            * End: ASC/DESC Section
+	                            * End: distance filter
 	                            */
 
 								/*
@@ -690,6 +706,12 @@ function pf_itemgrid2_func_new( $atts ) {
 	                        	/*
 	                            * End: Number Section
 	                            */
+														//jschen start keyword and search
+										$wpflistdata .= '<li><div class="center-outer"><div class="center-inner">';
+										$wpflistdata .= '<input type="text" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="padding-bottom: 0px;" value=""/>';
+										$wpflistdata .= '<button id="pfsearch-button">搜索</button>';
+										$wpflistdata .= '<a href="#" id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位您的位置</img> </a>';
+										$wpflistdata .= '</div></div></li>';
 
 		                        /*
 	                            * Start: Category Filters
