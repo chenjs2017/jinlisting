@@ -25,11 +25,12 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 } 
 
 function pf_build_sql($args) {
-//jschen, begin build sql
 			global $wpdb;
+/*jschen debug
 			echo '<br/>';
 			print_r($args);
 			echo '<br/>';
+*/
 
 			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
 
@@ -163,7 +164,7 @@ function pf_build_sql($args) {
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
-	echo '<br/>' . $sql . '<br/>';
+	'<br/>' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
