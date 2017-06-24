@@ -53,7 +53,7 @@ function pf_itemgrid2_func_new( $atts ) {
 		
 
 		$setup22_searchresults_defaultppptype = PFSAIssetControl('setup22_searchresults_defaultppptype','','10');
-		$setup22_searchresults_defaultsortbytype = PFSAIssetControl('setup22_searchresults_defaultsortbytype','','ID');
+		$setup22_searchresults_defaultsortbytype = PFSAIssetControl('setup22_searchresults_defaultsortbytype','','recommend');
 		$setup22_searchresults_defaultsorttype = PFSAIssetControl('setup22_searchresults_defaultsorttype','','ASC');
 
 		$general_retinasupport = PFSAIssetControl('general_retinasupport','','0');
@@ -328,16 +328,12 @@ function pf_itemgrid2_func_new( $atts ) {
 			//		$args['meta_key'] = $meta_key_featured;
 					$args['orderby'] = array( $pfgetdata['orderby'] => $pfgetdata['sortby']);
 				}else{
-					$args['orderby'] =  array( 'recommend' => '');
+					$args['orderby'] =  array( $setup22_searchresults_defaultsortbytype => '');
 				}
 			}
 			
-			
 			if($pfg_number != ''){
 				$args['posts_per_page'] = $pfg_number;
-				if (!empty($pfgetdata['manual_args'])) {
-					$pfgetdata['manual_args']['posts_per_page'] = $pfg_number;
-				}
 			}else{
 				if($pfgetdata['items'] != ''){
 					$args['posts_per_page'] = $pfgetdata['items'];
@@ -345,7 +341,10 @@ function pf_itemgrid2_func_new( $atts ) {
 					$args['posts_per_page'] = $setup22_searchresults_defaultppptype;
 				}
 			}
-			
+			if (!empty($pfgetdata['manual_args'])) {
+					$pfgetdata['manual_args']['posts_per_page'] = $args['posts_per_page'];
+			}
+		
 			//jschen keyword and distance filter
 			$pfg_distance = $pfg_distance =='' ? 0 : $pfg_distance;
 			$args['distance'] = $pfg_distance;

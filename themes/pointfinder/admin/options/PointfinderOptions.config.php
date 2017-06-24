@@ -1337,11 +1337,11 @@ if (!class_exists("Redux_Framework_PF_Theme_Config")) {
 								'type' => 'select',
 								'title' => esc_html__('Default: Sortby Type', 'pointfindert2d') ,
 								'options' => array(
-									'title' => esc_html__('Title', 'pointfindert2d') ,
-									'ID' => esc_html__('ID', 'pointfindert2d') ,
-									'date' => esc_html__('Date', 'pointfindert2d') ,
+									'distance' => esc_html__('distance', 'pointfindert2d') ,
+									'recommend' => esc_html__('recommend', 'pointfindert2d') ,
+									'date' => esc_html__('date', 'pointfindert2d') ,
 								) ,
-								'default' => 'ID',
+								'default' => 'distance',
 								'desc' => esc_html__('Default sortby type for listings.','pointfindert2d'),
 							),
 							array(

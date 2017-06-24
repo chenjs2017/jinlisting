@@ -159,14 +159,23 @@ function pf_build_sql($args) {
 			if (!isset($posts)) {
 				$posts = $args['posts_per_page']; 
 			}
-			if (!isset($posts) || $posts == '') {
-				$posts = 25;
+			if (!isset($posts)) {
+				$posts = $args['items']; 
 			}
+/*
+			if (!isset($posts) || $posts == '') {
+
+				$setup22_searchresults_defaultppptype = PFSAIssetControl('setup22_searchresults_defaultppptype','','10');
+				$posts = $setup22_searchresults_defaultppptype;
+			}
+*/
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
+/*
 			if (!isset($page)) {
 				$page=1;
 			}
+*/
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
