@@ -141,7 +141,7 @@ function pf_build_sql($args) {
 							";
 			if ($args['keyword'] != '') {
 					$k = $wpdb->esc_like($args['keyword']);
-					$sql .= " and (p.post_title like '%".$k."%' or p.post_excerpt like '%.".$k.".%' )";
+					$sql .= " and (p.post_title like '%".$k."%' or p.post_content like '%".$k."%' )";
 			}
 			if ($args['distance'] != 0) {
 				$sql .= " and (" . $distance_field . "<" . $args['distance'] . ")"; 
