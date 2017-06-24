@@ -26,10 +26,9 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 
 function pf_build_sql($args) {
 			global $wpdb;
-/*jschen debug
-			echo '<br/>';
+/*
+		echo '<br/>jschendebug:';
 			print_r($args);
-			echo '<br/>';
 */
 
 			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
@@ -155,16 +154,23 @@ function pf_build_sql($args) {
 								";
 			
 			$sql .= $str_orderby;
+
 			$posts = $args['showposts'];
 			if (!isset($posts)) {
 				$posts = $args['posts_per_page']; 
 			}
+			if (!isset($posts) || $posts == '') {
+				$posts = 25;
+			}
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
+			if (!isset($page)) {
+				$page=1;
+			}
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
-	'<br/>' . $sql . '<br/>';
+//	echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
@@ -237,7 +243,7 @@ function get_near_by() {
 		$result = $wpdb->get_results($sql, OBJECT);
 		$output ="在您身边发现：";
 		foreach( $result as $obj ) {
-				$url = '/?field_listingtype='. $obj->term_id .'&pointfinder_radius_search=1&ne=&ne2=&sw=&sw2=&s=&serialized=1&action=pfs';
+				$url = '/?field_listingtype='. $obj->term_id .'&pfsearch-filter=distance&pointfinder_radius_search=1&ne=&ne2=&sw=&sw2=&s=&serialized=1&action=pfs';
 				$output .= '<a href="'. $url .'">'. $obj->name .'&nbsp;'.  $obj->post_count .'个 </a> &nbsp;&nbsp;|&nbsp;&nbsp;';
     }
   }

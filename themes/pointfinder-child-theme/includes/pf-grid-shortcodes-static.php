@@ -290,7 +290,7 @@ function pf_itemgrid2_func_new( $atts ) {
 
 
 			if($pfg_orderby != ''){
-				if($pfg_orderby == 'date' || $pfg_orderby == 'distance'){
+				if($pfg_orderby == 'date' || $pfg_orderby == 'distance' || $pfg_orderby =='recommend'){
 					
 					$args['orderby'] = array($pfg_orderby => $pfg_order);
 //					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
