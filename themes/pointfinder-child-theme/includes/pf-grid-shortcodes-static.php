@@ -325,10 +325,10 @@ function pf_itemgrid2_func_new( $atts ) {
 			}else{
 			//jschen	
 				if($pfgetdata['orderby'] != ''){
-					$args['meta_key'] = $meta_key_featured;
+			//		$args['meta_key'] = $meta_key_featured;
 					$args['orderby'] = array( $pfgetdata['orderby'] => $pfgetdata['sortby']);
 				}else{
-					$args['orderby'] =  array( 'distance' => 'asc');
+					$args['orderby'] =  array( 'recommend' => '');
 				}
 			}
 			
@@ -346,7 +346,7 @@ function pf_itemgrid2_func_new( $atts ) {
 				}
 			}
 			
-			//jschen keyword and distance
+			//jschen keyword and distance filter
 			$pfg_distance = $pfg_distance =='' ? 0 : $pfg_distance;
 			$args['distance'] = $pfg_distance;
 			if(!empty($pfgetdate['manual_args'])) {
@@ -606,8 +606,8 @@ function pf_itemgrid2_func_new( $atts ) {
 */
 		
 
-												$pfgform_values3 = array('distance','date');
-												$pfgform_values3_texts = array('distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
+												$pfgform_values3 = array('recommend', 'distance','date');
+												$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
 											
 												if ($review_system_statuscheck == 1) {
 													array_push($pfgform_values3, 'reviewcount');

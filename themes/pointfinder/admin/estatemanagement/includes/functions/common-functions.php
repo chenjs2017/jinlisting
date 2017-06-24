@@ -27,11 +27,11 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 function pf_build_sql($args) {
 //jschen, begin build sql
 			global $wpdb;
-/*
 			echo '<br/>';
 			print_r($args);
 			echo '<br/>';
-*/
+
+			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
 
 			$vals = pf_get_location();
 			$lat = $vals['lat'];
@@ -74,7 +74,11 @@ function pf_build_sql($args) {
 						$value='desc';
 					}
 				}elseif ($key == 'meta_value_num') {
-					$order ='meta.meta_value * 1';
+					$order = 'meta.meta_value * 1';
+				}elseif ($key == 'recommend') {
+					$has_distance = true;
+					$args['meta_key'] = $meta_key_featured;
+					$order = 'meta.meta_value desc, '.$distance_field.' asc';
 				}
 
 				$str_orderby .= $order . ' ' . $value . ',';
@@ -159,7 +163,7 @@ function pf_build_sql($args) {
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
-//	echo '<br/>' . $sql . '<br/>';
+	echo '<br/>' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
