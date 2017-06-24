@@ -26,10 +26,7 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 
 function pf_build_sql($args) {
 			global $wpdb;
-/*
-		echo '<br/>jschendebug:';
-			print_r($args);
-*/
+//		echo '<br/>jschendebug:'; print_r($args);
 
 			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
 
@@ -79,8 +76,8 @@ function pf_build_sql($args) {
 					$has_distance = true;
 					$args['meta_key'] = $meta_key_featured;
 					$order = 'meta.meta_value desc, '.$distance_field.' asc';
+					$value = '';
 				}
-
 				$str_orderby .= $order . ' ' . $value . ',';
 			}			
 			$str_orderby = trim($str_orderby, ',');
