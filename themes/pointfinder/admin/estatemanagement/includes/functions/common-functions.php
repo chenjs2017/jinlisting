@@ -27,9 +27,11 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 function pf_build_sql($args) {
 //jschen, begin build sql
 			global $wpdb;
+/*
 			echo '<br/>';
 			print_r($args);
 			echo '<br/>';
+*/
 
 			$vals = pf_get_location();
 			$lat = $vals['lat'];
@@ -157,7 +159,7 @@ function pf_build_sql($args) {
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
-	echo '<br/>' . $sql . '<br/>';
+//	echo '<br/>' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
