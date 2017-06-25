@@ -85,6 +85,16 @@ $pf_extra_taxonomyfields = array();
 					'std'  => 0,
 				),
 				array(
+					'name' => esc_html__('Change to Tag','pointfindert2d'),
+					'id'   => 'change_to_tag',
+					'type' => 'radio',
+					'options' => array(
+						'0' => esc_html__('don not change','pointfindert2d'),
+						'1' => esc_html__('change','pointfindert2d'),
+						),
+					'std'  => 0,
+				),
+				array(
 					'name' => esc_html__('Icon Image','pointfindert2d'),
 					'id'   => 'cpoint_bgimage',
 					'type' => 'image',

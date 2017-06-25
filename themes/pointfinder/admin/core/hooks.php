@@ -550,7 +550,6 @@ if (PFASSIssetControl('st8_npsys','',0) == 1) {
 }
 
 function pointfinder_custom_pointStyles_newsys( $term_id, $taxonomy ) {
-
 	$listing_meta = get_option('pointfinderltypes_style_vars');
 
 	$setup8_pointsettings_retinapoints = PFSAIssetControl('setup8_pointsettings_retinapoints','','1');
@@ -566,6 +565,10 @@ function pointfinder_custom_pointStyles_newsys( $term_id, $taxonomy ) {
 
 
 	foreach ($listing_meta as $key => $value) {
+		if ($key == $term_id && $value['change_to_tag'] == 1) {
+			global $wpdb;
+			$count = $wpdb->query( "update  $wpdb->term_taxonomy set taxonomy='post_tag' where term_id=" . $term_id );
+		}
 		
 		$cpoint_type = (isset($value['cpoint_type']))?$value['cpoint_type']:0;
 		
