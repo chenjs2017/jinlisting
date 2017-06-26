@@ -581,6 +581,9 @@ function pointfinder_custom_pointStyles_newsys( $term_id, $taxonomy ) {
 			if( $value['change_to_tag'] == 1) {
 	      	$count = $wpdb->query( "update  $wpdb->term_taxonomy set taxonomy='post_tag' where term_id=" . $term_id );
 			}
+			if( $value['change_sub_to_tag'] == 1) {
+	      	$count = $wpdb->query( "update  $wpdb->term_taxonomy set taxonomy='post_tag' where parent=" . $term_id );
+			}
 		}
 		
 		$cpoint_type = (isset($value['cpoint_type']))?$value['cpoint_type']:0;
