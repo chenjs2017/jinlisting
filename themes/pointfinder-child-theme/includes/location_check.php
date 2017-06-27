@@ -12,7 +12,7 @@ if (!class_exists('RadiusCheck')) {
         var $maxLong;
         var $minLong;
 
-        function RadiusCheck($Latitude, $Longitude, $Miles) {
+        public function __construct ($Latitude, $Longitude, $Miles) {
             global $maxLat, $minLat, $maxLong, $minLong;
             $EQUATOR_LAT_MILE = 69.172; // in MIles
             $maxLat = $Latitude + $Miles / $EQUATOR_LAT_MILE;
@@ -47,7 +47,7 @@ if (!class_exists('DistanceCheck')) {
 
     class DistanceCheck {
 
-        function DistanceCheck() {
+        public function __construct() {
 
         }
 

@@ -145,8 +145,11 @@ function pointfinderwp_excerpt_single($length_callback = '', $more_callback = ''
 function pointfinderh_blank_view_article($more)
 {
     global $post;
-    $output = '... <a class="view-article" href="' . get_permalink($post->ID) . '">' . esc_html__('View Article', 'pointfindert2d') . '</a>';
-	return $output;
+		$output = '';
+		if (isset($post)) {
+    	$output = '... <a class="view-article" href="' . get_permalink($post->ID) . '">' . esc_html__('View Article', 'pointfindert2d') . '</a>';
+		}
+		return $output;
 }
 add_filter('excerpt_more', 'pointfinderh_blank_view_article');
 

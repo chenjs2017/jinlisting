@@ -689,6 +689,7 @@ function pointfinder_extrafunction_03_new(){
                 }
             }else {
 							$args2['tax_query'] = $_SESSION['tax_query'];
+							$args2['tag_id'] = $_SESSION['tag_id'];
 						}
 				
 					$meta_key_featured = 'webbupointfinder_item_featuredmarker';

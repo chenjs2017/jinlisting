@@ -133,6 +133,10 @@ function pf_itemgrid2_func_new( $atts ) {
 	        $pfg_paged = (esc_sql(get_query_var('paged'))) ? esc_sql(get_query_var('paged')) : 1; 
 	    }
 
+		if (isset($_GET['pageIndex'])) {
+			$pfg_paged = $_GET['pageIndex'];
+		}
+
 		$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
 		
 		if($pfgetdata['posts_in']!=''){
@@ -287,6 +291,7 @@ function pf_itemgrid2_func_new( $atts ) {
 					'operator' => 'IN'
 				);
 			}
+
 
 
 			if($pfg_orderby != ''){
@@ -468,6 +473,8 @@ function pf_itemgrid2_func_new( $atts ) {
 			global $wpdb;
 			$sql = pf_build_sql($args);
 			$_SESSION['tax_query'] = $args['tax_query'];
+			$_SESSION['tag_id'] = $args['tag_id'];
+
 			$loop = $wpdb->get_results($sql, OBJECT);
 			$sql = "select found_rows() as count";
 			$find = $wpdb->get_results($sql, OBJECT)[0]->count;
@@ -593,7 +600,7 @@ function pf_itemgrid2_func_new( $atts ) {
 	                            * Start: SORT BY Section
 	                            */	
 								    $wpflistdata .= '<li>';
-								    	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby">';
+								    	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby"><input type="hidden" id="dummy" name="dummy"/>';
 		                            		$wpflistdata .= '<select class="pfsearch-filter" name="pfsearch-filter" id="pfsearch-filter">';
 										/*jschen remark, defalut should be distance	
 					
@@ -1245,14 +1252,19 @@ function pf_itemgrid2_func_new( $atts ) {
 					
 					$big = 999999999;
 					$maxpages = ($find -1 ) / $args['posts_per_page']  + 1;//$loop->max_num_pages;
-					$wpflistdata .= paginate_links(array(
+					$links = paginate_links(array(
 						'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
 						'format' => '?page=%#%',
 						'current' => max(1, $pfg_paged),
 						'total' => $maxpages,
 						'type' => 'list',
 					));
-					
+					$links = str_replace('/?','&', $links);
+					$links = str_replace('pageIndex','lastPageIndex', $links);
+					$links = str_replace('page/','?a=1&pageIndex=', $links);
+//					$links = str_replace('/"','"', $links);
+//					$links = str_replace('%2F"','"', $links);
+					$wpflistdata .= $links; 
 					wp_reset_postdata();
 
 					if ($infinite_scroll == 1) {

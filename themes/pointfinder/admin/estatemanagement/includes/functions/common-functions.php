@@ -34,27 +34,31 @@ function pf_build_sql($args) {
 			$lat = $vals['lat'];
 			$lon = $vals['lon'];	
 
-			$distance_field = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(lat.meta_value,0) / 57.29577951)) +
-        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(lat.meta_value,0) / 57.29577951) *
-         COS(ifnull(lon.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
+			$distance_field = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(latitude.meta_value,0) / 57.29577951)) +
+        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(latitude.meta_value,0) / 57.29577951) *
+         COS(ifnull(longitude.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
 			
+/*
 			$loc ="'-1'";
 			$term_ids = $args['tax_query'][1]['terms'];
 			for ($i = 0; $i < sizeof($term_ids); $i++) {
 				$loc = $loc .",'" . $term_ids[$i] . "'"; 
 			}
+*/
 
 			$orderbys = $args['orderby'];
 			$has_distance = false;
+			if (isset($args['distance'] ) && $args['distance'] != 0) {
+				$has_distance = true;
+			}
 			if ($orderbys == null || sizeof($orderbys) ==0) {
-				$has_distance = true;	
-				$orderbys = array('distance' => 'asc');
+				$setup22_searchresults_defaultsortbytype = PFSAIssetControl('setup22_searchresults_defaultsortbytype','','recommend');
+				$orderbys =array( $setup22_searchresults_defaultsortbytype => '');
 			} 
 
 			$str_orderby = 'order by ';
 			foreach ($orderbys as $key => $value) {
-				$order = $key;
-				if ($order == 'date') {
+				if ($key == 'date') {
 					$order = 'post_date';
 					if (strlen($value) == 0) {
 						$value='desc';
@@ -71,17 +75,51 @@ function pf_build_sql($args) {
 						$value='desc';
 					}
 				}elseif ($key == 'meta_value_num') {
-					$order = 'meta.meta_value * 1';
+					$order = $args['meta_key'] . '.meta_value * 1';
 				}elseif ($key == 'recommend') {
 					$has_distance = true;
 					$args['meta_key'] = $meta_key_featured;
-					$order = 'meta.meta_value desc, '.$distance_field.' asc';
+					$order = $args['meta_key'] . '.meta_value desc, ' . $distance_field . ' asc';
 					$value = '';
+				}else {
+					$order = $key;
 				}
 				$str_orderby .= $order . ' ' . $value . ',';
 			}			
 			$str_orderby = trim($str_orderby, ',');
 
+			//metafields, show join postmeta once for each item 
+			$metafields = array();
+			if ($args['meta_key'] != null) {
+				$metafields[$args['meta_key']] = 0;
+			}
+			if ($has_distance){
+				$metafields['longitude'] = 0;
+				$metafields['latitude'] = 0;				
+			}
+
+			$meta_query = isset($args['meta_query']) ? $args['meta_query'] : null;
+			$meta_part = '';
+
+			if (isset ($meta_query)) {
+				foreach ($meta_query as $q) {
+					$metafields[$q['key']] = 0; 
+					$meta_part .=  ' and ( ' . $q['key'] . '.meta_value ' . $q['compare'] ; 
+					$arr = $q['value'];
+					if (sizeof ($arr) == 2) {
+						if ($arr[0] > $arr[1]) {
+							$t = $arr[0];
+							$arr[0] = $arr[1];
+							$arr[1] = $t;	
+						}
+					}
+					for ($i = 0 ; $i < sizeof($arr) ; $i++) {
+						$meta_part .= ' ' . $arr[$i] . ' and';
+					}
+					$meta_part = trim($meta_part, 'and') . ')';
+				}
+			}
+			//echo $meta_part;
 			
 			$sql = "
 								SELECT SQL_CALC_FOUND_ROWS p.ID 
@@ -94,32 +132,27 @@ function pf_build_sql($args) {
 						";
 */
 
-			if ($args['meta_key'] != null) {
+
+			foreach ($metafields as $k => $v) {
 				$sql .= "
-								inner join $wpdb->postmeta as meta on(p.id=meta.post_id and meta.meta_key='" . $args['meta_key'] . "')	
-								";
-			}
-			if ($has_distance){
-				
-				$sql .= "
-								inner join $wpdb->postmeta as lat on (p.id=lat.post_id and lat.meta_key='latitude')
-								inner join $wpdb->postmeta as lon on (p.id=lon.post_id and lon.meta_key='longitude')
-							";
+								inner join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	
+							";	
 			}
 			$sql .=	"
 								where (1=1) 
 							";
-			$termid = $args['tag_id'];
-			if (!isset($termid)) {
+
+			$termid = isset($args['tag_id']) ? $args['tag_id'] : null;
+			if ($termid == null) {
 						$termid =$args['tax_query'];
 						if (is_array($termid)) {
 							$termid=$termid[0];
 						}
 						if( $termid['taxonomy']=='pointfinderltypes') {
-										$termid = $termid['terms'];
-										if (is_array($termid)) {
-											$termid = $termid[0];
-										}
+								$termid = $termid['terms'];
+								if (is_array($termid)) {
+									$termid = $termid[0];
+								}
 						}
 			}
 			
@@ -139,11 +172,12 @@ function pf_build_sql($args) {
 								AND p.post_type = '". $args['post_type']."' 
 								AND (p.post_status = '". $args['post_status']."') 
 							";
-			if ($args['keyword'] != '') {
+			if (isset($args['keyword']) && $args['keyword'] != '') {
 					$k = $wpdb->esc_like($args['keyword']);
 					$sql .= " and (p.post_title like '%".$k."%' or p.post_content like '%".$k."%' )";
 			}
-			if ($args['distance'] != 0) {
+			$sql .= $meta_part;
+			if (isset($args['distance']) && $args['distance'] != 0) {
 				$sql .= " and (" . $distance_field . "<" . $args['distance'] . ")"; 
 			}
 			$sql .="
@@ -159,20 +193,8 @@ function pf_build_sql($args) {
 			if (!isset($posts)) {
 				$posts = $args['items']; 
 			}
-/*
-			if (!isset($posts) || $posts == '') {
-
-				$setup22_searchresults_defaultppptype = PFSAIssetControl('setup22_searchresults_defaultppptype','','10');
-				$posts = $setup22_searchresults_defaultppptype;
-			}
-*/
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
-/*
-			if (!isset($page)) {
-				$page=1;
-			}
-*/
 			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
 	
@@ -258,7 +280,7 @@ function get_near_by() {
 function pf_get_address_with_distance($pfitemid) {
 	$addr = get_post_meta( $pfitemid, 'webbupointfinder_items_address', true );
 	$vals = pf_get_location();
-	if (vals != false) {
+	if ($vals != false) {
 			$long = esc_html(get_post_meta( $pfitemid, 'longitude', true ));
 			$lat = esc_html(get_post_meta( $pfitemid, 'latitude', true ));
 
@@ -1970,7 +1992,7 @@ function PFLangCategoryID_ld($id,$lang){
 	                    <div class="pf-notfound-page animated flipInY">
 	                        <h3><?php esc_html_e( 'Sorry!', 'pointfindert2d' ); ?></h3>
 	                        <h4><?php esc_html_e( 'Nothing found...', 'pointfindert2d' ); ?></h4><br>
-	                        <p class="text-lightblue-2"><?php esc_html_e( 'You better try to search', 'pointfindert2d' ); ?>:</p>
+	                        <p class="text-lightblue-2"><?php esc_html_e( 'You had better try to search', 'pointfindert2d' ); ?>:</p>
 	                        <div class="row">
 	                            <div class="pfadmdad input-group col-sm-4 col-sm-offset-4">
 	                                <i class="pfadmicon-glyph-386"></i>
@@ -1980,7 +2002,7 @@ function PFLangCategoryID_ld($id,$lang){
 	                                  </span>
 	                            </div>
 	                        </div><br>
-	                        <a class="btn btn-primary btn-sm" href="<?php echo esc_url(home_url()); ?>"><i class="pfadmicon-glyph-857"></i><?php esc_html_e( 'Return Home', 'pointfindert2d' ); ?></a>
+	                        <a class="btn btn-primary btn-sm" href="<?php echo esc_url(home_url()); ?>"><i class="pfadmicon-glyph-857"></i><?php esc_html_e( 'Return Home......', 'pointfindert2d' ); ?></a>
 	                    </div>
 	                    </form>
 	                

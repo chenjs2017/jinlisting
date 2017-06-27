@@ -19,7 +19,7 @@ if (is_home() && (get_option('show_on_front') == 'posts' || get_option('show_on_
 }else{
 
 	if(function_exists('PFPageNotFound')){
-    	PFPageNotFound();
+    	//PFPageNotFound();
     } 
 }
 

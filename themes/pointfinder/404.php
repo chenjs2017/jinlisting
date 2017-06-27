@@ -9,7 +9,7 @@
                     <div class="pf-notfound-page">
                         <h1>404</h1>
                         <h2><?php esc_html_e( 'Page not found', 'pointfindert2d' ); ?></h2><br>
-                        <p class="text-lightblue-2"><?php esc_html_e( 'You better try to search', 'pointfindert2d' ); ?>:</p>
+                        <p class="text-lightblue-2"><?php esc_html_e( 'You had better try to search', 'pointfindert2d' ); ?>:</p>
                         <div class="row">
                             <div class="pfadmdad input-group col-sm-4 col-sm-offset-4">
                                 <i class="pfadmicon-glyph-386"></i>
