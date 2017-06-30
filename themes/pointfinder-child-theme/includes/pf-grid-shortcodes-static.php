@@ -626,7 +626,13 @@ function pf_itemgrid2_func_new( $atts ) {
 									}
 								}
 								$wpflistdata .= '</div>';
-					//jschen start keyword and search
+
+						$wpflistdata .= " 
+<script src=\"https://maps.googleapis.com/maps/api/js?key=".  PFSAIssetControl('setup5_map_key','','') . "&libraries=places&callback=initAutocomplete\"
+        async defer></script>
+					";
+
+				//jschen start keyword and search
 					$wpflistdata .= '
 					<div>
 						<input type="text" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
@@ -637,11 +643,6 @@ function pf_itemgrid2_func_new( $atts ) {
 						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位</img> </button>
 			    </div>
 			   ';
-					$wpflistdata .= " 
-<script src=\"https://maps.googleapis.com/maps/api/js?key=".  PFSAIssetControl('setup5_map_key','','') . "&libraries=places&callback=initAutocomplete\"
-        async defer></script>
-					";
-
 
             		$wpflistdata .= '<div class="'.$pfcontainerdiv.'-header pflistcommonview-header">'; 
 					/*
