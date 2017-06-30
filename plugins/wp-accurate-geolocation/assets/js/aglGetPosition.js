@@ -1,6 +1,48 @@
-
 var aglActionName = 'agl_request';
 var aglPhpParams;
+
+var placeSearch, autocomplete;
+
+function initAutocomplete() {
+	 autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+      {types: ['geocode']});
+  autocomplete.addListener('place_changed', fillInAddress);
+}
+
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+	var lat = place.geometry.location.lat();
+	var lon = place.geometry.location.lng();
+	var data = {
+        'action': aglActionName,
+        'lat': parseFloat( lat ),
+        'lon': parseFloat( lon )
+	} ;
+	aglPostData(data);
+	location.reload();
+}
+
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+	
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
+
 
 function aglInitialise() {
 	if (document.getElementById("aglResult") != null) {
@@ -117,24 +159,7 @@ function less(){
 		document.getElementById("aglResult").innerHTML=halftext;
 }
 
-function search(){
-	var addr = document.getElementById('field296725954161956900000');	
-	var co = document.getElementById("pointfinder_google_search_coord");
-	
-	if (addr.value == null || addr.value == '' || co.value =='' ){
-		alert('请输入需要查询的地址');
-	}else {
-		alert(co.value);
-		var arr = co.value.split(',');
-		var data = {
-        'action': aglActionName,
-        'lat': parseFloat( arr[0] ),
-        'lon': parseFloat( arr[1] )
- 		 };
-  	aglPostData(data);
-  	aglGetItems();	
-	}
-}
+
 function locateReload() {
 	aglInitialise();
 	location.reload();
@@ -156,6 +181,6 @@ jQuery(document).ready(function($) {
 	}
 	jQuery('#aglLocateReload').click(locateReload);
 //  document.getElementById('pointfinder_google_search_coord').value = '';
-	jQuery('#aglSearch').click(search);
+//	jQuery('#aglSearch').click(search);
 });
 
