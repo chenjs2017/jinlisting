@@ -4,10 +4,12 @@ var aglPhpParams;
 var placeSearch, autocomplete;
 
 function initAutocomplete() {
-	 autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-      {types: ['geocode']});
-  autocomplete.addListener('place_changed', fillInAddress);
+	if (document.getElementById("autocomplete") != null) {
+					 autocomplete = new google.maps.places.Autocomplete(
+							/** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+							{types: ['geocode']});
+					autocomplete.addListener('place_changed', fillInAddress);
+	}
 }
 
 function fillInAddress() {
@@ -180,6 +182,9 @@ jQuery(document).ready(function($) {
 		jQuery('#aglId').click(aglInitialise);
 	}
 	jQuery('#aglLocateReload').click(locateReload);
+	if (google != null) {
+		google.maps.event.addDomListener(window, 'load', initAutocomplete);
+	}
 //  document.getElementById('pointfinder_google_search_coord').value = '';
 //	jQuery('#aglSearch').click(search);
 });

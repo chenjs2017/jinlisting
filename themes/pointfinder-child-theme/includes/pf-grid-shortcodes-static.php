@@ -627,10 +627,7 @@ function pf_itemgrid2_func_new( $atts ) {
 								}
 								$wpflistdata .= '</div>';
 
-						$wpflistdata .= " 
-<script src=\"https://maps.googleapis.com/maps/api/js?key=".  PFSAIssetControl('setup5_map_key','','') . "&libraries=places&callback=initAutocomplete\"
-        async defer></script>
-					";
+						$wpflistdata .= '<script src="https://maps.googleapis.com/maps/api/js?key='.  PFSAIssetControl('setup5_map_key','','') . '&libraries=places" async defer></script> ';
 
 				//jschen start keyword and search
 					$wpflistdata .= '
