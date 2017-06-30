@@ -332,8 +332,10 @@ function pf_itemgrid2_func_new( $atts ) {
 				if($pfgetdata['orderby'] != ''){
 			//		$args['meta_key'] = $meta_key_featured;
 					$args['orderby'] = array( $pfgetdata['orderby'] => $pfgetdata['sortby']);
+					$pfg_orderby = $pfgetdata['orderby'];
 				}else{
 					$args['orderby'] =  array( $setup22_searchresults_defaultsortbytype => '');
+					$pfg_orderby = $setup22_searchresults_defaultsortbytype;
 				}
 			}
 			
@@ -589,9 +591,60 @@ function pf_itemgrid2_func_new( $atts ) {
             
 			/* Start: Header Area for filters (HTML) */		
             	if($pfheaderfilters == ''){
-            		$wpflistdata .= '<div class="'.$pfcontainerdiv.'-header pflistcommonview-header">'; 
+	
+								$wpflistdata .= '
+								<script>
+								function orderby(id) {
+									document.getElementById("pfsearch-filter").value=id;
+									document.getElementById("' . $pfcontainershow . '-form").submit();
+								}
+								</script>
+								';							
+								$pfgform_values3 = array('recommend', 'distance','date');
+								$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
+								
+								if ($review_system_statuscheck == 1) {
+									array_push($pfgform_values3, 'reviewcount');
+									$pfgform_values3_texts['reviewcount'] = esc_html__('评论多至少','pointfindert2d');
+								}
+//jschen order link
+								$wpflistdata .= '<div class="pflistgridviewwmdOLHKajsvD-header pflistcommonview-header">';
+								foreach($pfgform_values3 as $pfgform_value3){
+										if(isset($pfg_orderby)){
+										 if(strcmp($pfgform_value3, $pfg_orderby) == 0){
+											 $wpflistdata .= '<span style="color:red">'.$pfgform_values3_texts[$pfgform_value3].'</span>&nbsp;&nbsp;&nbsp;&nbsp;';
+										 }else{
+											 $wpflistdata .= '<strong><a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'↕︎</a></strong>&nbsp;&nbsp;&nbsp;&nbsp;';
+										 }
 
-						/*
+									}else{
+										 if(strcmp($pfgform_value3, $setup22_searchresults_defaultsortbytype)){
+											 $wpflistdata .= $pfgform_values3_texts[$pfgform_value3].'&nbsp;&nbsp;&nbsp;&nbsp;';
+										 }else{
+											 $wpflistdata .= '<a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'⇅</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+										 }
+									}
+								}
+								$wpflistdata .= '</div>';
+					//jschen start keyword and search
+					$wpflistdata .= '
+					<div>
+						<input type="text" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
+						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png "width="25px" heigh="25px">搜索</img></button>
+					</div> 
+					<div >
+			      <input id="autocomplete" placeholder="输入您的地址" onFocus="geolocate()" type="text" style="width:70%">
+						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位</img> </button>
+			    </div>
+			   ';
+					$wpflistdata .= " 
+<script src=\"https://maps.googleapis.com/maps/api/js?key=".  PFSAIssetControl('setup5_map_key','','') . "&libraries=places&callback=initAutocomplete\"
+        async defer></script>
+					";
+
+
+            		$wpflistdata .= '<div class="'.$pfcontainerdiv.'-header pflistcommonview-header">'; 
+					/*
                         * Start: Left Filter Area
                         */
 							$wpflistdata .= '<ul class="'.$pfcontainerdiv.'-filters-left '.$pfcontainerdiv.'-filters searchformcontainer-filters searchformcontainer-filters-left golden-forms clearfix col-lg-9 col-md-9 col-sm-9 col-xs-12">';
@@ -600,8 +653,8 @@ function pf_itemgrid2_func_new( $atts ) {
 	                            * Start: SORT BY Section
 	                            */	
 								    $wpflistdata .= '<li>';
-								    	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby"><input type="hidden" id="dummy" name="dummy"/>';
-		                            		$wpflistdata .= '<select class="pfsearch-filter" name="pfsearch-filter" id="pfsearch-filter">';
+								    	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby">';
+	                 		$wpflistdata .= '<select class="pfsearch-filter" name="pfsearch-filter" id="pfsearch-filter">';
 										/*jschen remark, defalut should be distance	
 					
 												if($args['orderby'] == 'ID' && $args['orderby'] != 'meta_value_num' && $args['orderby'] != 'meta_value'){
@@ -612,14 +665,7 @@ function pf_itemgrid2_func_new( $atts ) {
 */
 		
 
-												$pfgform_values3 = array('recommend', 'distance','date');
-												$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
-											
-												if ($review_system_statuscheck == 1) {
-													array_push($pfgform_values3, 'reviewcount');
-													$pfgform_values3_texts['reviewcount'] = esc_html__('评论多至少','pointfindert2d');
-												}
-											
+										
 											
 												foreach($pfgform_values3 as $pfgform_value3){
 
@@ -712,14 +758,7 @@ function pf_itemgrid2_func_new( $atts ) {
 	                        	/*
 	                            * End: Number Section
 	                            */
-														//jschen start keyword and search
-										$wpflistdata .= '<li><div class="center-outer"><div class="center-inner">';
-										$wpflistdata .= '<input type="text" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="padding-bottom: 0px;" value=""/>';
-										$wpflistdata .= '<button id="pfsearch-button">搜索</button>';
-										$wpflistdata .= '<a href="#" id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位您的位置</img> </a>';
-										$wpflistdata .= '</div></div></li>';
-
-		                        /*
+											                        /*
 	                            * Start: Category Filters
 	                            */
 		                            /*
@@ -890,7 +929,7 @@ function pf_itemgrid2_func_new( $atts ) {
                         */
 
 					$wpflistdata .= '</div>';
-				}
+					}
 			/* End: Header Area for filters (HTML) */
                            
             
@@ -1261,7 +1300,7 @@ function pf_itemgrid2_func_new( $atts ) {
 					));
 					$links = str_replace('/?','&', $links);
 					$links = str_replace('pageIndex','lastPageIndex', $links);
-					$links = str_replace('page/','?a=1&pageIndex=', $links);
+					$links = str_replace('page/','?pageIndex=', $links);
 //					$links = str_replace('/"','"', $links);
 //					$links = str_replace('%2F"','"', $links);
 					$wpflistdata .= $links; 
@@ -1277,6 +1316,7 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= '</div></div>';/*List Content End*/
 					$wpflistdata .= "<input type='hidden' value='".$pfgrid."' name='pfsearch-filter-col'>";
 					$wpflistdata .= $pfgetdata['hidden_output'];
+				
 					$wpflistdata .= "</form></div></div> ";/*Form End . List Data End*/
 					
 					if ($infinite_scroll == 1) {
