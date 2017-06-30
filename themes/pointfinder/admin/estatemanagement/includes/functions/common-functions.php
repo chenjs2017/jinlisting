@@ -90,7 +90,7 @@ function pf_build_sql($args) {
 
 			//metafields, show join postmeta once for each item 
 			$metafields = array();
-			if ($args['meta_key'] != null) {
+			if (isset($args['meta_key'] )) {
 				$metafields[$args['meta_key']] = 0;
 			}
 			if ($has_distance){
@@ -186,8 +186,8 @@ function pf_build_sql($args) {
 			
 			$sql .= $str_orderby;
 
-			$posts = $args['showposts'];
-			if (!isset($posts)) {
+			$posts = isset($args['showposts']) ? $args['showposts'] : '';
+			if ($posts=='') {
 				$posts = $args['posts_per_page']; 
 			}
 			if (!isset($posts)) {
