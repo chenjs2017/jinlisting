@@ -630,10 +630,10 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= '
 					<div>
 						<input type="text" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
-						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png "width="25px" heigh="25px">搜索</img></button>
+						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px">搜索</img></button>
 					</div> 
 					<div >
-			      <input id="autocomplete" placeholder="输入您的地址" onFocus="" type="text" style="width:70%">
+			      <input id="autocomplete" placeholder="输入您的地址" onFocus="geolocate()" type="text" style="width:70%">
 						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位</img> </button>
 			    </div>
 			   ';
