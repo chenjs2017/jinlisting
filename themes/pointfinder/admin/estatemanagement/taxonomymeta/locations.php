@@ -523,9 +523,6 @@ $pf_extra_taxonomyfields = array();
 			)
 		)
 	);
-	
-
-
 
 
 /**

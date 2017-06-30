@@ -17,7 +17,33 @@ add_action('pointfinderitypes_edit_form_fields', 'pointfinder_category_form_cust
 add_action('pointfinderconditions_add_form_fields', 'pointfinder_category_form_custom_field_add', 10 );
 add_action('pointfinderconditions_edit_form_fields', 'pointfinder_category_form_custom_field_edit', 10, 2 );
 
+add_action('post_tag_add_form_fields', 'tag_extra_fields', 10, 2);
+add_action('post_tag_edit_form_fields', 'tag_extra_fields', 10, 2);
+add_action('edited_post_tag', 'save_extra_fields', 10, 2);
+add_action('created_post_tag', 'save_extra_fields', 10, 2);
 
+function save_extra_fields($term_id) {
+    if(isset($_POST['addInTags']) && strlen($_POST['addInTags'])>0) {
+			 	global $wpdb;
+				$sql = "insert into $wpdb->term_relationships (object_id,term_taxonomy_id,term_order)
+					select distinct object_id, " . $term_id . ", 0 from $wpdb->term_relationships r 
+					inner join $wpdb->terms t on t.term_id=r.term_taxonomy_id 
+					where t.name like '%". $_POST['addInTags']."%'
+					and	object_id not in (select object_id from $wpdb->term_relationships where term_taxonomy_id=". $term_id . ")";
+				error_log ('jchen:' . $sql);
+				$count = $wpdb->query($sql);
+		}
+}
+
+function tag_extra_fields($term_obj){
+    $term_id        = isset($term_obj->term_id)?$term_obj->term_id:'';
+    ?>
+        <div class="form-field ultimate_layouts_extra_fields">
+            <label for="ultimate_layouts_color">需要合并的TAG</label><br/>
+            <input type="text" id="addInTags" name="addInTags" value="" autocomplete="off" width="100%">
+				</div>
+       <?php
+}
 /* For add screen */
 function pointfinder_category_form_custom_field_add( $taxonomy ) {
     switch ($taxonomy) {
