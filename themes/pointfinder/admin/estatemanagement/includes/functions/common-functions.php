@@ -27,7 +27,6 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 function pf_build_sql($args) {
 			global $wpdb;
 //		echo '<br/>jschendebug:'; print_r($args);
-
 			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
 
 			$vals = pf_get_location();
@@ -66,15 +65,11 @@ function pf_build_sql($args) {
 				}elseif($key =='distance'){
 					$has_distance = true;
 					$order = $distance_field;
-				}else if ($key =='meta_value') {
-					$order = 'meta.meta_value';
 				}else if ($key =='title') {
 					$order = 'p.post_title';
-				}elseif ($key == 'reviewcount') {
-					if (strlen($value) == 0) {
-						$value='desc';
-					}
-				}elseif ($key == 'meta_value_num') {
+				}else if ($key == 'meta_value') {
+					$order = $args['meta_key'] . '.meta_value ';
+				} elseif ($key == 'meta_value_num') {
 					$order = $args['meta_key'] . '.meta_value * 1';
 				}elseif ($key == 'recommend') {
 					$has_distance = true;
@@ -120,45 +115,42 @@ function pf_build_sql($args) {
 				}
 			}
 			//echo $meta_part;
-			
-			$sql = "
-								SELECT SQL_CALC_FOUND_ROWS p.ID 
-								FROM $wpdb->posts  as p
-								INNER JOIN $wpdb->term_relationships as r ON (p.ID = r.object_id) 
-						";
-/*
-			$sql .=	"
-								INNER JOIN $wpdb->term_relationships AS tt1 ON (p.ID = tt1.object_id) 
-						";
-*/
+			$keyword = '';
+			if (isset($args['keyword']) && $args['keyword'] != '') {
+					$keyword = $wpdb->esc_like($args['keyword']);
+			}elseif(isset($args['search_prod_title']) && $args['search_prod_title'] !='') {
+					$keyword = $wpdb->esc_like($args['search_prod_title']);
+			}	
 
-
-			foreach ($metafields as $k => $v) {
-				$sql .= "
-								inner join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	
-							";	
-			}
-			$sql .=	"
-								where (1=1) 
-							";
-
-			$termid = isset($args['tag_id']) ? $args['tag_id'] : null;
-			if ($termid == null) {
-						$termid =$args['tax_query'];
+			$termid = isset($args['tag_id']) ? $args['tag_id'] : '';
+			if ($termid == '') {
+						$termid =isset($args['tax_query']) ? $args['tax_query'] : '';
 						if (is_array($termid)) {
 							$termid=$termid[0];
-						}
-						if( $termid['taxonomy']=='pointfinderltypes') {
-								$termid = $termid['terms'];
-								if (is_array($termid)) {
-									$termid = $termid[0];
-								}
-						}
+							if( $termid['taxonomy']=='pointfinderltypes') {
+									$termid = $termid['terms'];
+									if (is_array($termid)) {
+										$termid = $termid[0];
+									}
+							}
+					}
 			}
-			
-			$sql .= "
-								and  r.term_taxonomy_id IN (".$termid.") 
-							";
+		
+			$sql = "SELECT SQL_CALC_FOUND_ROWS p.ID FROM $wpdb->posts  as p ";
+			if ($termid != '') {
+								$sql .= "INNER JOIN $wpdb->term_relationships as r ON (p.ID = r.object_id) ";
+			}
+/*
+			$sql .=	" INNER JOIN $wpdb->term_relationships AS tt1 ON (p.ID = tt1.object_id) ";
+*/
+			foreach ($metafields as $k => $v) {
+				$sql .= " inner join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	";	
+			}
+			$sql .=	" where (1=1) ";
+
+			if ($termid != '') {
+				$sql .= " and  r.term_taxonomy_id IN (".$termid.") ";
+			}
 /*jschen location is redundant
 										AND tt1.term_taxonomy_id IN 
 											(select term_id from wp_term_taxonomy where 
@@ -172,18 +164,15 @@ function pf_build_sql($args) {
 								AND p.post_type = '". $args['post_type']."' 
 								AND (p.post_status = '". $args['post_status']."') 
 							";
-			if (isset($args['keyword']) && $args['keyword'] != '') {
-					$k = $wpdb->esc_like($args['keyword']);
-					$sql .= " and (p.post_title like '%".$k."%' or p.post_content like '%".$k."%' )";
+		
+			if ($keyword != '') {
+				$sql .= " and (match(p.post_title,p.post_content) against ('" . $keyword . "'))";
 			}
 			$sql .= $meta_part;
 			if (isset($args['distance']) && $args['distance'] != 0) {
 				$sql .= " and (" . $distance_field . "<" . $args['distance'] . ")"; 
 			}
-			$sql .="
-								group by p.id
-								";
-			
+			$sql .=" group by p.id ";
 			$sql .= $str_orderby;
 
 			$posts = isset($args['showposts']) ? $args['showposts'] : '';
@@ -195,9 +184,7 @@ function pf_build_sql($args) {
 			}
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
-			 
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
-	
 //	echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }

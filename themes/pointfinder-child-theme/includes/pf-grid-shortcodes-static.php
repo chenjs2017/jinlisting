@@ -125,8 +125,10 @@ function pf_itemgrid2_func_new( $atts ) {
 
 		
 		if(isset($_GET['pfsearch-filter-distance']) && $_GET['pfsearch-filter-distance']!=''){$pfg_distance = esc_attr($_GET['pfsearch-filter-distance']);}else{$pfg_distance = '';}
-		if(isset($_GET['pfsearch-filter-keyword']) && $_GET['pfsearch-filter-keyword']!=''){$pfg_keyword = esc_attr($_GET['pfsearch-filter-keyword']);}else{$pfg_keyword = '';}
-		
+		if(isset($_GET['pfsearch-filter-keyword']) && $_GET['pfsearch-filter-keyword']!=''){
+			$pfg_keyword = $_GET['pfsearch-filter-keyword'];
+			unset($_GET['pfsearch-filter-keyword']);
+		}else{$pfg_keyword = '';}
 		if ( is_front_page() ) {
 	        $pfg_paged = (esc_sql(get_query_var('page'))) ? esc_sql(get_query_var('page')) : 1;   
 	    } else {
@@ -135,6 +137,8 @@ function pf_itemgrid2_func_new( $atts ) {
 
 		if (isset($_GET['pageIndex'])) {
 			$pfg_paged = $_GET['pageIndex'];
+			unset($_GET['pageIndex']);
+			unset($_GET['lastPageIndex']);
 		}
 
 		$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
@@ -355,13 +359,27 @@ function pf_itemgrid2_func_new( $atts ) {
 			//jschen keyword and distance filter
 			$pfg_distance = $pfg_distance =='' ? 0 : $pfg_distance;
 			$args['distance'] = $pfg_distance;
-			if(!empty($pfgetdate['manual_args'])) {
-				$pfgetdate['manual_args']['distance'] = $pfg_distance;
+			if(!empty($pfgetdata['manual_args'])) {
+				$pfgetdata['manual_args']['distance'] = $pfg_distance;
 			}
 
-			$args['keyword'] = $pfg_keyword;
-			if(!empty($pfgetdate['manual_args'])) {
-				$pfgetdate['manual_args']['keyword'] = $pfg_keyword;
+
+			if ($pfg_keyword != '') {
+				$args['keyword'] = $pfg_keyword;
+				if(!empty($pfgetdata['manual_args'])) {
+					$pfgetdata['manual_args']['search_prod_title'] = $pfg_keyword;
+				}
+			}else {
+				if (!empty($pfgetdata['manual_args'])) {
+					$temp = $pfgetdata['manual_args'];
+					$pfg_keyword = isset($temp['search_prod_title']) ? $temp['search_prod_title'] : '' ;
+				}
+		//		echo 'jschen:=====' . $temp['search_prod_title'];
+				//echo 'jchen, see manual args';
+				//print_r(;
+			//	echo 'prod title = ' . $pfgetdate['manual_args']['search_prod_title'];
+				//	$pfg_keyword == isset($pfgetdata['manual_args']->search_prod_title) ? $pfgetdata['manual_args']->search_prod_title : '';	
+				
 			}
 			
 			if($pfg_paged != ''){
@@ -443,6 +461,7 @@ function pf_itemgrid2_func_new( $atts ) {
         $tax_id= $term_parent;
     }
 
+/*
     if (($tax_id<>'114')&&($taxonomy<>'pointfinderlocations')) {
         $location = get_location();
         if ($location == 'sf') {
@@ -467,6 +486,7 @@ function pf_itemgrid2_func_new( $atts ) {
             'operator' => 'IN'
         );
     }
+*/
 			if (!empty($pfgetdata['manual_args'])) {
 				$args = $pfgetdata['manual_args'];
 			}	
@@ -632,7 +652,7 @@ function pf_itemgrid2_func_new( $atts ) {
 				//jschen start keyword and search
 					$wpflistdata .= '
 					<div>
-						<input type="text" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
+						<input type="text" value="'. $pfg_keyword .'" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
 						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px">搜索</img></button>
 					</div> 
 					<div >
@@ -1297,7 +1317,7 @@ function pf_itemgrid2_func_new( $atts ) {
 						'type' => 'list',
 					));
 					$links = str_replace('/?','&', $links);
-					$links = str_replace('pageIndex','lastPageIndex', $links);
+					$links = preg_replace('(&pageIndex=\\w+)','', $links);
 					$links = str_replace('page/','?pageIndex=', $links);
 //					$links = str_replace('/"','"', $links);
 //					$links = str_replace('%2F"','"', $links);
