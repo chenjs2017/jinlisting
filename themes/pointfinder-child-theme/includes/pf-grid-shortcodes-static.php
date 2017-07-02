@@ -299,7 +299,7 @@ function pf_itemgrid2_func_new( $atts ) {
 
 
 			if($pfg_orderby != ''){
-				if($pfg_orderby == 'date' || $pfg_orderby == 'distance' || $pfg_orderby =='recommend'){
+				if($pfg_orderby == 'date' || $pfg_orderby == 'distance' || $pfg_orderby =='recommend' || $pfg_orderby =='relevant'){
 					
 					$args['orderby'] = array($pfg_orderby => $pfg_order);
 //					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
@@ -609,7 +609,7 @@ function pf_itemgrid2_func_new( $atts ) {
             <form action="" method="GET" name="'.$pfcontainershow.'-form" id="'.$pfcontainershow.'-form">';/*List Data Begin . Form Begi*/
 
             
-			/* Start: Header Area for filters (HTML) */		
+							/* Start: Header Area for filters (HTML) */		
             	if($pfheaderfilters == ''){
 	
 								$wpflistdata .= '
@@ -621,27 +621,31 @@ function pf_itemgrid2_func_new( $atts ) {
 								</script>
 								';							
 								$pfgform_values3 = array('recommend', 'distance','date');
-								$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离近至远','date'=>esc_html__('最新更新','pointfindert2d'));
-								
+								$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离最近','date'=>esc_html__('最新更新','pointfindert2d'));
+								if ($pfg_keyword !='') {
+									array_push($pfgform_values3, 'relevant');
+									$pfgform_values3_texts['relevant'] = esc_html__('相关度','pointfindert2d');
+								}						
 								if ($review_system_statuscheck == 1) {
 									array_push($pfgform_values3, 'reviewcount');
-									$pfgform_values3_texts['reviewcount'] = esc_html__('评论多至少','pointfindert2d');
+									$pfgform_values3_texts['reviewcount'] = esc_html__('评论最多','pointfindert2d');
 								}
-//jschen order link
+			
+								//jschen order link
 								$wpflistdata .= '<div class="pflistgridviewwmdOLHKajsvD-header pflistcommonview-header">';
 								foreach($pfgform_values3 as $pfgform_value3){
 										if(isset($pfg_orderby)){
 										 if(strcmp($pfgform_value3, $pfg_orderby) == 0){
-											 $wpflistdata .= '<span style="color:red">'.$pfgform_values3_texts[$pfgform_value3].'</span>&nbsp;&nbsp;&nbsp;&nbsp;';
+											 $wpflistdata .= '<span style="color:red">'.$pfgform_values3_texts[$pfgform_value3].'▼</span>&nbsp;&nbsp;&nbsp;&nbsp;';
 										 }else{
-											 $wpflistdata .= '<strong><a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'↕︎</a></strong>&nbsp;&nbsp;&nbsp;&nbsp;';
+											 $wpflistdata .= '<strong><a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'▶︎</a></strong>&nbsp;&nbsp;&nbsp;&nbsp;';
 										 }
 
 									}else{
 										 if(strcmp($pfgform_value3, $setup22_searchresults_defaultsortbytype)){
 											 $wpflistdata .= $pfgform_values3_texts[$pfgform_value3].'&nbsp;&nbsp;&nbsp;&nbsp;';
 										 }else{
-											 $wpflistdata .= '<a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'⇅</a>&nbsp;&nbsp;&nbsp;&nbsp;';
+											 $wpflistdata .= '<a href="#" onclick="orderby(\'' .$pfgform_value3. '\')">'.$pfgform_values3_texts[$pfgform_value3].'</a>&nbsp;&nbsp;&nbsp;&nbsp;';
 										 }
 									}
 								}

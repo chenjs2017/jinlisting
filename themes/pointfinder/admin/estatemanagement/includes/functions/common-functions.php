@@ -24,67 +24,69 @@ function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count
 	return $user_ids;
 } 
 
-function pf_build_sql($args) {
-			global $wpdb;
-//		echo '<br/>jschendebug:'; print_r($args);
-			$meta_key_featured = 'webbupointfinder_item_featuredmarker';
+function pf_get_distance_field() {
+	$vals = pf_get_location();
+	$lat = $vals['lat'];
+	$lon = $vals['lon'];	
+	$distance_field = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(latitude.meta_value,0) / 57.29577951)) +
+		(COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(latitude.meta_value,0) / 57.29577951) *
+		 COS(ifnull(longitude.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
+	return $distance_field;
+}
 
-			$vals = pf_get_location();
-			$lat = $vals['lat'];
-			$lon = $vals['lon'];	
+function pf_get_keyword(&$args) {
+	global $wpdb;
+	if (isset($args['keyword']) && $args['keyword'] != '') {
+			$keyword = $wpdb->esc_like($args['keyword']);
+	}elseif(isset($args['search_prod_title']) && $args['search_prod_title'] !='') {
+			$keyword = $wpdb->esc_like($args['search_prod_title']);
+	}	
+	return $keyword;
+}
 
-			$distance_field = '(3936 * ACOS((sin(ifnull('. $lat .',0) / 57.29577951) * SIN(ifnull(latitude.meta_value,0) / 57.29577951)) +
-        (COS(ifnull('. $lat .',0) / 57.29577951) * COS(ifnull(latitude.meta_value,0) / 57.29577951) *
-         COS(ifnull(longitude.meta_value,0) / 57.29577951 - ifnull('. $lon .',0)/ 57.29577951))))';
-			
-/*
-			$loc ="'-1'";
-			$term_ids = $args['tax_query'][1]['terms'];
-			for ($i = 0; $i < sizeof($term_ids); $i++) {
-				$loc = $loc .",'" . $term_ids[$i] . "'"; 
+function pf_get_orderby(&$args, &$has_distance, &$keyword) {
+	$orderbys = $args['orderby'];
+	$str_orderby = 'order by ';
+	foreach ($orderbys as $key => $value) {
+		if ($key == 'relevant') {
+		}elseif ($key == 'date') {
+			$order = 'post_date';
+			if (strlen($value) == 0) {
+				$value='desc';
 			}
-*/
+		}elseif($key =='distance'){
+			$has_distance = true;
+			$order = pf_get_distance_field();
+		}else if ($key =='title') {
+			$order = 'p.post_title';
+		}else if ($key == 'meta_value') {
+			$order = $args['meta_key'] . '.meta_value ';
+		} elseif ($key == 'meta_value_num') {
+			$order = $args['meta_key'] . '.meta_value * 1';
+		}elseif ($key == 'recommend') {
+			$has_distance = true;
+			$args['meta_key'] = 'webbupointfinder_item_featuredmarker';
+			$order = $args['meta_key'] . '.meta_value desc, ' . pf_get_distance_field() . ' asc';
+			$value = '';
+		}else {
+			$order = $key;
+		}
+		if($order != '') { 
+			$str_orderby .= $order . ' ' . $value . ',';
+		}
+	}						
+	if ($keyword != '') {
+		$str_orderby .= pf_get_fulltext_field($keyword) . " desc";
+	}
+	$str_orderby = trim($str_orderby, ',');
+	return $str_orderby;
+}
+function pf_get_fulltext_field($keyword) {
+	return " (match(p.post_title,p.post_content) against ('" . $keyword . "'))"; 
+}
 
-			$orderbys = $args['orderby'];
-			$has_distance = false;
-			if (isset($args['distance'] ) && $args['distance'] != 0) {
-				$has_distance = true;
-			}
-			if ($orderbys == null || sizeof($orderbys) ==0) {
-				$setup22_searchresults_defaultsortbytype = PFSAIssetControl('setup22_searchresults_defaultsortbytype','','recommend');
-				$orderbys =array( $setup22_searchresults_defaultsortbytype => '');
-			} 
-
-			$str_orderby = 'order by ';
-			foreach ($orderbys as $key => $value) {
-				if ($key == 'date') {
-					$order = 'post_date';
-					if (strlen($value) == 0) {
-						$value='desc';
-					}
-				}elseif($key =='distance'){
-					$has_distance = true;
-					$order = $distance_field;
-				}else if ($key =='title') {
-					$order = 'p.post_title';
-				}else if ($key == 'meta_value') {
-					$order = $args['meta_key'] . '.meta_value ';
-				} elseif ($key == 'meta_value_num') {
-					$order = $args['meta_key'] . '.meta_value * 1';
-				}elseif ($key == 'recommend') {
-					$has_distance = true;
-					$args['meta_key'] = $meta_key_featured;
-					$order = $args['meta_key'] . '.meta_value desc, ' . $distance_field . ' asc';
-					$value = '';
-				}else {
-					$order = $key;
-				}
-				$str_orderby .= $order . ' ' . $value . ',';
-			}			
-			$str_orderby = trim($str_orderby, ',');
-
+function pf_get_meta_field_and_filter(&$args, &$metafields, $has_distance) {
 			//metafields, show join postmeta once for each item 
-			$metafields = array();
 			if (isset($args['meta_key'] )) {
 				$metafields[$args['meta_key']] = 0;
 			}
@@ -94,12 +96,12 @@ function pf_build_sql($args) {
 			}
 
 			$meta_query = isset($args['meta_query']) ? $args['meta_query'] : null;
-			$meta_part = '';
+			$meta_filter = '';
 
 			if (isset ($meta_query)) {
 				foreach ($meta_query as $q) {
 					$metafields[$q['key']] = 0; 
-					$meta_part .=  ' and ( ' . $q['key'] . '.meta_value ' . $q['compare'] ; 
+					$meta_filter .=  ' and ( ' . $q['key'] . '.meta_value ' . $q['compare'] ; 
 					$arr = $q['value'];
 					if (sizeof ($arr) == 2) {
 						if ($arr[0] > $arr[1]) {
@@ -109,33 +111,53 @@ function pf_build_sql($args) {
 						}
 					}
 					for ($i = 0 ; $i < sizeof($arr) ; $i++) {
-						$meta_part .= ' ' . $arr[$i] . ' and';
+						$meta_filter .= ' ' . $arr[$i] . ' and';
 					}
-					$meta_part = trim($meta_part, 'and') . ')';
+					$meta_filter = trim($meta_filter, 'and') . ')';
 				}
 			}
-			//echo $meta_part;
-			$keyword = '';
-			if (isset($args['keyword']) && $args['keyword'] != '') {
-					$keyword = $wpdb->esc_like($args['keyword']);
-			}elseif(isset($args['search_prod_title']) && $args['search_prod_title'] !='') {
-					$keyword = $wpdb->esc_like($args['search_prod_title']);
-			}	
+		return $meta_filter;
+}
 
-			$termid = isset($args['tag_id']) ? $args['tag_id'] : '';
-			if ($termid == '') {
-						$termid =isset($args['tax_query']) ? $args['tax_query'] : '';
-						if (is_array($termid)) {
-							$termid=$termid[0];
-							if( $termid['taxonomy']=='pointfinderltypes') {
-									$termid = $termid['terms'];
-									if (is_array($termid)) {
-										$termid = $termid[0];
-									}
+function pf_get_termID(&$args) {
+	$termid = isset($args['tag_id']) ? $args['tag_id'] : '';
+	if ($termid == '') {
+				$termid =isset($args['tax_query']) ? $args['tax_query'] : '';
+				if (is_array($termid)) {
+					$termid=$termid[0];
+					if( $termid['taxonomy']=='pointfinderltypes') {
+							$termid = $termid['terms'];
+							if (is_array($termid)) {
+								$termid = $termid[0];
 							}
 					}
 			}
-		
+	}
+	return $termid;
+}
+	
+function pf_build_sql(&$args) {
+			global $wpdb;
+//		echo '<br/>jschendebug:'; print_r($args);
+
+			$keyword = pf_get_keyword($args);
+/*
+			$loc ="'-1'";
+			$term_ids = $args['tax_query'][1]['terms'];
+			for ($i = 0; $i < sizeof($term_ids); $i++) {
+				$loc = $loc .",'" . $term_ids[$i] . "'"; 
+			}
+*/
+			$has_distance = false;
+			if (isset($args['distance'] ) && $args['distance'] != 0) {
+				$has_distance = true;
+			}
+			$str_orderby = pf_get_orderby($args, $has_distance, $keyword);
+
+			$metafields = array();// array to determind which table to join
+			$meta_filter = pf_get_meta_field_and_filter($args, $metafields, $has_distance);
+			$termid = pf_get_termID($args);
+	
 			$sql = "SELECT SQL_CALC_FOUND_ROWS p.ID FROM $wpdb->posts  as p ";
 			if ($termid != '') {
 								$sql .= "INNER JOIN $wpdb->term_relationships as r ON (p.ID = r.object_id) ";
@@ -166,15 +188,15 @@ function pf_build_sql($args) {
 							";
 		
 			if ($keyword != '') {
-				$sql .= " and (match(p.post_title,p.post_content) against ('" . $keyword . "'))";
+				$sql .= " and (" .  pf_get_fulltext_field($keyword) .  ")";
 			}
-			$sql .= $meta_part;
+			$sql .= $meta_filter;
 			if (isset($args['distance']) && $args['distance'] != 0) {
-				$sql .= " and (" . $distance_field . "<" . $args['distance'] . ")"; 
+				$sql .= " and (" . pf_get_distance_field() . "<" . $args['distance'] . ")"; 
 			}
 			$sql .=" group by p.id ";
 			$sql .= $str_orderby;
-
+			
 			$posts = isset($args['showposts']) ? $args['showposts'] : '';
 			if ($posts=='') {
 				$posts = $args['posts_per_page']; 
@@ -185,7 +207,7 @@ function pf_build_sql($args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
-//	echo '<br/>jschendebug:' . $sql . '<br/>';
+//			echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
