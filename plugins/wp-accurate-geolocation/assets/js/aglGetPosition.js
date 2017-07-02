@@ -182,10 +182,8 @@ jQuery(document).ready(function($) {
 		jQuery('#aglId').click(aglInitialise);
 	}
 	jQuery('#aglLocateReload').click(locateReload);
-	if (google != null) {
+	if (document.getElementById("autocomplete") != null) {
 		google.maps.event.addDomListener(window, 'load', initAutocomplete);
 	}
-//  document.getElementById('pointfinder_google_search_coord').value = '';
-//	jQuery('#aglSearch').click(search);
 });
 
