@@ -38,7 +38,7 @@ get_header();
 			$pfgetdata = $_GET;
 			$pfne = $pfne2 = $pfsw = $pfsw2 = $pfpointfinder_google_search_coord = '';
 			$hidden_output = $search_output = '';
-			$searchkeys = array('s', 'pageIndex', 'pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
+			$searchkeys = array('s', 'action', 'pageIndex', 'pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
 			if(is_array($pfgetdata)){
 
 				$pfformvars = array();

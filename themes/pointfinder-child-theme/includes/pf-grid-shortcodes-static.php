@@ -1334,6 +1334,7 @@ function pf_itemgrid2_func_new( $atts ) {
 
 					$wpflistdata .= '</div></div>';/*List Content End*/
 					$wpflistdata .= "<input type='hidden' value='".$pfgrid."' name='pfsearch-filter-col'>";
+					$wpflistdata .= "<input type='hidden' value='pfs' name='action'>";
 					$wpflistdata .= $pfgetdata['hidden_output'];
 				
 					$wpflistdata .= "</form></div></div> ";/*Form End . List Data End*/
