@@ -97,7 +97,9 @@ function pf_get_meta_field_and_filter(&$args, &$metafields, $has_distance) {
 
 			$meta_query = isset($args['meta_query']) ? $args['meta_query'] : null;
 			$meta_filter = '';
-
+/*
+ [meta_query] => Array ( [0] => Array ( [key] => latitude [value] => Array ( [0] => 40.7699016 [1] => 40.7699016 ) [compare] => BETWEEN [type] => CHAR ) [1] => Array ( [key] => longitude [value] => Array ( [0] => -73.8272029 [1] => -73.8272029 ) [compare] => BETWEEN [type] => CHAR ) )
+*/
 			if (isset ($meta_query)) {
 				foreach ($meta_query as $q) {
 					$metafields[$q['key']] = 0; 

@@ -1,5 +1,6 @@
 <?php
 //echo $_GET['jobskeyword'];
+/*
 $cookie_name = "jinlisting_zipcode";
 $cookie_value = $_GET['field296725954161956900000'];
 setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
@@ -26,6 +27,7 @@ if (!(is_wp_error( $term_link ))) {
 	header("Location: " . $new_url);
 }
 }
+*/
 get_header();
 
 	if (isset($_GET['action']) && $_GET['action'] == 'pfs') {
@@ -36,7 +38,7 @@ get_header();
 			$pfgetdata = $_GET;
 			$pfne = $pfne2 = $pfsw = $pfsw2 = $pfpointfinder_google_search_coord = '';
 			$hidden_output = $search_output = '';
-			$searchkeys = array('pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
+			$searchkeys = array('s', 'pageIndex', 'pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
 			if(is_array($pfgetdata)){
 
 				$pfformvars = array();
@@ -74,7 +76,7 @@ get_header();
 
 					
 					}
-					$hidden_output .= '<input type="hidden" name="s" value=""/>';
+//					$hidden_output .= '<input type="hidden" name="s" value=""/>';
 
 					
 					
@@ -126,26 +128,26 @@ get_header();
 			                
 						);*/
 
-						$location=$_GET['field296725954161956900000'];
-
+						$location=isset($_GET['field296725954161956900000']) ? $_GET['field296725954161956900000']: '';
+/*
 						if ((empty($location))&&(empty($_REQUEST['jobskeyword'])))
                         {
 
                             $location=get_zip();
 
                         }
-
-						if (!class_exists('RadiusCheck')) {
-
-							require_once( get_stylesheet_directory().'/includes/location_check.php');
-						}
+*/
 
 						if (isset($_GET['pointfinder_radius_search'])) {
 							$Miles = $_GET['pointfinder_radius_search'];
-
+						}else {
+							$Miles = 0;
 						}
 
-						if ((isset($location) && !empty($location))) {
+						if ($Miles<> 0 &&  isset($location) && !empty($location)) {
+							if (!class_exists('RadiusCheck')) {
+								require_once( get_stylesheet_directory().'/includes/location_check.php');
+							}
 							$address = esc_html($location);
 
 							$prepAddr = str_replace(array(' '), array('+'), $address);

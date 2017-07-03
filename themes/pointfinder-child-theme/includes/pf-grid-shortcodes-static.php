@@ -125,9 +125,8 @@ function pf_itemgrid2_func_new( $atts ) {
 
 		
 		if(isset($_GET['pfsearch-filter-distance']) && $_GET['pfsearch-filter-distance']!=''){$pfg_distance = esc_attr($_GET['pfsearch-filter-distance']);}else{$pfg_distance = '';}
-		if(isset($_GET['pfsearch-filter-keyword']) && $_GET['pfsearch-filter-keyword']!=''){
-			$pfg_keyword = $_GET['pfsearch-filter-keyword'];
-			unset($_GET['pfsearch-filter-keyword']);
+		if(isset($_GET['s']) && $_GET['s']!=''){
+			$pfg_keyword = $_GET['s'];
 		}else{$pfg_keyword = '';}
 		if ( is_front_page() ) {
 	        $pfg_paged = (esc_sql(get_query_var('page'))) ? esc_sql(get_query_var('page')) : 1;   
@@ -137,8 +136,6 @@ function pf_itemgrid2_func_new( $atts ) {
 
 		if (isset($_GET['pageIndex'])) {
 			$pfg_paged = $_GET['pageIndex'];
-			unset($_GET['pageIndex']);
-			unset($_GET['lastPageIndex']);
 		}
 
 		$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
@@ -622,14 +619,14 @@ function pf_itemgrid2_func_new( $atts ) {
 								';							
 								$pfgform_values3 = array('recommend', 'distance','date');
 								$pfgform_values3_texts = array('recommend'=>'推荐优先', 'distance'=>'距离最近','date'=>esc_html__('最新更新','pointfindert2d'));
+							if ($review_system_statuscheck == 1) {
+									array_push($pfgform_values3, 'reviewcount');
+									$pfgform_values3_texts['reviewcount'] = esc_html__('评论最多','pointfindert2d');
+								}
 								if ($pfg_keyword !='') {
 									array_push($pfgform_values3, 'relevant');
 									$pfgform_values3_texts['relevant'] = esc_html__('相关度','pointfindert2d');
 								}						
-								if ($review_system_statuscheck == 1) {
-									array_push($pfgform_values3, 'reviewcount');
-									$pfgform_values3_texts['reviewcount'] = esc_html__('评论最多','pointfindert2d');
-								}
 			
 								//jschen order link
 								$wpflistdata .= '<div class="pflistgridviewwmdOLHKajsvD-header pflistcommonview-header">';
@@ -656,7 +653,7 @@ function pf_itemgrid2_func_new( $atts ) {
 				//jschen start keyword and search
 					$wpflistdata .= '
 					<div>
-						<input type="text" value="'. $pfg_keyword .'" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
+						<input type="text" value="'. $pfg_keyword .'" placeholder="请输入关键字搜索" name="s" id="s" style="width:70%" value=""/>
 						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px">搜索</img></button>
 					</div> 
 					<div >
