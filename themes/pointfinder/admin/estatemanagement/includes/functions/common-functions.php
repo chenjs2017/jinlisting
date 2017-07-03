@@ -49,6 +49,8 @@ function pf_get_orderby(&$args, &$has_distance, &$keyword) {
 	$str_orderby = 'order by ';
 	foreach ($orderbys as $key => $value) {
 		if ($key == 'relevant') {
+			$order .= pf_get_fulltext_field($keyword) ;
+			$value = "desc";
 		}elseif ($key == 'date') {
 			$order = 'post_date';
 			if (strlen($value) == 0) {
@@ -75,9 +77,11 @@ function pf_get_orderby(&$args, &$has_distance, &$keyword) {
 			$str_orderby .= $order . ' ' . $value . ',';
 		}
 	}						
+/*
 	if ($keyword != '') {
 		$str_orderby .= pf_get_fulltext_field($keyword) . " desc";
 	}
+*/
 	$str_orderby = trim($str_orderby, ',');
 	return $str_orderby;
 }
@@ -140,7 +144,7 @@ function pf_get_termID(&$args) {
 	
 function pf_build_sql(&$args) {
 			global $wpdb;
-//		echo '<br/>jschendebug:'; print_r($args);
+		echo '<br/>jschendebug:'; print_r($args);
 
 			$keyword = pf_get_keyword($args);
 /*
@@ -208,8 +212,8 @@ function pf_build_sql(&$args) {
 			}
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
-			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $page * $posts;
-//			echo '<br/>jschendebug:' . $sql . '<br/>';
+			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
+			echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
@@ -1745,8 +1749,13 @@ function PFLangCategoryID_ld($id,$lang){
 		    	$user = get_user_by('id', $params['author_id']);
 		    	$titletext = $user->nickname;
 		    }elseif(is_search()){
-		    	if (!empty($_GET['s'])) {
-		    		$titletext = sprintf(esc_html__( 'Search Results for %s', 'pointfindert2d' ),$_GET['s']);
+					$kwyword = empty($_GET['pfsearch-filter-keyword']) ? '' : $_GET['pfsearch-filter-keyword'];
+					if ($keyword == '') {
+						$keyword = empty($_GET['s']) ? '' : $_GET['s'];
+					}
+						
+		    	if ($keyword !='') {
+		    		$titletext = sprintf(esc_html__( 'Search Results for %s', 'pointfindert2d' ), $keyword);
 		    	}else{
 		    		$titletext = esc_html__( '搜索結果', 'pointfindert2d' );
 		    	}

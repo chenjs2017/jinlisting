@@ -10,7 +10,7 @@ get_header();
 			$pfgetdata = $_GET;
 			$pfne = $pfne2 = $pfsw = $pfsw2 = $pfpointfinder_google_search_coord = '';
 			$hidden_output = $search_output = '';
-			$searchkeys = array('pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
+			$searchkeys = array('pfsearch-filter-distance','pfsearch-filter-keyword','pfsearch-filter','pfsearch-filter-order','pfsearch-filter-number','pfsearch-filter-col');
 			if(is_array($pfgetdata)){
 
 				$pfformvars = array();
@@ -84,6 +84,7 @@ get_header();
 					}
 
 					/* On/Off filter for items */
+/*
 						$args['meta_query'][] = array('relation' => 'OR',
 							array(
 								'key' => 'pointfinder_item_onoffstatus',
@@ -98,6 +99,7 @@ get_header();
 			                )
 			                
 						);
+*/
 
 					foreach($pfformvars as $pfformvar => $pfvalue){
 						
