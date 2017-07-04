@@ -1,7 +1,6 @@
 var aglActionName = 'agl_request';
-var aglPhpParams;
 
-var placeSearch, autocomplete;
+var autocomplete;
 
 function initAutocomplete() {
 	if (document.getElementById("autocomplete") != null) {
@@ -17,12 +16,12 @@ function fillInAddress() {
   var place = autocomplete.getPlace();
 	var lat = place.geometry.location.lat();
 	var lon = place.geometry.location.lng();
-	var data = {
-        'action': aglActionName,
-        'lat': parseFloat( lat ),
-        'lon': parseFloat( lon )
-	} ;
-	aglPostData(data);
+//	alert(JSON.stringify(place.address_components));	
+	var addr = place.address_components[0]['short_name'] + ',' 
+		+ place.address_components[1]['short_name'] + ',' 
+		+ place.address_components[2]['short_name'] + ',' 
+		+ place.address_components[4]['short_name'];
+		aglPostData(lat, lon, addr);
 	location.reload();
 }
 
@@ -45,70 +44,50 @@ function geolocate() {
   }
 }
 
+function getAddressFromLatLang(lat,lng){
+      var geocoder = new google.maps.Geocoder();
+        var latLng = new google.maps.LatLng(lat, lng);
+        geocoder.geocode( { 'latLng': latLng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[1]) {
+            console.log(results[1]);
+						aglPostData(lat,lng,results[1].formatted_address);
+          }
+        }else{
+          alert("Geocode was not successful for the following reason: " + status);
+        }
+        });
+}
 
 function aglInitialise() {
 	if (document.getElementById("aglResult") != null) {
 		document.getElementById("aglResult").innerHTML = "<div>正在查询附近商家...</div>";
 	}
-	if ( geoPosition.init() ) {
-		geoPosition.getCurrentPosition(aglShowPosition, aglShowError, {maximumAge: aglPhpParams.gcp_maximumAge, enableHighAccuracy: aglPhpParams.gcp_enableHighAccuracy, timeout: aglPhpParams.gcp_timeout} );
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+		 	getAddressFromLatLang(position.coords.latitude, position.coords.longitude);
+		});
 	} else {
-		var data = {
-	        'action': aglActionName,
-	        'error_code': -1,
-	        'error_message': 'Geolocation is not available. Try getting a device from the Stone Age, at least :)'
-    	};
-
-    	aglPostData(data);
-	}
+		jQuery.getJSON('https://ipapi.co/json', function(data){
+			var addr = data.city +',' +  data.region + ',' + data.country;
+			aglPostData(data.latitude, data.longitude, addr);		
+    });	
+		}
 }
 
-// Information of our Request
-function aglShowPosition(position) {
+function aglPostData(lat, lon, addr) {
 	var data = {
-        'action': aglActionName,
-        'lat': parseFloat( position.coords.latitude ),
-        'lon': parseFloat( position.coords.longitude )
+    'action': aglActionName,
+    'lat': parseFloat( lat ),
+    'lon': parseFloat( lon),
+		'addr': addr
 	} ;
-	aglPostData(data);
+//	alert(JSON.stringify(data));
+	jQuery.post(aglParams.ajaxUrl, data, function(response) {
+    }, 'json');
 	aglGetItems();
 }
 
-function aglShowError(error) {
-    var data = {
-        'action': aglActionName,
-        'error_code': error.code,
-        'error_message': error.message
-	};
-	//jschen: don't post error back, aglPostData(data);
-}
-
-function aglPostData(data) {
-	jQuery.post(aglParams.ajaxUrl, data, function(response) {
-	//		alert(JSON.stringify(response));
-    }, 'json');
-}
-
-function aglGetPhpParams() {
-	var ajax = jQuery.ajax({
-	    url: aglParams.ajaxUrl + '?action=agl_get_php',
-	    type: 'POST',
-	    contentType: 'application/json; charset=utf-8',
-	    dataType: 'json',
-	    async: false,
-	    statusCode: {
-	        404: function () {
-	            alert('Page not found.');
-	        }
-	    }
-	});
-
-	ajax.done(function (response, textStatus, jqXHR) {
-	    aglPhpParams = response;
-	}); ajax.fail(function (jqXHR, textStatus, errorThrown) {
-	    alert('No data available!');
-	});
-}
 
 var fulltext = '';
 var halftext = '';
@@ -168,20 +147,15 @@ function locateReload() {
 }
 
 jQuery(document).ready(function($) {
-	aglGetPhpParams();
-
-	if (aglPhpParams.is_cookie_permission != 'yes') {
-		if (aglPhpParams.is_ask_onload == 'yes') {
-			window.onload = aglInitialise;
-		}
-	} else {
+	if (document.cookie && document.cookie.indexOf('agl-values=') != -1){
 		aglGetItems();
+	} else {
+		window.onload = aglInitialise;
 	}
 	
-	if (aglPhpParams.is_ask_onclick == 'yes') {
-		jQuery('#aglId').click(aglInitialise);
-	}
+	jQuery('#aglId').click(aglInitialise);
 	jQuery('#aglLocateReload').click(locateReload);
+
 	if (document.getElementById("autocomplete") != null) {
 		google.maps.event.addDomListener(window, 'load', initAutocomplete);
 	}

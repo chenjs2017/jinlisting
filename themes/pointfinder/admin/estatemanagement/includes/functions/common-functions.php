@@ -144,7 +144,7 @@ function pf_get_termID(&$args) {
 	
 function pf_build_sql(&$args) {
 			global $wpdb;
-//		echo '<br/>jschendebug:'; print_r($args);
+		echo '<br/>jschendebug:'; print_r($args);
 
 			$keyword = pf_get_keyword($args);
 /*
@@ -213,7 +213,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-//			echo '<br/>jschendebug:' . $sql . '<br/>';
+			echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
@@ -241,17 +241,15 @@ function pf_get_location() {
     }
     $url = 'http://ip-api.com/json/' . $ip;
     $content = file_get_contents($url);
-    $json = json_decode($content, true);
-		$_SESSION['agl-values'] = $json;	
+    $vals = json_decode($content, true);
+		$address = $vals['city'] . ',' . $vals['region'] . ',' . $vals['country'];
+		$vals['addr'] = $address;
+		$_SESSION['agl-values'] = $vals;	
 		return $json;
 }
+//https://jschen.jinlisting.com/wp-admin/admin-ajax.php?action=agl_ask
 function get_near_by() {
-	$cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
-	$cookie = stripslashes($cookie);
-//jschen, return nearby info
-  if ($cookie !='') {
-		//require_once(get_theme_root() . '/pointfinder-child-theme/includes/location_check.php');
-    $vals = json_decode($cookie, true);
+    $vals = pf_get_location();
     $latitude = $vals['lat'];
     $longitude = $vals['lon'];
     $has_location = true;
@@ -278,17 +276,18 @@ function get_near_by() {
 				INNER JOIN $wpdb->terms on ($wpdb->terms.term_id= $wpdb->term_taxonomy.term_id)
 				INNER JOIN $wpdb->postmeta AS mt1 ON ( $wpdb->posts.ID = mt1.post_id ) 
 				INNER JOIN $wpdb->postmeta AS mt2 ON ( $wpdb->posts.ID = mt2.post_id ) 
-				WHERE taxonomy='pointfinderltypes'
+				WHERE taxonomy='pointfinderltypes' and parent=0
 				AND  ( mt1.meta_key = 'latitude' AND CAST(mt1.meta_value AS CHAR) BETWEEN '" . $minLat . "' AND '" . $maxLat . "' ) 
 				AND ( mt2.meta_key = 'longitude' AND CAST(mt2.meta_value AS CHAR) BETWEEN '" . $minLong . "' AND '" . $maxLong . "' ) 
 				AND $wpdb->posts.post_type = 'listing' AND $wpdb->posts.post_status = 'publish'
 				group by $wpdb->terms.term_id,name";
+//		echo $sql;
 		$result = $wpdb->get_results($sql, OBJECT);
-		$output ="在您身边发现：";
+		$output ="在[". $vals['addr'] . "]附近发现：";
 		foreach( $result as $obj ) {
 				$url = '/?field_listingtype='. $obj->term_id .'&pfsearch-filter=distance&pointfinder_radius_search=1&ne=&ne2=&sw=&sw2=&s=&serialized=1&action=pfs';
 				$output .= '<a href="'. $url .'">'. $obj->name .'&nbsp;'.  $obj->post_count .'个 </a> &nbsp;&nbsp;|&nbsp;&nbsp;';
-    }
+  //  }
   }
 	return $output;
 }

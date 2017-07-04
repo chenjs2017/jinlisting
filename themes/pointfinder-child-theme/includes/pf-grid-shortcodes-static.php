@@ -652,17 +652,18 @@ function pf_itemgrid2_func_new( $atts ) {
 								}
 								$wpflistdata .= '</div>';
 
-						$wpflistdata .= '<script src="https://maps.googleapis.com/maps/api/js?key='.  PFSAIssetControl('setup5_map_key','','') . '&libraries=places" async defer></script> ';
+//						$wpflistdata .= '<script src="https://maps.googleapis.com/maps/api/js?key='.  PFSAIssetControl('setup5_map_key','','') . '&libraries=places" async defer></script> ';
 
 				//jschen start keyword and search
+					$vals = pf_get_location();
 					$wpflistdata .= '
 					<div>
-						<input type="text" value="'. $pfg_keyword .'" placeholder="请输入关键字搜索" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
-						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px">搜索</img></button>
+						查找：<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
+						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px"></img></button>
 					</div> 
 					<div >
-			      <input id="autocomplete" placeholder="输入您的地址" onFocus="geolocate()" type="text" style="width:70%">
-						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位</img> </button>
+			      靠近：<input id="autocomplete" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%">
+						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </button>
 			    </div>
 			   ';
 

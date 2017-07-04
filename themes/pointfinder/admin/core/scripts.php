@@ -176,22 +176,11 @@ function pf_styleandscripts()
 
 		if ($usemin == 1) {$script_file_2n = "theme-map-functions.min.js";}else{$script_file_2n = "theme-map-functions.js";}
 
-		wp_register_script('theme-google-api', 'https://maps.googleapis.com/maps/api/js?v=3.23&libraries=places&language='.$maplanguage.$setup5_map_key, array('jquery'), '',true); 
+		wp_register_script('theme-google-api', 'https://maps.googleapis.com/maps/api/js?libraries=places&language='.$maplanguage.$setup5_map_key, array('jquery'), '',true); 
 		wp_register_script('theme-gmap3', get_template_directory_uri() . '/js/gmap3.js', array('theme-google-api'), '6.1',true); 
 		wp_register_script('theme-map-functionspf', get_template_directory_uri() . '/js/'.$script_file_2n, array('theme-gmap3','pftheme-minified-package','theme-scriptspf'), '1.0.0',true);
-		
-		global $post;
-
-		$setup3_pointposttype_pt1 = PFSAIssetControl('setup3_pointposttype_pt1','','pfitemfinder');
-		$pfpage_post_type = get_post_type();
-
-		if (isset($post)) {
-			if (!is_single() && (has_shortcode($post->post_content,'pf_itemgrid2') || is_archive() || is_category() || is_search())) {
-				wp_enqueue_script('theme-infinitescroll'); 
-			}
-			if( (is_single() || has_shortcode( $post->post_content, 'pf_contact_map') || has_shortcode( $post->post_content, 'pf_directory_map')) || $pfpage_post_type == $setup3_pointposttype_pt1 || (isset($_GET['action']) && $_GET['action'] == 'pfs')) {
-		       /* Map */
-		        wp_enqueue_script('theme-google-api');
+		      /* Map */
+		     wp_enqueue_script('theme-google-api');
 				wp_enqueue_script('theme-gmap3'); 
 				
 				if(!wp_style_is('pfsearch-select2-css', 'enqueued')){wp_enqueue_style('pfsearch-select2-css');}
@@ -210,7 +199,16 @@ function pf_styleandscripts()
 					'pfcurlang' => PF_current_language(),
 					'defmapdist' => PFSAIssetControl('setup7_geolocation_distance','',10),
 				));
-		    }
+
+		global $post;
+
+		$setup3_pointposttype_pt1 = PFSAIssetControl('setup3_pointposttype_pt1','','pfitemfinder');
+		$pfpage_post_type = get_post_type();
+
+		if (isset($post)) {
+			if (!is_single() && (has_shortcode($post->post_content,'pf_itemgrid2') || is_archive() || is_category() || is_search())) {
+				wp_enqueue_script('theme-infinitescroll'); 
+			}
 		}
 
 

@@ -82,8 +82,6 @@ function agl_setcookie_value( $data ) {
 function agl_enqueue_script() {
 	wp_enqueue_script( 'geoPosition', plugins_url( 'assets/js/geoPosition.js', __FILE__ ), array(), false, true );
 	wp_enqueue_script( 'aglGetPosition', plugins_url( 'assets/js/aglGetPosition.js', __FILE__ ), array( 'jquery' ), false, true );
-	
-	$agl_params = get_option( 'agl_settings' );
 	$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
 	$params = array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php', $protocol ),
@@ -102,6 +100,7 @@ function agl_request_callback() {
 	$response = array(
 			'lat' => isset($_POST['lat']) ? $_POST['lat'] : '',
 			'lon' => isset($_POST['lon']) ? $_POST['lon'] : '',
+			'addr' => isset($_POST['addr']) ? $_POST['addr'] : '',
 			'error_code' => isset($_POST['error_code']) ? $_POST['error_code'] : '',
 			'error_message' => isset($_POST['error_message']) ? $_POST['error_message'] : '',
 			'php_time' => time(),
