@@ -213,7 +213,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-	//		echo '<br/>jschendebug:' . $sql . '<br/>';
+			echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
@@ -245,7 +245,7 @@ function pf_get_location() {
 		$address = $vals['city'] . ',' . $vals['region'] . ',' . $vals['country'];
 		$vals['addr'] = $address;
 		$_SESSION['agl-values'] = $vals;	
-		return $json;
+		return $vals;
 }
 //https://jschen.jinlisting.com/wp-admin/admin-ajax.php?action=agl_ask
 function get_near_by() {
