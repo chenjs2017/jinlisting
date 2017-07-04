@@ -144,7 +144,7 @@ function pf_get_termID(&$args) {
 	
 function pf_build_sql(&$args) {
 			global $wpdb;
-		echo '<br/>jschendebug:'; print_r($args);
+//		echo '<br/>jschendebug:'; print_r($args);
 
 			$keyword = pf_get_keyword($args);
 /*
@@ -213,7 +213,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-			echo '<br/>jschendebug:' . $sql . '<br/>';
+	//		echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 function pf_get_location() {
