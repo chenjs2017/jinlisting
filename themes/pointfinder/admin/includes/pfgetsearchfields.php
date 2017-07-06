@@ -1281,21 +1281,25 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 								$itemparent = $this->CheckItemsParent($target);
 								
 								if($itemparent == 'none'){
+
+									if ($hormode == 1) {
+										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
+										$divEnd ='</div>';	
+									}
 									if ($target == 'google') {
-											$vals = pf_get_location();
-											$this->FieldOutput .= '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">
-																<span style="color:white">靠近:</span>
+											$this->FieldOutput .= $divBegin . '
+																<span style="color:white;font-size:18px">Near</span>
 																<span>
-																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:75%">
+																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:300px;height: 36px;">
 																</span>
 																<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
-											</div>';
+										 ' . $divEnd;
 									}elseif ($target == 'title' ) {
-										$this->FieldOutput .= '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">
-															<span style="color:white">查找:</span>
-															<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:88%"/></span>
-										</div>
-										';
+										$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
+										$this->FieldOutput .= $divBegin . '
+															<span style="color:white;font-size:18px">Find</span>
+															<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:336px;height: 36px;"/></span>
+										 ' . $divEnd;
 									}								
 								}
 							}
@@ -1346,7 +1350,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 											$this->FieldOutput .= '<div class="col6 last">';
 										}else{
 											if ($hormode == 1 && $widget == 0 && $target != 'google') {
-												$this->FieldOutput .= '1634<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+												$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 											}
 											if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
 												$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
@@ -1356,7 +1360,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										$this->PFHalf++;
 									}else{
 										if ($hormode == 1 && $widget == 0) {
-											$this->FieldOutput .= '1644<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+											$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 										}
 										if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
 											$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
@@ -1475,7 +1479,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 									}
 									
 									if ($hormode == 1 && $widget == 0) {
-										$this->FieldOutput .= '1763<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+										$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 									}
 									
 									$this->FieldOutput .= '<div id="'.$slug.'_main">';
