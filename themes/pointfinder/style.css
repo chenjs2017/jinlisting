@@ -12,20 +12,18 @@
 */
 
 /*jschen added*/
-.center-container {
-    text-align: center;
-    height: 100%; }
-.center-span { 
-    height: 100%;
-    vertical-align: middle;
-    display: inline-block; }
-.center-outer {
-    padding: 0;
-    vertical-align: middle;
-    display: inline-block; }
-.center-inner {
-    vertical-align: middle;
-    display: inline-block; }
+
+.col-keyword {
+	width: 35%;
+}
+.col-address {
+	width: 35%;
+}
+
+.col-button {
+	width: 20%;
+}
+
 
 
 /*------------------------------------*\

@@ -1281,307 +1281,22 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 								$itemparent = $this->CheckItemsParent($target);
 								
 								if($itemparent == 'none'){
-
-									$validation_check = PFSFIssetControl('setupsearchfields_'.$slug.'_validation_required','','0');
-									$field_autocmplete = PFSFIssetControl('setupsearchfields_'.$slug.'_autocmplete','','1');
-
-									if($validation_check == 1){
-										$validation_message = PFSFIssetControl('setupsearchfields_'.$slug.'_message','','');
-										
-										if($this->VSOMessages != ''){
-											$this->VSOMessages .= ','.$slug.':"'.$validation_message.'"';
-										}else{
-											$this->VSOMessages = $slug.':"'.$validation_message.'"';
-										}
-										
-										if($this->VSORules != ''){
-											$this->VSORules .= ','.$slug.':"required"';
-										}else{
-											$this->VSORules = $slug.':"required"';
-										}
-									}
-									
-									$fieldtext = PFSFIssetControl('setupsearchfields_'.$slug.'_fieldtext','','');
-									$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
-									$column_type = PFSFIssetControl('setupsearchfields_'.$slug.'_column','','0');
-
-									$geolocfield = PFSFIssetControl('setupsearchfields_'.$slug.'_geolocfield','','0');
-									$geolocfield = ($geolocfield == 1)? 'Mile':'Km';
-									$geolocfield2 = PFSFIssetControl('setupsearchfields_'.$slug.'_geolocfield2','','100');
-									
-									
-
-									if($column_type == 1 && $target != 'google'){
-										if ($this->PFHalf % 2 == 0) {
-											$this->FieldOutput .= '<div class="col6 last">';
-										}else{
-											if ($hormode == 1 && $widget == 0 && $target != 'google') {
-												$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
-											}
-											if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
-												$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
-											}
-											$this->FieldOutput .= '<div class="row"><div class="col6 first">';
-										}
-										$this->PFHalf++;
-									}else{
-										if ($hormode == 1 && $widget == 0 && $target != 'google') {
-											$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
-										}
-										if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
-											$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
-										}
-									};
-
-									if (array_key_exists($slug,$pfgetdata)) {
-										$valtext = ' value = "'.$pfgetdata[$slug].'" ';;
-									}else{
-										$valtext = '';
-									}
-
-									
 									if ($target == 'google') {
-										if ($widget == 0) {
-											
-											if ($hormode == 1) {
-												$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
-											}
-											$this->FieldOutput .= '
-											<div id="'.$slug.'_main" class="pfmapgoogleaddon">
-												<label for="'.$slug.'" class="pftitlefield">'.$fieldtext.'</label>
-												<label class="pflabelfixsearch lbl-ui search">
-													<input type="search" name="'.$slug.'" id="'.$slug.'" class="input" placeholder="'.$placeholder.'"'.$valtext.' />
-													<input type="hidden" name="pointfinder_google_search_coord" id="pointfinder_google_search_coord" class="input" value="" />
-													<input type="hidden" name="pointfinder_google_search_coord_unit" id="pointfinder_google_search_coord_unit" class="input" value="'.$geolocfield.'" />
-													<a class="button" id="pf_search_geolocateme" title="'.esc_html__('Locate me!','pointfindert2d').'"><img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'"><div class="pf-search-locatemebutloading"></div></a>
-													<a class="button" id="pf_search_geodistance" title="'.esc_html__('Distance','pointfindert2d').'"><i class="pfadmicon-glyph-72"></i></a>
-												</label> 
-											';
-											
-											$this->FieldOutput .= '
-												<div id="pointfinder_radius_search_main">
-												<div class="pfradius-triangle-up"></div>
-													<label for="pointfinder_radius_search-view" class="pfrangelabel">'.esc_html__('Distance','pointfindert2d').' ('.$geolocfield.') :</label>
-													<input type="text" id="pointfinder_radius_search-view" class="slider-input" disabled="" style="width: 44%;">
-													<input name="pointfinder_radius_search" id="pointfinder_radius_search-view2" type="hidden" class="pfignorevalidation"> 
-													<div class="slider-wrapper">
-														<div id="pointfinder_radius_search" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all ui-slider-pointfinder_radius_search">
-															<div class="ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min"></div>
-															<span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-														</div>  
-													</div>
-												</div> 
-
-											</div>                        
-											';
-											
-											if ($hormode == 1) {
-												$this->FieldOutput .= '</div>';
-											}
-											$this->ScriptOutput .= "
-											$('#pf_search_geolocateme').live('click',function(){
-												$('.pf-search-locatemebut').hide('fast'); $('.pf-search-locatemebutloading').show('fast');
-												$.pfgeolocation_findme('".$slug."');
-												return false;
-											});
-
-											
-											$('#pf_search_geodistance').live('click',function(){
-												if ($('#pf_search_geodistance i').hasClass('pfadmicon-glyph-72')) {
-													$('#pf_search_geodistance i').switchClass('pfadmicon-glyph-72','pfadmicon-glyph-96');
-													$('#pointfinder_radius_search_main').fadeIn('fast');
-												}else{
-													$('#pf_search_geodistance i').switchClass('pfadmicon-glyph-96','pfadmicon-glyph-72');
-													$('#pointfinder_radius_search_main').fadeOut('fast');
-												}
-												return false;
-											});
-											
-											$(function(){
-												setTimeout(function(){
-												var map = $('#wpf-map').gmap3('get');
-												var input = (document.getElementById('".$slug."'));
-													var autocomplete = new google.maps.places.Autocomplete(input);
-													autocomplete.bindTo('bounds', map);
-													
-													google.maps.event.addListener(autocomplete, 'place_changed', function() {
-													    var place = autocomplete.getPlace();
-													    if (!place.geometry) {
-													      return;
-													    }
-														$('#pointfinder_google_search_coord').val(place.geometry.location.lat()+','+place.geometry.location.lng());
-													});
-													},1000);
-													
-											});
-											";
-											
-											$pointfinder_radius_search_val = PFSAIssetControl('setup7_geolocation_distance','','10');
-
-											$this->ScriptOutput .= '
-												$( "#pointfinder_radius_search" ).slider({
-													range: "min",value:'.$pointfinder_radius_search_val.',min: 0,max: '.$geolocfield2.',step: 1,
-													slide: function(event, ui) {
-														$("#pointfinder_radius_search-view").val(ui.value);
-														$("#pointfinder_radius_search-view2").val(ui.value);
-													}
-												});
-
-												$("#pointfinder_radius_search-view").val( $("#pointfinder_radius_search").slider("value"));
-
-																
-												$(document).one("ready",function(){
-													$("#pointfinder_radius_search-view2").val('.$pointfinder_radius_search_val.');
-												});
-											';
-											
-										}else{
 											$vals = pf_get_location();
-											$this->FieldOutput .= '<lable style="background-color:white">
-												<div style="background-color:white">
-									      <span>靠近</span>
-												<span>
-												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:75%">
-												</span>
-												<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
-										    </div> 
-												</lable>';
-										}
-
-									}elseif ($target == 'title' || $target == 'address') {
-										$this->FieldOutput .= '<lable style="background-color:white">
-											<div style="background-color:white">
-											<span >查找</span>
-											<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:88%"/></span>
-											</div>
-										</lable>
+											$this->FieldOutput .= '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">
+																<span style="color:white">靠近:</span>
+																<span>
+																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:75%">
+																</span>
+																<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
+											</div>';
+									}elseif ($target == 'title' ) {
+										$this->FieldOutput .= '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">
+															<span style="color:white">查找:</span>
+															<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:88%"/></span>
+										</div>
 										';
-/*
-'
-										<div id="jobskeyword_main" class="ui-widget">
-										<label for="jobskeyword" class="pftitlefield" title="查找">检索</label>
-										<label class="lbl-ui pflabelfixsearch pflabelfixsearchjobskeyword"> 											
-										<input type="text" name="jobskeyword" id="jobskeyword" class="input" placeholder="----jschen:'.$placeholder.'"'.$valtext.' />
-										</label>    
-										</div>                        
-										';
-										if($field_autocmplete == 1){
-											$this->ScriptOutput .= '
-											$( "#'.$slug.'" ).bind("keydown",function(){
-
-
-											$( "#'.$slug.'" ).autocomplete({
-											  appendTo: ".pflabelfixsearch'.$slug.'",
-										      source: function( request, response ) {
-										        $.ajax({
-										          url: theme_scriptspf.ajaxurl,
-										          dataType: "jsonp",
-										          data: {
-										          	action: "pfget_autocomplete",
-										            q: request.term,
-										            security: theme_scriptspf.pfget_autocomplete,
-										            ftype: "'.$target.'"
-										          },
-										          success: function( data ) {
-										            response( data );
-										          }
-										        });
-										      },
-										      minLength: 2,
-										      select: function( event, ui ) {
-										        $("#'.$slug.'").val(ui.item);
-										      },
-										      open: function() {
-										        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-										      },
-										      close: function() {
-										        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-										      }
-										    });
-
-											});
-											';
-										}
-*/										
-
-									}elseif ($target == 'description') {
-
-										$this->FieldOutput .= '
-										<div id="'.$slug.'_main">
-										<label for="'.$slug.'" class="pftitlefield">'.$fieldtext.'</label>
-										<label class="lbl-ui pflabelfixsearch">
-											<input type="text" name="'.$slug.'" id="'.$slug.'" class="input" placeholder="'.$placeholder.'"'.$valtext.' />
-										</label>    
-										</div>                        
-										';
-
-									} else {
-										
-										$this->FieldOutput .= '
-										<div id="'.$slug.'_main">
-										<label for="'.$slug.'" class="pftitlefield">'.$fieldtext.'</label>
-										<label class="lbl-ui pflabelfixsearch pflabelfixsearch'.$slug.'">
-											<input type="text" name="'.$slug.'" id="'.$slug.'" class="input" placeholder="'.$placeholder.'"'.$valtext.' />
-										</label>    
-										</div>                        
-										';
-
-										if($field_autocmplete == 1){
-											$this->ScriptOutput .= '
-											$( "#'.$slug.'" ).bind("keydown",function(){
-
-											$( "#'.$slug.'" ).autocomplete({
-											  appendTo: ".pflabelfixsearch'.$slug.'",
-										      source: function( request, response ) {
-										        $.ajax({
-										          url: theme_scriptspf.ajaxurl,
-										          dataType: "jsonp",
-										          data: {
-										          	action: "pfget_autocomplete",
-										            q: request.term,
-										            security: theme_scriptspf.pfget_autocomplete,
-										            ftype: "'.$target.'"
-										          },
-										          success: function( data ) {
-										            response( data );
-										          }
-										        });
-										      },
-										      minLength: 3,
-										      select: function( event, ui ) {
-										        $("#'.$slug.'").val(ui.item);
-										      },
-										      open: function() {
-										        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
-										      },
-										      close: function() {
-										        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
-										      }
-										    });
-
-											});
-											';
-										}
-										
-									}
-									
-									
-									if($column_type == 1 && $target != 'google'){
-										if ($this->PFHalf % 2 == 0) {
-											$this->FieldOutput .= '</div>';
-										}else{
-											if (($hormode == 1 && $widget == 0 && $target != 'google') || ($hormode == 1 && $widget == 1 && $minisearch == 1)) {
-												$this->FieldOutput .= '</div>';
-											}
-											$this->FieldOutput .= '</div></div>';
-										}
-									}else{
-										if (($hormode == 1 && $widget == 0 && $target != 'google') || ($hormode == 1 && $widget == 1 && $minisearch == 1)) {
-											$this->FieldOutput .= '</div>';
-										}
-									};
-									
-									
+									}								
 								}
 							}
 							break;
@@ -1631,7 +1346,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 											$this->FieldOutput .= '<div class="col6 last">';
 										}else{
 											if ($hormode == 1 && $widget == 0 && $target != 'google') {
-												$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+												$this->FieldOutput .= '1634<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 											}
 											if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
 												$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
@@ -1641,7 +1356,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										$this->PFHalf++;
 									}else{
 										if ($hormode == 1 && $widget == 0) {
-											$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+											$this->FieldOutput .= '1644<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 										}
 										if ($hormode == 1 && $widget == 1 && $minisearch == 1) {
 											$this->FieldOutput .= $this->GetMiniSearch($minisearchc);
@@ -1760,7 +1475,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 									}
 									
 									if ($hormode == 1 && $widget == 0) {
-										$this->FieldOutput .= '<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
+										$this->FieldOutput .= '1763<div class="col-lg-3 col-md-4 col-sm-4 colhorsearch">';
 									}
 									
 									$this->FieldOutput .= '<div id="'.$slug.'_main">';

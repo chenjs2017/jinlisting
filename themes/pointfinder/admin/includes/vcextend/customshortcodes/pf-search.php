@@ -23,7 +23,7 @@ function pf_searchw_func( $atts ) {
         break;
 
       case '3':
-        $coln = '<div class="col-lg-3 col-md-3 col-sm-3 colhorsearch">';
+        $coln = '<div class="col-button col-md-3 col-sm-3 colhorsearch">';
         break;
 
       default:
