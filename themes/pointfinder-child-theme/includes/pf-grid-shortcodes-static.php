@@ -658,12 +658,14 @@ function pf_itemgrid2_func_new( $atts ) {
 					$vals = pf_get_location();
 					$wpflistdata .= '
 					<div>
-						查找：<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="width:70%" value=""/>
-						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px"></img></button>
+						<SPAN STYLE="font-family: Courier New;font-size:18px" >Find</Span>
+						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:70%" value=""/>
+						<button id="pfsearch-button" style="background-color: Transparent;outline:none;border: none;"><img src="/wp-content/themes/pointfinder/images/se.png" width="30px" heigh="30px"></img></button>
 					</div> 
 					<div >
-			      靠近：<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%">
-						<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
+						<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
+						<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%;height:30px">
+						<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="30px" heigh="30px"></img> </a>
 			    </div>
 					<input type="hidden" id="aglReload" />
 			   ';

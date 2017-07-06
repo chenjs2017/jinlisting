@@ -1285,20 +1285,25 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 									if ($hormode == 1) {
 										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
 										$divEnd ='</div>';	
+										$labColor = 'color:white;';
+										$txtWidth= 300;
+									}else {
+										$txtWidth= 230;
 									}
 									if ($target == 'google') {
+											$vals = pf_get_location(); 
 											$this->FieldOutput .= $divBegin . '
-																<span style="color:white;font-size:18px">Near</span>
+																<span style="' . $labColor . 'font-size:18px">Near</span>
 																<span>
-																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:300px;height: 36px;">
+																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidth .'px;height: 36px;">
 																</span>
 																<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
 										 ' . $divEnd;
 									}elseif ($target == 'title' ) {
 										$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
 										$this->FieldOutput .= $divBegin . '
-															<span style="color:white;font-size:18px">Find</span>
-															<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:336px;height: 36px;"/></span>
+													<span style="'. $labColor .'font-size:18px">Find</span>
+													<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:'. ($txtWidth + 36) .'px;height: 36px;"/></span>
 										 ' . $divEnd;
 									}								
 								}
