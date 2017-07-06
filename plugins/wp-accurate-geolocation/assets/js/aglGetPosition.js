@@ -1,11 +1,17 @@
-var aglActionName = 'agl_request';
+"use strict";
 
+var aglActionName = 'agl_request';
+var reload = false;
+var getItem = false;
 var autocomplete;
+var fulltext = '';
+var halftext = '';
+
 
 function initAutocomplete() {
-	if (document.getElementById("autocomplete") != null) {
+	if (document.getElementById("aglAddress") != null) {
 					 autocomplete = new google.maps.places.Autocomplete(
-							/** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+							/** @type {!HTMLInputElement} */(document.getElementById('aglAddress')),
 							{types: ['geocode']});
 					autocomplete.addListener('place_changed', fillInAddress);
 	}
@@ -21,43 +27,24 @@ function fillInAddress() {
 		+ place.address_components[1]['short_name'] + ',' 
 		+ place.address_components[2]['short_name'] + ',' 
 		+ place.address_components[4]['short_name'];
-		aglPostData(lat, lon, addr);
-	location.reload();
-}
-
-// Bias the autocomplete object to the user's geographical location,
-// as supplied by the browser's 'navigator.geolocation' object.
-function geolocate() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var geolocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-	
-      var circle = new google.maps.Circle({
-        center: geolocation,
-        radius: position.coords.accuracy
-      });
-      autocomplete.setBounds(circle.getBounds());
-    });
-  }
+	aglPostData(lat, lon, addr);
 }
 
 function getAddressFromLatLang(lat,lng){
       var geocoder = new google.maps.Geocoder();
-        var latLng = new google.maps.LatLng(lat, lng);
-        geocoder.geocode( { 'latLng': latLng}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          if (results[1]) {
-            console.log(results[1]);
-						aglPostData(lat,lng,results[1].formatted_address);
-          }
-        }else{
-          alert("Geocode was not successful for the following reason: " + status);
-        }
-        });
-}
+      var latLng = new google.maps.LatLng(lat, lng);
+      geocoder.geocode( { 'latLng': latLng}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+           if (results[1]) {
+		   			aglPostData(lat,lng,results[1].formatted_address);
+     	    }else {
+		   			alert( 'no result');
+		 			}
+     	  }else{
+           	alert("Geocode was not successful for the following reason: " + status);
+         }
+      });
+}    	
 
 function aglInitialise() {
 	if (document.getElementById("aglResult") != null) {
@@ -74,7 +61,13 @@ function aglInitialise() {
     });	
 		}
 }
-
+function setCookie(cname, cvalue) {
+    var d = new Date();
+    d.setTime(d.getTime() + (60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+	
 function aglPostData(lat, lon, addr) {
 	var data = {
     'action': aglActionName,
@@ -82,20 +75,20 @@ function aglPostData(lat, lon, addr) {
     'lon': parseFloat( lon),
 		'addr': addr
 	} ;
-//	alert(JSON.stringify(data));
-	jQuery.post(aglParams.ajaxUrl, data, function(response) {
-    }, 'json');
-	aglGetItems();
+	setCookie('agl-values',JSON.stringify(data));
+	if (document.getElementById("aglAddress") != null) {
+		document.getElementById("aglAddress").value = addr; 
+	}
+	if (reload) {
+		location.reload();
+	}
+	if (getItem) {
+			aglGetItems();
+	}
 }
 
 
-var fulltext = '';
-var halftext = '';
-
 function aglGetItems() {
-	if (document.getElementById("aglResult") == null) {
-		return;	
-	}
 	document.getElementById("aglResult").innerHTML = "<div>正在查询附近商家...</div>";
 	var ajax = jQuery.ajax({
 	    url: aglParams.ajaxUrl + '?action=agl_ask',
@@ -141,23 +134,22 @@ function less(){
 }
 
 
-function locateReload() {
-	aglInitialise();
-	location.reload();
-}
-
 jQuery(document).ready(function($) {
+	reload = document.getElementById("aglReload") !=null;
+	getItem = document.getElementById("aglResult") !=null;
 	if (document.cookie && document.cookie.indexOf('agl-values=') != -1){
-		aglGetItems();
+		if (getItem){
+			aglGetItems();
+		}
 	} else {
 		window.onload = aglInitialise;
 	}
 	
 	jQuery('#aglId').click(aglInitialise);
-	jQuery('#aglLocateReload').click(locateReload);
 
-	if (document.getElementById("autocomplete") != null) {
+	if (document.getElementById("aglAddress") != null) {
 		google.maps.event.addDomListener(window, 'load', initAutocomplete);
 	}
+
 });
 

@@ -86,6 +86,7 @@ function pf_searchw_func( $atts ) {
                 *End: Get search data & apply to query arguments.
                 **/
                 $PFListSF = new PF_SF_Val();
+//	print_r($setup1s_slides);
                 foreach ($setup1s_slides as &$value) {
                 
                     $PFListSF->GetValue($value['title'],$value['url'],$value['select'],1,$pfformvars,1,1,$minisearchc);

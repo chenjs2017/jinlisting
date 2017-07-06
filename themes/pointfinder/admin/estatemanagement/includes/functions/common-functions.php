@@ -216,11 +216,9 @@ function pf_build_sql(&$args) {
 //			echo '<br/>jschendebug:' . $sql . '<br/>';
 	return $sql;			
 }
+
+//page variable
 function pf_get_location() {
-	if (isset($_SESSION['agl-values']))
-	{
-		return $_SESSION ['agl-values'];
-	}
   $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
 	if ($cookie !='') {
 		$cookie = stripslashes($cookie) ;
@@ -229,23 +227,28 @@ function pf_get_location() {
 		$lat = isset($vals['lat']) ? $vals['lat']:'';
 		if (strlen($lat) > 0 && strlen($lon) >0 )
 		{
-			$_SESSION['agl-values'] = $vals;	
+			$agl_values = $vals;
 			return $vals;
 		}
 	}
 	
-		if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-    } else {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    $url = 'http://ip-api.com/json/' . $ip;
-    $content = file_get_contents($url);
-    $vals = json_decode($content, true);
-		$address = $vals['city'] . ',' . $vals['region'] . ',' . $vals['country'];
-		$vals['addr'] = $address;
-		$_SESSION['agl-values'] = $vals;	
-		return $vals;
+	if (isset($_SESSION['agl-values']))
+	{
+		return $_SESSION ['agl-values'];
+	}
+
+	if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+      $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+  } else {
+      $ip = $_SERVER['REMOTE_ADDR'];
+  }
+  $url = 'http://ip-api.com/json/' . $ip;
+  $content = file_get_contents($url);
+  $vals = json_decode($content, true);
+	$address = $vals['city'] . ',' . $vals['region'] . ',' . $vals['country'];
+	$vals['addr'] = $address;
+	$_SESSION['agl-values'] = $vals;	
+	return $vals;
 }
 //https://jschen.jinlisting.com/wp-admin/admin-ajax.php?action=agl_ask
 function get_near_by() {

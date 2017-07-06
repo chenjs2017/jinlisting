@@ -1436,361 +1436,35 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 											';
 											
 										}else{
-											wp_enqueue_script('theme-gmap3'); 
-
-											$nefv = $ne2fv = $swfv = $sw2fv = $pointfinder_google_search_coord1 = '';
-
-											if (isset($_GET['pointfinder_google_search_coord'])) {$pointfinder_google_search_coord1 = $_GET['pointfinder_google_search_coord'];}
-											
-											if ($minisearch == 1) {
-												$statustextform2 = 'class="pfminigoogleaddon"';
-											}else{$statustextform2 = 'class="pfwidgetgoogleaddon"';}
-                                            $zipcode=$_REQUEST['field296725954161956900000'];
-
-                                            $useragent=$_SERVER['HTTP_USER_AGENT'];
-                                            $if_mobile=False;
-
-                                            if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)||preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4))) {
-                                             $if_mobile=True;
-                                            }
-                                            $front_page=False;
-                                            $front_post_id=get_the_ID();
-                                            if (($front_post_id=='4670')||($front_post_id=='54497'))
-                                            {
-                                                $front_page=True;
-                                                if(isset($_COOKIE[jinlisting_zipcode])) {
-                                                    $zipcode= $_COOKIE[jinlisting_zipcode];
-                                                    $valtext='value = "'.$zipcode.'"';
-                                                }
-                                            }
-
-                                            if ((empty($zipcode))&&($if_mobile==False)&&($front_page==False)&&(empty($_REQUEST['jobskeyword'])))
-                                            {
-                                                $zipcode=get_zip();
-                                                $valtext='value = "'.$zipcode.'"';
-
-                                            }
-                                            else if((empty($zipcode))&&($if_mobile==true)&&($front_page==False)&&(empty($_REQUEST['jobskeyword'])))
-                                            {
-                                                $zipcode='10001';
-                                                $valtext='value = "'.$zipcode.'"';
-
-                                            }
-
-
-											$this->FieldOutput .= '
-											<div id="pf-widget-map" style="display:none;"></div>
-											<div id="'.$slug.'_main" '.$statustextform2.'>
-												<label for="'.$slug.'" class="pftitlefield">'.$fieldtext.'</label>
-												<label class="pflabelfixsearch lbl-ui search">
-													<input type="search" name="'.$slug.'" id="'.$slug.'" class="input" placeholder="'.$placeholder.'"'.$valtext.' />
-													<input type="hidden" name="pointfinder_google_search_coord" id="pointfinder_google_search_coord" class="input" value="'.$pointfinder_google_search_coord1.'" />
-													<input type="hidden" name="pointfinder_google_search_coord_unit" id="pointfinder_google_search_coord_unit" class="input" value="'.$geolocfield.'" />
-													<a class="button" id="pf_search_geolocateme" title="'.esc_html__('Locate me!','pointfindert2d').'"><img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'"><div class="pf-search-locatemebutloading"></div></a>
-													<a class="button" id="pf_search_geodistance" title="'.esc_html__('Distance','pointfindert2d').'"><i class="pfadmicon-glyph-72"></i></a>
-												</label> 
-											';
-
-											
-											if (isset($_GET['ne'])) {$nefv = $_GET['ne'];}
-											if (isset($_GET['ne2'])) {$ne2fv = $_GET['ne2'];}
-											if (isset($_GET['sw'])) {$swfv = $_GET['sw'];}
-											if (isset($_GET['sw2'])) {$sw2fv = $_GET['sw2'];}
-											if (isset($_GET['pointfinder_radius_search'])) {$pointfinder_radius_search_val = $_GET['pointfinder_radius_search'];}
-											
-											if (empty($pointfinder_radius_search_val)) {
-											    $pointfinder_radius_search_val = PFSAIssetControl('setup7_geolocation_distance','','10');
-											}
-											if ($minisearch == 1) {
-												$statustextform = ' style="display:none;"';
-											}else{$statustextform = '';}
-                                            $geolocfield=str_replace('Mile', '哩', $geolocfield);
-											$this->FieldOutput .= '
-												<div id="pointfinder_radius_search_main"'.$statustextform.'>
-												<div class="pfradius-triangle-up"></div>
-													<label for="pointfinder_radius_search-view" class="pfrangelabel">'.esc_html__('距離','pointfindert2d').' ('.$geolocfield.') :</label>
-													<input type="text" id="pointfinder_radius_search-view" class="slider-input" disabled="" style="width: 44%;">
-													<input name="pointfinder_radius_search" id="pointfinder_radius_search-view2" type="hidden" class="pfignorevalidation"> 
-													<div class="slider-wrapper">
-														<div id="pointfinder_radius_search" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all ui-slider-pointfinder_radius_search">
-															<div class="ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min"></div>
-															<span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-														</div>  
-													</div>
-													<input type="hidden" name="ne" id="pfw-ne" class="input" value="'.$nefv.'" />
-													<input type="hidden" name="ne2" id="pfw-ne2" class="input" value="'.$ne2fv.'" />
-													<input type="hidden" name="sw" id="pfw-sw" class="input" value="'.$swfv.'" />
-													<input type="hidden" name="sw2" id="pfw-sw2" class="input" value="'.$sw2fv.'" />
-												</div> 
-
-											</div>                        
-											';
-											
-											$this->ScriptOutput .= "
-
-											$(function(){
-												";
-												if (!empty($pointfinder_radius_search_val)) {
-													$this->ScriptOutput .= "											
-													$( '#pointfinder_radius_search' ).slider( 'option', 'value', ".$pointfinder_radius_search_val." );
-													$( '#pointfinder_radius_search-view' ).val( ".$pointfinder_radius_search_val." );
-													";
-
-												}
-												$this->ScriptOutput .= "
-												if($('.pf-search-locatemebut').length){
-													$('.pf-search-locatemebut').svgInject();
-												};
-											});
-								
-											$('#pf_search_geolocateme').live('click',function(){
-												$('.pf-search-locatemebut').hide('fast'); $('.pf-search-locatemebutloading').show('fast');
-
-												$('#pf-widget-map').gmap3({
-													getgeoloc:{
-														callback : function(latLng){
-														  if (latLng){
-															var geocoder = new google.maps.Geocoder();
-															geocoder.geocode({'latLng': latLng}, function(results, status) {
-															    if (status == google.maps.GeocoderStatus.OK) {
-															      if (results[0]) {
-															        $('#".$slug."').val(results[0].formatted_address);
-															        $('#pointfinder_google_search_coord').val(latLng.lat()+','+latLng.lng());
-															      } 
-															    }
-															});
-															
-															
-
-															var mylatlng = latLng;
-
-															var form_radius_val = $('#pointfinder_radius_search-view2').val();
-														 	var form_radius_unit = $('#pointfinder_google_search_coord_unit').val();
-														 	var form_radius_unit_name = 'mi';
-														 	
-														 	if (form_radius_unit != 'Mile') {
-														 		form_radius_val = parseInt(form_radius_val);
-														 		var form_radius_val_ex = (parseInt(form_radius_val)*1000);
-														 		form_radius_unit_name='km';
-														 	} else{
-														 		form_radius_val = parseInt(form_radius_val);
-														 		var form_radius_val_ex = ((parseInt(form_radius_val)*1000)*1.60934);
-														 		form_radius_unit_name='mi';
-														 	};
-
-
-
-
-														 	$('#pf-widget-map').gmap3({
-															  circle:{
-																values:[{id:'geoloccircle'}],
-																options:{
-																  center: mylatlng,
-																  editable: false,
-																  draggable:false,
-																  clickable:true,
-																  radius : form_radius_val_ex
-																},
-
-																
-																callback: function(){
-																	var mygeocircle = $(this).gmap3({get: {id: 'geoloccircle'}})
-																	var bounds = mygeocircle.getBounds();
-																	var necoor = bounds.getNorthEast();
-																	var swcoor = bounds.getSouthWest();
-																	
-																	$('#pfw-ne').val(necoor.lat());
-																	$('#pfw-ne2').val(necoor.lng());
-																	$('#pfw-sw').val(swcoor.lat());
-																	$('#pfw-sw2').val(swcoor.lng());
-
-															
-																},
-																
-															  }
-															});
-
-														  }
-														  $('.pf-search-locatemebut').show('fast'); $('.pf-search-locatemebutloading').hide('fast');
-														}
-													  },
-												});
-
-												return false;
-											});
-											var url      = window.location.href;   
-											if ((url!=='http://www.jinlisting.com/')&&(url!=='http://kenk.jinlisting.com/')) {
-                                                        $('#pf_search_geodistance i').switchClass('pfadmicon-glyph-72','pfadmicon-glyph-96');
-                                                        $('#pointfinder_radius_search_main').fadeIn('fast');
-                                            }            
-											$('#pf_search_geodistance').live('click',function(){
-												if ($('#pf_search_geodistance i').hasClass('pfadmicon-glyph-72')) {
-													$('#pf_search_geodistance i').switchClass('pfadmicon-glyph-72','pfadmicon-glyph-96');
-													$('#pointfinder_radius_search_main').fadeIn('fast');
-												}else{
-													$('#pf_search_geodistance i').switchClass('pfadmicon-glyph-96','pfadmicon-glyph-72');
-													$('#pointfinder_radius_search_main').fadeOut('fast');
-												}
-												return false;
-											});
-											
-											$(document).ready(function(){
-												setTimeout(function(){
-												$('#pf-widget-map').gmap3({
-												    map:{
-												      center:[0,0]
-												    }
-												  });
-												var map = $('#pf-widget-map').gmap3('get');
-												var input = (document.getElementById('".$slug."'));
-												
-			
-												var autocomplete = new google.maps.places.Autocomplete(input);
-												autocomplete.bindTo('bounds', map);
-												
-												google.maps.event.addListener(autocomplete, 'place_changed', function() {
-												    var place = autocomplete.getPlace();
-												    if (!place.geometry) {
-												      return;
-												    }
-													$('#pointfinder_google_search_coord').val(place.geometry.location.lat()+','+place.geometry.location.lng());
-														
-													var mylatlng = new google.maps.LatLng(place.geometry.location.lat(),place.geometry.location.lng());
-
-													var form_radius_val = $('#pointfinder_radius_search-view2').val();
-												 	var form_radius_unit = $('#pointfinder_google_search_coord_unit').val();
-												 	var form_radius_unit_name = 'mi';
-												 	
-												 	if (form_radius_unit != 'Mile') {
-												 		form_radius_val = parseInt(form_radius_val);
-												 		var form_radius_val_ex = (parseInt(form_radius_val)*1000);
-												 		form_radius_unit_name='km';
-												 	} else{
-												 		form_radius_val = parseInt(form_radius_val);
-												 		var form_radius_val_ex = ((parseInt(form_radius_val)*1000)*1.60934);
-												 		form_radius_unit_name='mi';
-												 	};
-
-
-
-												 	$('#pf-widget-map').gmap3({
-													  circle:{
-														values:[{id:'geoloccircle'}],
-														options:{
-														  center: mylatlng,
-														  editable: false,
-														  draggable:false,
-														  clickable:true,
-														  radius : form_radius_val_ex
-														},
-														
-														callback: function(){
-															var mygeocircle = $(this).gmap3({get: {id: 'geoloccircle'}})
-															var bounds = mygeocircle.getBounds();
-															var necoor = bounds.getNorthEast();
-															var swcoor = bounds.getSouthWest();
-															
-															$('#pfw-ne').val(necoor.lat());
-															$('#pfw-ne2').val(necoor.lng());
-															$('#pfw-sw').val(swcoor.lat());
-															$('#pfw-sw2').val(swcoor.lng());
-													
-														},
-														
-													  }
-													});
-												});
-												},1000);
-												
-												$('#pointfinder_radius_search').slider({
-												    change: function(event, ui) {
-														
-														var coord_value = $('#pointfinder_google_search_coord').val();
-														var coord_value1 = coord_value.split(',');
-
-												        var mylatlng = new google.maps.LatLng(parseFloat(coord_value1[0]),parseFloat(coord_value1[1]));
-														
-														var form_radius_val;
-													 	var form_radius_unit = $('#pointfinder_google_search_coord_unit').val();
-													 	var form_radius_unit_name = 'mi';
-													 	
-													 	if (form_radius_unit != 'Mile') {
-													 		form_radius_val = parseInt(ui.value);
-													 		var form_radius_val_ex = (parseInt(form_radius_val)*1000);
-													 		form_radius_unit_name='km';
-													 	} else{
-													 		form_radius_val = parseInt(ui.value);
-													 		var form_radius_val_ex = ((parseInt(form_radius_val)*1000)*1.60934);
-													 		form_radius_unit_name='mi';
-													 	};
-													 	
-
-
-
-													 	$('#pf-widget-map').gmap3({
-														  circle:{
-															values:[{id:'geoloccircle'}],
-															options:{
-															  center: mylatlng,
-															  editable: false,
-															  draggable:false,
-															  clickable:true,
-															  radius : form_radius_val_ex
-															},
-
-															
-															callback: function(){
-																var mygeocircle = $(this).gmap3({get: {id: 'geoloccircle'}})
-																var bounds = mygeocircle.getBounds();
-																var necoor = bounds.getNorthEast();
-																var swcoor = bounds.getSouthWest();
-																
-																$('#pfw-ne').val(necoor.lat());
-																$('#pfw-ne2').val(necoor.lng());
-																$('#pfw-sw').val(swcoor.lat());
-																$('#pfw-sw2').val(swcoor.lng());
-
-														
-															},
-															
-														  }
-														});
-												    }
-												});
-
-											});
-											";
-
-											$this->ScriptOutput .= '
-												$( "#pointfinder_radius_search" ).slider({
-													range: "min",value:'.$pointfinder_radius_search_val.',min: 0,max: '.$geolocfield2.',step: 1,
-													slide: function(event, ui) {
-														$("#pointfinder_radius_search-view").val(ui.value);
-														$("#pointfinder_radius_search-view2").val(ui.value);
-													}
-												});
-
-												$("#pointfinder_radius_search-view").val( $("#pointfinder_radius_search").slider("value"));
-
-																
-												$(document).one("ready",function(){
-													$("#pointfinder_radius_search-view2").val('.$pointfinder_radius_search_val.');
-												});
-											';
-
+											$vals = pf_get_location();
+											$this->FieldOutput .= '<lable style="background-color:white">
+												<div style="background-color:white">
+									      <span>靠近</span>
+												<span>
+												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:75%">
+												</span>
+												<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
+										    </div> 
+												</lable>';
 										}
 
 									}elseif ($target == 'title' || $target == 'address') {
-										
-										$this->FieldOutput .= '
+										$this->FieldOutput .= '<lable style="background-color:white">
+											<div style="background-color:white">
+											<span >查找</span>
+											<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:88%"/></span>
+											</div>
+										</lable>
+										';
+/*
+'
 										<div id="jobskeyword_main" class="ui-widget">
-										<label for="jobskeyword" class="pftitlefield">'.$fieldtext.'</label>
-										<label class="lbl-ui pflabelfixsearch pflabelfixsearchjobskeyword">
-											<input type="text" name="jobskeyword" id="jobskeyword" class="input" placeholder="'.$placeholder.'"'.$valtext.' />
+										<label for="jobskeyword" class="pftitlefield" title="查找">检索</label>
+										<label class="lbl-ui pflabelfixsearch pflabelfixsearchjobskeyword"> 											
+										<input type="text" name="jobskeyword" id="jobskeyword" class="input" placeholder="----jschen:'.$placeholder.'"'.$valtext.' />
 										</label>    
 										</div>                        
 										';
-										
 										if($field_autocmplete == 1){
 											$this->ScriptOutput .= '
 											$( "#'.$slug.'" ).bind("keydown",function(){
@@ -1828,7 +1502,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 											});
 											';
 										}
-
+*/										
 
 									}elseif ($target == 'description') {
 

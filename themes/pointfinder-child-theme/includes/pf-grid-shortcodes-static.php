@@ -662,9 +662,10 @@ function pf_itemgrid2_func_new( $atts ) {
 						<button id="pfsearch-button"><img src="/wp-content/themes/pointfinder/images/se.png" width="25px" heigh="25px"></img></button>
 					</div> 
 					<div >
-			      靠近：<input id="autocomplete" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%">
-						<button id="aglLocateReload"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </button>
+			      靠近：<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%">
+						<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
 			    </div>
+					<input type="hidden" id="aglReload" />
 			   ';
 
             		$wpflistdata .= '<div class="'.$pfcontainerdiv.'-header pflistcommonview-header">'; 
