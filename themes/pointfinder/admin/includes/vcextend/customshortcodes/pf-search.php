@@ -86,7 +86,6 @@ function pf_searchw_func( $atts ) {
                 *End: Get search data & apply to query arguments.
                 **/
                 $PFListSF = new PF_SF_Val();
-//	print_r($setup1s_slides);
                 foreach ($setup1s_slides as &$value) {
                 
                     $PFListSF->GetValue($value['title'],$value['url'],$value['select'],1,$pfformvars,1,1,$minisearchc);
@@ -99,78 +98,23 @@ function pf_searchw_func( $atts ) {
 
                 $pfformvars_json = (isset($pfformvars))?json_encode($pfformvars):json_encode(array());
             
+								$mobile =	pf_is_mobile();
+								if (!$mobile) {
+									$divBegin = $coln;
+								}else {
+									$divEnd = '</div>';
+								}
                 echo $PFListSF->FieldOutput;
-                echo $coln;
+								echo $divBegin;
                 echo '<div id="pfsearchsubvalues"></div>';
                 echo '<input type="hidden" name="s" value=""/>';
                 echo '<input type="hidden" name="serialized" value="1"/>';
                 echo '<input type="hidden" name="action" value="pfs"/>';
                 echo  '<input type="submit" style="display:none"/>';
                 echo '<a class="button pfsearch" id="pf-search-button-manual"'.$searchb_style.'><i class="pfadmicon-glyph-627"></i> '.esc_html__('搜索', 'pointfindert2d').'</a>';
-                echo '<script type="text/javascript">
-                (function($) {
-                    "use strict";
-                    $.pfsliderdefaults = {};$.pfsliderdefaults.fields = Array();
-
-                    $(function(){
-                    '.$PFListSF->ScriptOutput;
-                    echo 'var pfsearchformerrors = $(".pfsearchformerrors");
-                    
-                        $("#pointfinder-search-form-manual").validate({
-                              debug:false,
-                              onfocus: false,
-                              onfocusout: false,
-                              onkeyup: false,
-                              rules:{'.$PFListSF->VSORules.'},messages:{'.$PFListSF->VSOMessages.'},
-                              ignore: ".select2-input, .select2-focusser, .pfignorevalidation",
-                              validClass: "pfvalid",
-                              errorClass: "pfnotvalid pfadmicon-glyph-858",
-                              errorElement: "li",
-                              errorContainer: pfsearchformerrors,
-                              errorLabelContainer: $("ul", pfsearchformerrors),
-                              invalidHandler: function(event, validator) {
-                                var errors = validator.numberOfInvalids();
-                                if (errors) {
-                                    pfsearchformerrors.show("slide",{direction : "up"},100)
-                                    $(".pfsearch-err-button").click(function(){
-                                        pfsearchformerrors.hide("slide",{direction : "up"},100)
-                                        return false;
-                                    });
-                                }else{
-                                    pfsearchformerrors.hide("fade",300)
-                                }
-                              }
-                        });
-                    ';
-
-                    if ($fltf != 'none') {
-                        echo '
-                        setTimeout(function(){
-                           $(".select2-container" ).attr("title","");
-                           $("#'.$fltf.'" ).attr("title","")
-                            
-                        },300);
-                        ';
-                    }
-                    echo '
-                    });'.$PFListSF->ScriptOutputDocReady;
-                }
-
-                if (!empty($category_selected_auto)) {
-                    echo '
-                        $(document).ready(function(){
-                            if ($("#'.$fltf.'" )) {
-                                $("#'.$fltf.'" ).select2("val","'.$category_selected_auto.'");
-                            }
-                        });
-                    ';
-                }
-                echo'   
-                    
-                })(jQuery);
-                </script>';
-                echo '</div>';
-                unset($PFListSF);
+               	echo $divEnd;
+              }
+              unset($PFListSF);
           ?>
           </div>
           </div>

@@ -1281,21 +1281,27 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 								$itemparent = $this->CheckItemsParent($target);
 								
 								if($itemparent == 'none'){
-
-									if ($hormode == 1) {
+									$mobile =	pf_is_mobile();
+									if ($mobile) {
+										$txtWidth= '260px';
+										$txtWidthAddress= '225px';
+										$labColor = 'color:white;';
+									}elseif ($hormode == 1 ) {
 										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
 										$divEnd ='</div>';	
 										$labColor = 'color:white;';
-										$txtWidth= 297;
+										$txtWidth= '320px';
+										$txtWidthAddress= '260px';
 									}else {
-										$txtWidth= 225;
+										$txtWidth= '225px';
+										$txtWidthAddress= '225px';
 									}
 									if ($target == 'google') {
 											$vals = pf_get_location(); 
 											$this->FieldOutput .= $divBegin . '
 										  <label class="lbl-ui gdlocations" >
-												<span style="' . $labColor . 'font-size:18px">Near</span>
-												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidth .'px;height: 36px;">
+											<span style="' . $labColor . 'font-size:18px;font-family: Courier New;">Near</span>
+												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidthAddress .';height: 36px;">
              						<a class="button" id="aglId">
 													<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
 													<div class="pf-search-locatemebutloading"></div>
@@ -1305,8 +1311,8 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 									}elseif ($target == 'title' ) {
 										$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
 										$this->FieldOutput .= $divBegin . '
-													<span style="'. $labColor .'font-size:18px">Find</span>
-													<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:'. ($txtWidth + 36) .'px;height: 36px;"/></span>
+													<span style="'. $labColor .'font-size:18px;font-family: Courier New;">Find</span>
+													<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:'. ($txtWidth ) .';height: 36px;"/></span>
 										 ' . $divEnd;
 									}								
 								}
