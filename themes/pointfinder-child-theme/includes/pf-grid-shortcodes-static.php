@@ -659,17 +659,20 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= '
 					<div>
 						<SPAN STYLE="font-family: Courier New;font-size:18px" >Find</Span>
-						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:500px" />
+            <label class="lbl-ui gdlocations" style="width:70%;" >
+						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:100%" />
+						</label>
 						<button id="pfsearch-button" style="background-color: Transparent;outline:none;border: none;"><img src="/wp-content/themes/pointfinder/images/se.png" width="30px" heigh="30px"></img></button>
 					</div> 
-					<div >
-            <label class="lbl-ui gdlocations" >
-							<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
-             	<input id="aglAddress" style="height:30px;width:500px;" value="'. $vals['addr'] . '"  placeholder="输入位置或点击右侧定位按钮" autocomplete="off" type="text">
-             	<a class="button" id="aglId">
-									<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
+
+					<div>
+						<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
+            <label class="lbl-ui gdlocations" style="width:70%;" >
+             	<input id="aglAddress" style="height:30px;width:100%;" value="'. $vals['addr'] . '"  placeholder="输入位置或点击右侧定位按钮" autocomplete="off" type="text">
+             	<a class="button" id="aglId"><img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
 									<div class="pf-search-locatemebutloading"></div>
-							</a> </label>                            
+							</a>
+						 </label>                            
 			    </div>
 					<input type="hidden" id="aglReload" />
 			   ';
