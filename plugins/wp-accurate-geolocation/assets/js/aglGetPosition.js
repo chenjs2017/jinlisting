@@ -37,6 +37,8 @@ function getAddressFromLatLang(lat,lng){
       if (status == google.maps.GeocoderStatus.OK) {
            if (results[1]) {
 		   			aglPostData(lat,lng,results[1].formatted_address);
+						jQuery(".pf-search-locatemebut").show("fast"); 
+						jQuery('.pf-search-locatemebutloading').hide('fast');
      	    }else {
 		   			alert( 'no result');
 		 			}
@@ -46,10 +48,16 @@ function getAddressFromLatLang(lat,lng){
       });
 }    	
 
+function aglIdClick() {
+	jQuery(".pf-search-locatemebut").hide("fast"); 
+	jQuery('.pf-search-locatemebutloading').show('fast');
+	aglInitialise();
+}
 function aglInitialise() {
 	if (document.getElementById("aglResult") != null) {
 		document.getElementById("aglResult").innerHTML = "<div>正在查询附近商家...</div>";
 	}
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
 		 	getAddressFromLatLang(position.coords.latitude, position.coords.longitude);
@@ -145,7 +153,7 @@ jQuery(document).ready(function($) {
 		window.onload = aglInitialise;
 	}
 	
-	jQuery('#aglId').click(aglInitialise);
+	jQuery('#aglId').click(aglIdClick);
 
 	if (document.getElementById("aglAddress") != null) {
 		google.maps.event.addDomListener(window, 'load', initAutocomplete);

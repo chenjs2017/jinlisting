@@ -659,13 +659,17 @@ function pf_itemgrid2_func_new( $atts ) {
 					$wpflistdata .= '
 					<div>
 						<SPAN STYLE="font-family: Courier New;font-size:18px" >Find</Span>
-						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:70%" value=""/>
+						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:500px" />
 						<button id="pfsearch-button" style="background-color: Transparent;outline:none;border: none;"><img src="/wp-content/themes/pointfinder/images/se.png" width="30px" heigh="30px"></img></button>
 					</div> 
 					<div >
-						<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
-						<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址" onFocus="" type="text" style="width:70%;height:30px">
-						<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="30px" heigh="30px"></img> </a>
+            <label class="lbl-ui gdlocations" >
+							<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
+             	<input id="aglAddress" style="height:30px;width:500px;" value="'. $vals['addr'] . '"  placeholder="输入位置或点击右侧定位按钮" autocomplete="off" type="text">
+             	<a class="button" id="aglId">
+									<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
+									<div class="pf-search-locatemebutloading"></div>
+							</a> </label>                            
 			    </div>
 					<input type="hidden" id="aglReload" />
 			   ';

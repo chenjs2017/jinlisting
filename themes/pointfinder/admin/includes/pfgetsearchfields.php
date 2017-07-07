@@ -1286,18 +1286,21 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
 										$divEnd ='</div>';	
 										$labColor = 'color:white;';
-										$txtWidth= 300;
+										$txtWidth= 297;
 									}else {
 										$txtWidth= 230;
 									}
 									if ($target == 'google') {
 											$vals = pf_get_location(); 
 											$this->FieldOutput .= $divBegin . '
-																<span style="' . $labColor . 'font-size:18px">Near</span>
-																<span>
-																<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidth .'px;height: 36px;">
-																</span>
-																<a id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px"></img> </a>
+										  <label class="lbl-ui gdlocations" >
+												<span style="' . $labColor . 'font-size:18px">Near</span>
+												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidth .'px;height: 36px;">
+             						<a class="button" id="aglId">
+													<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
+													<div class="pf-search-locatemebutloading"></div>
+												</a> 
+										</label>   		
 										 ' . $divEnd;
 									}elseif ($target == 'title' ) {
 										$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
