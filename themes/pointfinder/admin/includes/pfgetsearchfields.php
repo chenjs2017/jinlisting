@@ -1288,7 +1288,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										$labColor = 'color:white;';
 										$txtWidth= 297;
 									}else {
-										$txtWidth= 230;
+										$txtWidth= 225;
 									}
 									if ($target == 'google') {
 											$vals = pf_get_location(); 
