@@ -1293,7 +1293,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										$txtWidth= '320px';
 										$txtWidthAddress= '260px';
 									}else {
-										$txtWidth= '225px';
+										$txtWidth= '260px';
 										$txtWidthAddress= '225px';
 									}
 									if ($target == 'google') {
