@@ -100,13 +100,7 @@ function agl_request_callback() {
 	$response = array(
 			'lat' => isset($_POST['lat']) ? $_POST['lat'] : '',
 			'lon' => isset($_POST['lon']) ? $_POST['lon'] : '',
-			'addr' => isset($_POST['addr']) ? $_POST['addr'] : '',
-			'error_code' => isset($_POST['error_code']) ? $_POST['error_code'] : '',
-			'error_message' => isset($_POST['error_message']) ? $_POST['error_message'] : '',
-			'php_time' => time(),
-			'php_date' => date( $agl_params['php_date_format'] ),
-			'php_date_format' => $agl_params['php_date_format'],
-			'user_id' => get_current_user_id(),
+			'addr' => isset($_POST['addr']) ? $_POST['addr'] : ''
 		);
 	if($response ['lat'] !='' && $response['lon'] != '') {
 		$_SESSION['agl-values'] = $response;
@@ -141,18 +135,18 @@ function agl_delete_data() {
 	return $count;
 }
 
+//test url, //https://jschen.jinlisting.com/wp-admin/admin-ajax.php?action=agl_get_php
 function agl_get_php_callback() {
 	$agl_params = get_option( 'agl_settings' );
-	$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+	$ask =	$agl_params['is_ask_onload'];
+	if(isset($_COOKIE['agl-values'])) {
+		$ask = 'false';
+	}elseif(isset($_SESSION['agl-values'])) {
+		$ask = 'false';
+	}
 	$params = array(
-		'is_ask_onload' => $agl_params['is_ask_onload'],
-		'is_ask_onclick' => $agl_params['is_ask_onclick'],
-		'gcp_maximumAge' => $agl_params['gcp_maximumAge'],
-		'gcp_enableHighAccuracy' => $agl_params['gcp_enableHighAccuracy'],
-		'gcp_timeout' => $agl_params['gcp_timeout'],
-		'is_cookie_permission' => isset( $_COOKIE['agl-permission-asked-already'] ) ? $_COOKIE['agl-permission-asked-already'] : '',
+		'is_ask_onload' => $ask,
 	);
-
 	exit( json_encode( $params ) );
 }
 

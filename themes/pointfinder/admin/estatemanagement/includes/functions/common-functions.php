@@ -226,6 +226,7 @@ function pf_is_mobile() {
 	return 0;
 }
 
+
 function pf_get_location() {
   $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
 	if ($cookie !='') {

@@ -6,6 +6,7 @@ var getItem = false;
 var autocomplete;
 var fulltext = '';
 var halftext = '';
+var aglPhpParams;
 
 
 function initAutocomplete() {
@@ -27,6 +28,7 @@ function fillInAddress() {
 		+ place.address_components[1]['short_name'] + ',' 
 		+ place.address_components[2]['short_name'] + ',' 
 		+ place.address_components[4]['short_name'];
+	reload = document.getElementById("aglReload") !=null;
 	aglPostData(lat, lon, addr);
 }
 
@@ -51,6 +53,7 @@ function getAddressFromLatLang(lat,lng){
 function aglIdClick() {
 	jQuery(".pf-search-locatemebut").hide("fast"); 
 	jQuery('.pf-search-locatemebutloading').show('fast');
+	reload = document.getElementById("aglReload") !=null ;
 	aglInitialise();
 }
 function aglInitialise() {
@@ -75,7 +78,6 @@ function setCookie(cname, cvalue) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-	
 function aglPostData(lat, lon, addr) {
 	var data = {
     'action': aglActionName,
@@ -83,16 +85,19 @@ function aglPostData(lat, lon, addr) {
     'lon': parseFloat( lon),
 		'addr': addr
 	} ;
-	setCookie('agl-values',JSON.stringify(data));
-	if (document.getElementById("aglAddress") != null) {
-		document.getElementById("aglAddress").value = addr; 
-	}
-	if (reload) {
-		location.reload();
-	}
-	if (getItem) {
-			aglGetItems();
-	}
+//	setCookie('agl-values',JSON.stringify(data));
+	jQuery.post(aglParams.ajaxUrl, data, function(response) {
+		if (document.getElementById("aglAddress") != null) {
+			document.getElementById("aglAddress").value = addr; 
+		}
+		if (reload) {
+			location.reload();
+		}
+		if (getItem) {
+				aglGetItems();
+		}
+  }, 'json');		      
+
 }
 
 
@@ -141,11 +146,33 @@ function less(){
 		document.getElementById("aglResult").innerHTML=halftext;
 }
 
+function aglGetPhpParams() {		
+ 	var ajax = jQuery.ajax({		
+ 	    url: aglParams.ajaxUrl + '?action=agl_get_php',		
+ 	    type: 'POST',		
+ 	    contentType: 'application/json; charset=utf-8',		
+ 	    dataType: 'json',		
+ 	    async: false,		
+ 	    statusCode: {		
+ 	        404: function () {		
+ 	            alert('Page not found.');		
+ 	        }		
+ 	    }		
+ 	});		
+ 		
+ 	ajax.done(function (response, textStatus, jqXHR) {		
+ 	    aglPhpParams = response;		
+ 	}); ajax.fail(function (jqXHR, textStatus, errorThrown) {		
+ 	    alert('No data available!');		
+ 	});		
+ }
 
 jQuery(document).ready(function($) {
-	reload = document.getElementById("aglReload") !=null;
 	getItem = document.getElementById("aglResult") !=null;
-	if (document.cookie && document.cookie.indexOf('agl-values=') != -1){
+	reload = false;
+	aglGetPhpParams();
+
+	if (aglPhpParams.is_ask_onload != 'yes'){
 		if (getItem){
 			aglGetItems();
 		}
