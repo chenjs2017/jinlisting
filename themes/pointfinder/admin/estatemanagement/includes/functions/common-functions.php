@@ -7,7 +7,39 @@
 * Author: Webbu Design
 * Please do not modify below functions.
 ***********************************************************************************************************************************/
+function unset_as_empty(&$arr, &$key) {
+	return isset($arr[$key]) ? $arr[$key] : null;
+}
 
+function cookie_as_empty($key) {
+	return unset_as_empty($_COOKIE, $key);
+}
+
+function session_as_empty($key) {
+	return unset_as_empty($_SESSION, $key);
+}
+
+function pf_push_id_to_history($id) {
+	$id_str = cookie_as_empty('id_str') ;
+	if (empty($id_str)) {
+		$id_str = session_as_empty('id_str');
+	}
+	$arr = [];
+	if (!empty($id_str)){
+		$arr = explode(',', $id_str);
+	}
+	array_unshift($arr, $id);
+	$max_id=5;
+	$id_str = '';
+	for ($i = 0 ; $i < $max_id; $i++) {
+		if (i > 0) {
+			$id_str .=',';
+		}
+		$id_str .= $arr[$i];
+	}	
+	$_SESSION['id_str'] = $id_str;
+	setcookie( 'id_str', 'yes', time() + ( 3600 * 24 * 365 ), COOKIEPATH, COOKIE_DOMAIN );
+}
 
 function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count) {
 	$user_ids = '';
