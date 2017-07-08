@@ -101,8 +101,8 @@ function pf_searchw_func( $atts ) {
 								$mobile =	pf_is_mobile();
 								if (!$mobile) {
 									$divBegin = $coln;
-								}else {
 									$divEnd = '</div>';
+								}else {
 								}
                 echo $PFListSF->FieldOutput;
 								echo $divBegin;
