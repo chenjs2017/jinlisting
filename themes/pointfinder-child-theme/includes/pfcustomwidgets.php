@@ -768,7 +768,7 @@ return $instance;
                     echo '<li class="clearfix">';
                         $myid = $lo->ID;
                         $mytitle = get_the_title($myid);
-                        echo '<a href="'.get_the_permalink().'" title="';
+                        echo '<a href="'.get_the_permalink($myid).'" title="';
                                 esc_attr($mytitle ? $mytitle : $myid); 
                                 echo '">';
                         if($limage == 1){
