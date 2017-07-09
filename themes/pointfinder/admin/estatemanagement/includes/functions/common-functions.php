@@ -7,6 +7,34 @@
 * Author: Webbu Design
 * Please do not modify below functions.
 ***********************************************************************************************************************************/
+function edit_posts_join_paged($join_paged_statement, $add_feature = false) {
+	global $wpdb;
+	if ($add_feature) {
+		$join_paged_statement .= " inner JOIN " . $wpdb->prefix . "postmeta 
+				ON " . $wpdb->prefix ."postmeta.post_id =" . $wpdb->prefix ."posts.ID 
+				and " . $wpdb->prefix . "postmeta.meta_key='webbupointfinder_item_featuredmarker'";
+	}
+	$join_paged_statement .= " inner JOIN ". $wpdb->prefix."postmeta location 
+				ON location.post_id = " . $wpdb->prefix ."posts.ID and location.meta_key='webbupointfinder_items_location'";
+	return $join_paged_statement;	
+}
+
+function edit_posts_orderby($orderby_statement, $add_feature = true) {
+	global $wpdb;
+	$vals = pf_get_location();
+	$lat = $vals['lat'];
+	$lon = $vals['lon'];	
+	$distance_field = "(3936 * ACOS((sin(ifnull(". $lat .",0) / 57.29577951) * SIN(ifnull(substring_index(location.meta_value,',',1),0) / 57.29577951)) +
+			(COS(ifnull(". $lat .",0) / 57.29577951) * COS(ifnull(substring_index(location.meta_value,',',1),0) / 57.29577951) *
+			COS(ifnull(substring_index(location.meta_value,',',-1),0) / 57.29577951 - ifnull(". $lon .",0)/ 57.29577951))))";
+	$orderby_statement = '';
+	if ($add_feature) {
+		$orderby_statement .= $wpdb->prefix . "postmeta.meta_value*1 desc,";
+	}
+	$orderby_statement .= $distance_field;
+	return $orderby_statement;
+}
+
 function unset_as_empty(&$arr, &$key) {
 	return isset($arr[$key]) ? $arr[$key] : null;
 }
@@ -19,26 +47,54 @@ function session_as_empty($key) {
 	return unset_as_empty($_SESSION, $key);
 }
 
-function pf_push_id_to_history($id) {
-	$id_str = cookie_as_empty('id_str') ;
+function pf_get_id_from_history_str($id_type) {
+	$key = 'str_' . $id_type;
+	$id_str = cookie_as_empty($key) ;
 	if (empty($id_str)) {
-		$id_str = session_as_empty('id_str');
+		$id_str = session_as_empty($key);
 	}
+	return $id_str;
+}
+function pf_put_id_to_history_str($id_str, $id_type){
+	$key = 'str_' . $id_type;
+	$_SESSION[$key] = $id_str;
+	setcookie( $key, $id_str, time() + ( 3600 * 24 * 365 ), COOKIEPATH, COOKIE_DOMAIN );
+}
+
+function pf_get_id_from_history_arr($id_type){
 	$arr = [];
+	$id_str = pf_get_id_from_history_str($id_type);
 	if (!empty($id_str)){
 		$arr = explode(',', $id_str);
 	}
+	return $arr;
+}
+
+function pf_push_id_to_history($id,$id_type) {
+	$max_count = 20;
+	$arr = pf_get_id_from_history_arr($id_type);
+	$max_id = $max_count > sizeof($arr) ? sizeof($arr) : $max_count;
+
+	for ($i = 0 ; $i < $max_id; $i++) {
+		if($id == $arr[$i]) {
+			break;	
+		}
+	}
+	if ($i < $max_id) {
+		 array_splice($arr, $i ,1);
+	}
+
 	array_unshift($arr, $id);
-	$max_id=5;
+	$max_id = $max_count > sizeof($arr) ? sizeof($arr) : $max_count;
 	$id_str = '';
 	for ($i = 0 ; $i < $max_id; $i++) {
-		if (i > 0) {
+		if ($i > 0) {
 			$id_str .=',';
 		}
 		$id_str .= $arr[$i];
 	}	
-	$_SESSION['id_str'] = $id_str;
-	setcookie( 'id_str', 'yes', time() + ( 3600 * 24 * 365 ), COOKIEPATH, COOKIE_DOMAIN );
+	echo 'befor save' . $id_str;
+	pf_put_id_to_history_str($id_str, $id_type);	
 }
 
 function pointfinder_pfstring2AdvArray($results,$keyname, $kv = ',',$uearr_count) {

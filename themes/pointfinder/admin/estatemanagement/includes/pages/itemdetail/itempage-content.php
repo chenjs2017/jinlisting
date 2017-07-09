@@ -36,7 +36,7 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 	$features_list_permission = 1;
 
 	$the_post_id = get_the_id();
-
+	pf_push_id_to_history($the_post_id, 'post');
 	/*Item Count*/
 	$item_old_count = get_post_meta( $the_post_id, 'webbupointfinder_page_itemvisitcount', true );
 
@@ -49,6 +49,8 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 	update_post_meta( $the_post_id, 'webbupointfinder_page_itemvisitcount',$item_old_count);
 
 	$item_term = pf_get_item_term_id($the_post_id);
+	pf_push_id_to_history($item_term, 'term');
+	echo 'termid=' .  pf_get_id_from_history_str('term');
 	$listing_meta = get_option('pointfinderltypes_fevars');
 
 	$setup42_itempagedetails_sidebarpos = PFSAIssetControl('setup42_itempagedetails_sidebarpos','','2');

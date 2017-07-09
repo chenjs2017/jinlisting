@@ -298,6 +298,7 @@ function pf_ajax_list_items_new(){
 				*/
 					if(isset($_POST['dt']) && $_POST['dt']!=''){$pfgetdata = $_POST['dt'];}
 
+print_r($pfgetdata);
 					if(is_array($pfgetdata)){
 
 						$pfformvars = array();
@@ -550,6 +551,48 @@ function pf_ajax_list_items_new(){
 						if($pfgetdata['posts_in']!=''){
 							$args['post__in'] = pfstring2BasicArray($pfgetdata['posts_in']);
 						}
+						//jchen for browse history and  recommendation
+						$is_simple = false;
+						$simple_title = '';
+						if (isset($pfgetdata['posts_in'])){
+							switch ($pfgetdata['posts_in']) {
+								case -1:
+									//history or latest
+									$id_arr = pf_get_id_from_history_arr('post');
+									unset($args['post__in']);	
+									if(sizeof($id_arr) == 0) {
+										$args['meta_key'] = 'webbupointfinder_item_featuredmarker';
+										$args['orderby'] = array('meta_value_num' => 'DESC' , 'date' => 'DESC');
+										$simple_title = '最新更新的商家';
+									}else {
+										$args['post__in'] = $id_arr;
+										$simple_title = '您的浏览历史';
+									}
+									$is_simple = true;
+									break;
+								case -2:
+									//recommend or nearest
+									$id_arr = pf_get_id_from_history_arr('term');
+									unset($args['post__in']);	
+									if(sizeof($id_arr) > 0) {
+                      $args['tax_query'][]= array(
+                          'taxonomy' =>'pointfinderltypes',
+                          'field' => 'id',
+                          'terms' => $id_arr[0],
+                          'operator' => 'IN'
+                      );	
+											$simple_title = '根据您的浏览历史推荐';
+									}else {
+											$simple_title = '您身边的商家';
+									}
+									//order by featured and distance
+									add_filter('posts_orderby', 'edit_posts_orderby');
+									add_filter('posts_join_paged', 'edit_posts_join_paged');
+									$is_simple = true;
+									break;
+							}
+						}
+
 
 						if($pfgetdata['authormode'] != 0){
 							if (!empty($pfgetdata['author'])) {
@@ -954,7 +997,8 @@ function pf_ajax_list_items_new(){
 				                            /*
 				                            * Start: SORT BY Section
 				                            */	   
-												if($setup22_searchresults_status_sortby == 0){
+												$wpflistdata .= '<li><span style="font-size:20px">' . $simple_title . '</span></li>';	
+												if($setup22_searchresults_status_sortby == 0 && !$is_simple){
 												   	$wpflistdata .= '<li>';
 													   	$wpflistdata .= '<label for="pfsearch-filter" class="lbl-ui select pfsortby">';
 														   	$wpflistdata .= '<select class="pfsearch-filter" name="pfsearch-filter" id="pfsearch-filter">';
@@ -1013,7 +1057,7 @@ function pf_ajax_list_items_new(){
 				                            /*
 				                            * Start: ASC/DESC Section
 				                            */	
-												if($setup22_searchresults_status_ascdesc == 0){
+												if($setup22_searchresults_status_ascdesc == 0 && !$is_simple){
 													$wpflistdata .= '<li>';
 														$wpflistdata .= '<label for="pfsearch-filter-order" class="lbl-ui select pforderby">';
 															$wpflistdata .= '<select class="pfsearch-filter-order" name="pfsearch-filter-order" id="pfsearch-filter-order" >';
@@ -1050,7 +1094,7 @@ function pf_ajax_list_items_new(){
 				                            /*
 				                            * Start: Number Section
 				                            */
-												if($setup22_searchresults_status_number == 0 && $pfg_authormode == 0 && $pfg_agentmode == 0){
+												if(!$is_simple && $setup22_searchresults_status_number == 0 && $pfg_authormode == 0 && $pfg_agentmode == 0){
 													$wpflistdata .= '<li>';
 														$wpflistdata .= '<label for="pfsearch-filter-number" class="lbl-ui select pfnumberby">';
 															$wpflistdata .= '<select class="pfsearch-filter-number" name="pfsearch-filter-number" id="pfsearch-filter-number" >';
@@ -1087,7 +1131,7 @@ function pf_ajax_list_items_new(){
 					                            /*
 					                            * Start: Listing Type Filter
 					                            */
-													if (isset($pfgetdata['listingtypefilters'])) {
+													if (!$is_simple && isset($pfgetdata['listingtypefilters'])) {
 														if($pfgetdata['listingtypefilters'] == 'yes'){
 															$wpflistdata .= '
 								                            <li class="pfltypebyli">
@@ -1133,10 +1177,11 @@ function pf_ajax_list_items_new(){
 					                            /*
 					                            * Start: Item Type Filter
 					                            */
-													if (isset($pfgetdata['itemtypefilters'])) {
+
+													if (!$is_simple && isset($pfgetdata['itemtypefilters'])) {
 														if($pfgetdata['itemtypefilters'] == 'yes' && $setup3_pointposttype_pt4_check == 1){
 															$wpflistdata .= '
-								                            <li class="pfitypebyli">
+								                            <li class="pfitypebyli">;
 								                                <label for="pfsearch_filter_itype" class="lbl-ui select pfitypeby">';
 																ob_start();
 																$pfitypeby_args = array(
@@ -1178,7 +1223,7 @@ function pf_ajax_list_items_new(){
 												/*
 					                            * Start: Location Type Filter
 					                            */
-													if (isset($pfgetdata['locationfilters'])) {
+													if (!$is_simple && isset($pfgetdata['locationfilters'])) {
 							                        	if($pfgetdata['locationfilters'] == 'yes' && $setup3_pointposttype_pt5_check == 1){
 															$wpflistdata .= '
 								                            <li class="pflocationbyli">
@@ -1233,7 +1278,7 @@ function pf_ajax_list_items_new(){
 		                            /*
 		                            * Start: Right Filter Area
 		                            */
-				                        if($pfg_authormode == 0 && $pfg_agentmode == 0){
+				                        if(!$is_simple && $pfg_authormode == 0 && $pfg_agentmode == 0){
 					                        $wpflistdata .= '<ul class="'.$pfcontainerdiv.'-filters-right '.$pfcontainerdiv.'-filters searchformcontainer-filters searchformcontainer-filters-right clearfix col-lg-3 col-md-3 col-sm-3 col-xs-12">';
 											
 			                                    if($setup22_searchresults_status_2col == 0){$wpflistdata .= '<li class="pfgridlist2 pfgridlistit" data-pf-grid="grid2" ></li>';}
@@ -1269,11 +1314,14 @@ function pf_ajax_list_items_new(){
 
             	$wpflistdata .='<ul class="pfitemlists-content-elements '.$pfgrid_output.'" data-layout-mode="'.$grid_layout_mode.'">';
             /* End: Grid List Area - HEAD (HTML) */
-
-
-
 			/* Start: Loop for grid List */
+//				echo '-------jchen print ---------';
+//				print_r($args);		
 				$loop = new WP_Query( $args );
+				//jchen remove filter
+				remove_filter('posts_orderby', 'edit_posts_orderby');
+				remove_filter('posts_join_paged','edit_posts_join_paged');
+				
 				/*
 				Check Results
 					//print_r($loop->query).PHP_EOL;
@@ -1330,7 +1378,7 @@ function pf_ajax_list_items_new(){
 								$ItemDetailArr['if_title'] = get_the_title($pfitemid);
 								$ItemDetailArr['if_excerpt'] = get_the_excerpt();
 								$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
-								$ItemDetailArr['if_address'] = esc_html(get_post_meta( $pfitemid, 'webbupointfinder_items_address', true ));
+								$ItemDetailArr['if_address'] = esc_html(pf_get_address_with_distance( $pfitemid, 'webbupointfinder_items_address' ));
 								$ItemDetailArr['featured_video'] =  get_post_meta( $pfitemid, 'webbupointfinder_item_video', true );
 							
 								$output_data = PFIF_DetailText_ld($pfitemid);
