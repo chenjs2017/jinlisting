@@ -155,7 +155,7 @@ function pf_get_orderby(&$args, &$has_distance, &$keyword) {
 		}elseif ($key == 'recommend') {
 			$has_distance = true;
 			$args['meta_key'] = 'webbupointfinder_item_featuredmarker';
-			$order = $args['meta_key'] . '.meta_value desc, ' . pf_get_distance_field() . ' asc';
+			$order = $args['meta_key'] . '.meta_value desc, ' . pf_get_fulltext_field($keyword) . ' desc, ' . pf_get_distance_field() . ' asc';
 			$value = '';
 		}else {
 			$order = $key;
