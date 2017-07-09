@@ -111,7 +111,7 @@ function pf_searchw_func( $atts ) {
                 echo '<input type="hidden" name="serialized" value="1"/>';
                 echo '<input type="hidden" name="action" value="pfs"/>';
                 echo  '<input type="submit" style="display:none"/>';
-                echo '<a class="button pfsearch" id="pf-search-button-manual"'.$searchb_style.'><i class="pfadmicon-glyph-627"></i> '.esc_html__('搜索', 'pointfindert2d').'</a>';
+                echo '<button class="button pfsearch" id="pf-search-button-manual"'.$searchb_style.'><i class="pfadmicon-glyph-627"></i> '.esc_html__('搜索', 'pointfindert2d').'</button>';
                	echo $divEnd;
               }
               unset($PFListSF);
