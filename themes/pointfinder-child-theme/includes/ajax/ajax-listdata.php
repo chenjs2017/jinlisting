@@ -1657,8 +1657,8 @@ print_r($pfgetdata);
 				}
 	        /* End: Loop for grid List */
 
-
             /* Start: Paginate */
+			if (!$is_simple) {
 				$wpflistdata .= '<div class="pfajax_paginate" >';
 					$big = 999999999;
 					$wpflistdata .= paginate_links(array(
@@ -1669,6 +1669,7 @@ print_r($pfgetdata);
 						'type' => 'list',
 					));
 				$wpflistdata .= '</div>';
+			}
 			/* End: Paginate */
 
 

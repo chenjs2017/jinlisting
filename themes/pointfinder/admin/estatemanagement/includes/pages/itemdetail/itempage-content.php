@@ -50,7 +50,6 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 
 	$item_term = pf_get_item_term_id($the_post_id);
 	pf_push_id_to_history($item_term, 'term');
-	echo 'termid=' .  pf_get_id_from_history_str('term');
 	$listing_meta = get_option('pointfinderltypes_fevars');
 
 	$setup42_itempagedetails_sidebarpos = PFSAIssetControl('setup42_itempagedetails_sidebarpos','','2');
