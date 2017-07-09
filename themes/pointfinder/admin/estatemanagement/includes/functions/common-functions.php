@@ -93,7 +93,6 @@ function pf_push_id_to_history($id,$id_type) {
 		}
 		$id_str .= $arr[$i];
 	}	
-	echo 'befor save' . $id_str;
 	pf_put_id_to_history_str($id_str, $id_type);	
 }
 
