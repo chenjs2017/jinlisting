@@ -313,24 +313,30 @@ function pf_is_mobile() {
 	return 0;
 }
 
+function pf_check_location(&$vals) {
+		$lon = isset($vals['lon']) ? $vals['lon']:'';
+		$lat = isset($vals['lat']) ? $vals['lat']:'';
+		if (strlen($lat) > 0 && strlen($lon) >0 ) {
+			return true ;
+		}
+		return false;
+}
 
 function pf_get_location() {
   $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
 	if ($cookie !='') {
 		$cookie = stripslashes($cookie) ;
 		$vals = json_decode($cookie, true);
-		$lon = isset($vals['lon']) ? $vals['lon']:'';
-		$lat = isset($vals['lat']) ? $vals['lat']:'';
-		if (strlen($lat) > 0 && strlen($lon) >0 )
-		{
-			$agl_values = $vals;
+		if (pf_check_location($val)) {
 			return $vals;
 		}
 	}
 	
-	if (isset($_SESSION['agl-values']))
-	{
-		return $_SESSION ['agl-values'];
+	if (isset($_SESSION['agl-values'])) {
+		$vals = $_SESSION['agl-values'];
+		if (pf_check_location($val)) {
+			return $vals;
+		}
 	}
 
 	if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
