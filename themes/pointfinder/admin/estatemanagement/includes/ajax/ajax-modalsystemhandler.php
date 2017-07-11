@@ -358,21 +358,21 @@ function pf_ajax_modalsystemhandler(){
               }
             }
 
-            
-            $message_reply = pointfinder_mailsystem_mailsender(
-              array(
-                'toemail' => $user->user_email,
-                'predefined' => 'reviewformuser',
-                'data' => array(
-                  'name' => $vars['name'],
-                  'email'=>$vars['email'],
-                  'message'=>$vars['msg'],
-                  'item' => $vars['itemid']
-                ),
-              )
-            );
-
+						$message_reply = true;
             if($setup33_emaillimits_copyofreviewform == 1){
+	            $message_reply = pointfinder_mailsystem_mailsender(
+               array(
+                  'toemail' => $user->user_email,
+                  'predefined' => 'reviewformuser',
+                  'data' => array(
+                    'name' => $vars['name'],
+                    'email'=>$vars['email'],
+                    'message'=>$vars['msg'],
+                    'item' => $vars['itemid']
+                  ),
+                )
+              );
+
               pointfinder_mailsystem_mailsender(
                 array(
                   'toemail' => $setup33_emailsettings_mainemail,
