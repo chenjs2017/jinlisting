@@ -104,12 +104,11 @@ function agl_request_callback() {
 		);
 	if($response ['lat'] !='' && $response['lon'] != '') {
 		$_SESSION['agl-values'] = $response;
-	}
+		if ( $agl_params['is_cookie_store'] == 'yes' ) {
+			agl_setcookie_value( $response );
+		}
 
-	if ( $agl_params['is_cookie_store'] == 'yes' ) {
-		agl_setcookie_value( $response );
 	}
-
 	if ( $agl_params['is_db_store'] == 'yes' ) {
 		add_option( 'agl_data_' . uniqid() . '_' . md5( mt_rand() ), $response, '', 'no' );
 	}
