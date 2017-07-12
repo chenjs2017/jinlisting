@@ -334,7 +334,7 @@ function pf_get_location() {
 	
 	if (isset($_SESSION['agl-values'])) {
 		$vals = $_SESSION['agl-values'];
-		if (pf_check_location($val)) {
+		if (pf_check_location($vals)) {
 			return $vals;
 		}
 	}
