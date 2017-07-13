@@ -1275,33 +1275,33 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 						case '4':
 						/* Text Field */
 							if ($showonlywidget_check == 'show') {
-								
 								$target = PFSFIssetControl('setupsearchfields_'.$slug.'_target_target','','');
-
 								$itemparent = $this->CheckItemsParent($target);
 								
 								if($itemparent == 'none'){
 									$mobile =	pf_is_mobile();
 									if ($mobile) {
-										$txtWidth= '260px';
-										$txtWidthAddress= '225px';
-										$labColor = 'color:white;';
+										$txtWidth= '320px';
+										$txtWidthAddress= '285px';
 									}elseif ($hormode == 1 ) {
 										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
 										$divEnd ='</div>';	
 										$labColor = 'color:white;';
+										$spanNear = '<span style="' . $labColor . 'font-size:18px;font-family: Courier New;">Near</span>';
+										$spanFind = '<span style="'. $labColor .'font-size:18px;font-family: Courier New;">Find</span>';
 										$txtWidth= '320px';
 										$txtWidthAddress= '260px';
 									}else {
 										$txtWidth= '260px';
 										$txtWidthAddress= '225px';
+										$spanNear = '<span style="' . $labColor . 'font-size:18px;font-family: Courier New;">Near</span>';
 									}
+
 									if ($target == 'google') {
 											$vals = pf_get_location(); 
 											$this->FieldOutput .= $divBegin . '
-										  <label class="lbl-ui gdlocations" >
-											<span style="' . $labColor . 'font-size:18px;font-family: Courier New;">Near</span>
-												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidthAddress .';height: 36px;">
+										  <label class="lbl-ui gdlocations" >' . $spanNear .'
+												<input id="aglAddress" value="Near：'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidthAddress .';height: 36px;">
              						<a class="button" id="aglId">
 													<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
 													<div class="pf-search-locatemebutloading"></div>
@@ -1310,8 +1310,7 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 										 ' . $divEnd;
 									}elseif ($target == 'title' ) {
 										$placeholder = PFSFIssetControl('setupsearchfields_'.$slug.'_placeholder','','');
-										$this->FieldOutput .= $divBegin . '
-													<span style="'. $labColor .'font-size:18px;font-family: Courier New;">Find</span>
+										$this->FieldOutput .= $divBegin . $spanFind . '
 													<span ><input type="text" name="pfsearch-filter-keyword" id="jobskeyword" placeholder="'.$placeholder.'"'.$valtext.' style="width:'. ($txtWidth ) .';height: 36px;"/></span>
 										 ' . $divEnd;
 									}								
