@@ -304,14 +304,7 @@ function get_location(){
     }else{
         $ip=$_SERVER['REMOTE_ADDR'];
     }
-//$ip="134.201.250.155";//LA
-//$ip="143.112.144.129";//SF
-//$ip="192.227.139.106";//dallas
-    //$ip="107.189.36.6";//Atlanta
-   // $url ='http://ip-api.com/json/'.$ip;
-		$url = 'http://pro.ip-api.com/json/?key=E8N639AlU3vbDrk&ip=' . $ip;
-    //$content = file_get_contents($url);
-    //$json = json_decode($content, true);
+		$url = 'http://pro.ip-api.com/json/' . $ip . '?key=E8N639AlU3vbDrk';
     if(isset($json['city'] ) && isset($json['region'] ) ) {
         if ((in_array($json['city'], $Cities_of_SF)) && ($json['region'] == 'CA')) {
      return 'sf';
@@ -334,9 +327,7 @@ function get_zip()
     } else {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
-
-//    $url = 'http://ip-api.com/json/' . $ip;
-		$url = 'http://pro.ip-api.com/json/?key=E8N639AlU3vbDrk&ip=' . $ip;
+		$url = 'http://pro.ip-api.com/json/' . $ip . '?key=E8N639AlU3vbDrk';
     $content = file_get_contents($url);
     $json = json_decode($content, true);
     $zipcode = $json[zip];

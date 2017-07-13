@@ -344,8 +344,7 @@ function pf_get_location() {
   } else {
       $ip = $_SERVER['REMOTE_ADDR'];
   }
-//  $url = 'http://ip-api.com/json/' . $ip;
-	$url = 'http://pro.ip-api.com/json/?key=E8N639AlU3vbDrk&ip=' . $ip;
+	$url = 'http://pro.ip-api.com/json/' . $ip . '?key=E8N639AlU3vbDrk';
   $content = file_get_contents($url);
   $vals = json_decode($content, true);
 	$address = $vals['city'] . ',' . $vals['region'] . ',' . $vals['country'];
