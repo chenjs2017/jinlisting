@@ -1277,12 +1277,14 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 							if ($showonlywidget_check == 'show') {
 								$target = PFSFIssetControl('setupsearchfields_'.$slug.'_target_target','','');
 								$itemparent = $this->CheckItemsParent($target);
-								
+								$vals = pf_get_location(); 
+
 								if($itemparent == 'none'){
 									$mobile =	pf_is_mobile();
 									if ($mobile) {
 										$txtWidth= '320px';
 										$txtWidthAddress= '285px';
+										$vals['addr'] = 'Near:' . $vals['addr'];
 									}elseif ($hormode == 1 ) {
 										$divBegin = '<div class="col-keyword col-md-3 col-sm-3 colhorsearch">';
 										$divEnd ='</div>';	
@@ -1294,14 +1296,13 @@ if ( ! class_exists( 'PF_SF_Val' ) ){
 									}else {
 										$txtWidth= '260px';
 										$txtWidthAddress= '225px';
-										$spanNear = '<span style="' . $labColor . 'font-size:18px;font-family: Courier New;">Near</span>';
+										$vals['addr'] = 'Near:' . $vals['addr'];
 									}
 
 									if ($target == 'google') {
-											$vals = pf_get_location(); 
 											$this->FieldOutput .= $divBegin . '
 										  <label class="lbl-ui gdlocations" >' . $spanNear .'
-												<input id="aglAddress" value="Near：'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidthAddress .';height: 36px;">
+												<input id="aglAddress" value="'. $vals['addr'] . '" placeholder="输入地址"  type="text" style="width:'. $txtWidthAddress .';height: 36px;">
              						<a class="button" id="aglId">
 													<img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
 													<div class="pf-search-locatemebutloading"></div>
