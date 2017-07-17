@@ -52,6 +52,7 @@ function pf_ajax_modalsystemhandler(){
   $item_err10 = sprintf(esc_html__('Your %s received successfully.','pointfindert2d' ),esc_html__('review flag','pointfindert2d'));
   $item_err11 = sprintf(esc_html__('Your %s received successfully.','pointfindert2d' ),esc_html__('contact form','pointfindert2d'));
   $item_err12 = sprintf(esc_html__('Your %s received successfully.','pointfindert2d' ),esc_html__('claim request','pointfindert2d'));
+
 	switch($formtype){
 /**
 *Enquiry Form
@@ -236,6 +237,34 @@ function pf_ajax_modalsystemhandler(){
       }
     break;
 
+		case 'eventform':
+			$delete_id = isset($vars['delete-event-id']) ? $vars['delete-event-id'] : '';
+			if ($delete_id != '') {
+				wp_delete_post($delete_id);	
+				echo json_encode( array( 'process'=>true, 'mes'=>$delete_id));
+			}else {
+				$item_id = isset($vars['itemid']) ? $vars['itemid'] : '';
+				$arg = array(
+					 'post_type'    => 'pointfinderevents',
+					 'post_title'    => esc_html($vars['event_title']),
+					 'post_content'  => esc_html($vars['event_content']),
+					 'post_status'   => 'publish',
+				);
+				if (is_user_logged_in()) {
+					$arg['post_author'] = get_current_user_id();
+				}
+				$post_id = wp_insert_post($arg);
+				add_post_meta($post_id, 'webbupointfinder_event_itemid', $item_id);
+				$images = isset($vars['pfuploadimagesrc']) ? $vars['pfuploadimagesrc'] : '';
+				if ($images != '') {
+					$uploadimages = pfstring2BasicArray($vars['pfuploadimagesrc']);
+					foreach ($uploadimages as $uploadimage) {
+						add_post_meta($item_id, 'webbupointfinder_item_images', $uploadimage);
+					}
+				}
+				echo json_encode( array( 'process'=>true, 'mes'=>$post_id));
+			}
+		break;
 
 /**
 *Review Form
