@@ -20,15 +20,6 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 	<a href="#" id="aglId"><img src="/wp-content/themes/pointfinder/images/ge.png" width="25px" heigh="25px">定位位置</img> </a> 
 	<span id="aglResult"></span>
 </div>';
-/*
-echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
-<input name="field296725954161956900000" id="field296725954161956900000" class="input" placeholder="输入地址，查看附近商家" value="" autocomplete="off" type="search">
-<input name="pointfinder_google_search_coord" id="pointfinder_google_search_coord" class="input" value="" type="hidden">
-	<a href="#" id="aglSearch"><img src="/se.png" width="25px" heigh="25px"></img></a> 
-	<a href="#" id="aglId"><img src="/ge.png" width="25px" heigh="25px"></img> </a> 
-	<br><span id="aglResult"></span>
-</div>';
-*/
 	$claim_list_permission = 1;
 	$review_list_permission = 1;
 	$comment_list_permission = 1;
@@ -1262,6 +1253,9 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 
 		echo '</div>';
 	echo '</div>';
+//jchen, events part
+  get_template_part('admin/estatemanagement/includes/pages/itemdetail/event','part');
+
 
 
 	/**
@@ -1309,9 +1303,7 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 	/**
 	*End: Contact Widget
 	**/
-
-
-	/**
+		/**
 	*Start: Review System
 	**/
 		if ($review_list_permission == 1) {
