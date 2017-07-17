@@ -54,7 +54,6 @@
 							}
 						}
 					}
-					
 				}
 			}
 
@@ -106,21 +105,67 @@
 **/
 
 
+	//Start:
+	//jchen
+function pfitempage_get_event(){
+	//jchen, get event 
+	$item_id = get_the_id();
+	$can_edit = pf_current_user_can_edit_post($item_id);
+	$args = array(
+      'post_type' => 'pointfinderevents',
+      'posts_per_page' => $setup11_reviewsystem_revperpage,
+      'paged' => $pfg_paged,
+      'post_status' => 'publish',
+      'meta_key' => 'webbupointfinder_event_itemid',
+      'meta_value' => $item_id,
+      'orderby' => 'ID',
+      'order' => 'DESC'
+    );
+	$event_block = '';
+  $the_query = new WP_Query( $args );
+	if($the_query->have_posts()) {
+		$event_block .= '<div class="pfitempagecontainerheader" id="event">最新活动:</div>';
+		while ( $the_query->have_posts() ) {
+      $the_query->the_post();
+      $post_id_event = get_the_id();
+			$event_block .= '<p>' . get_the_title() . '</p>';				
+			$event_block .= '<p>' . get_the_content() . '</p>';
+			if ($can_edit) {
+				$event_block .= '
+			<button id="pf-event-delete-button-' . $post_id_event . '" class="button green">删除活动</button>
+			<script type="text/javascript">
+				(function($) {
+							"use strict";
+							$(document).ready(function () {
+								$("#pf-event-delete-button-' . $post_id_event . '").click(function(){
+									$.pfEventwithAjax("delete-event-id=' . $post_id_event . '");
+								}); 						
+							});
+				 })(jQuery);
+			</script>
 
-
+';
+			}
+		}			
+		$event_block .= '<div class="pfitempagecontainerheader" id="event"></div>';
+	}
+	wp_reset_postdata();
+	return $event_block;
+}
 /**
 *Start : Description Block
 **/
 	function pfitempage_description_block(){
+				
 		$description_block = '';
 		$description_block .= '<section role="itempagedesc" class="pf-itempage-desc-block pf-itempage-elements">';
 				
 				$description_block .= '<div class="pf-itempage-desc descexpf" itemprop="description">';
 					
+					$description_block .= pfitempage_get_event();	
 					$output = do_shortcode(get_the_content());
 					$output = apply_filters('convert_chars', $output);
 					$output = apply_filters('the_content', $output);
-
 
 					$description_block .= $output;
 				$description_block .= '</div>';
