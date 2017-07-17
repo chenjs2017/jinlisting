@@ -17,9 +17,9 @@ function pf_current_user_can_edit_post($the_post_id) {
 			$can_edit = ($user_id == get_current_user_id());
 		}
 	}
-	$can_edit = true;
 	return $can_edit;
 }
+
 function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
 	if ($dropzone) {
 	$str = '<link rel="stylesheet" id="theme-dropzone-css"  href="' . get_theme_root_uri() . '/pointfinder/css/dropzone.min.css?ver=1.0" media="all" />
