@@ -128,11 +128,14 @@ function pfitempage_get_event(){
 		while ( $the_query->have_posts() ) {
       $the_query->the_post();
       $post_id_event = get_the_id();
-			$event_block .= '<p>' . get_the_title() . '</p>';				
-			$event_block .= '<p>' . get_the_content() . '</p>';
+			$event_block .= '<h2 style="font-family: 微软雅黑; font-size: 18px; line-height: 30px; letter-spacing: 0.01em;">' ;
+			$event_block .= '<strong>' . get_the_title() . '</strong>';				
+			$event_block .= '<br/>' . get_the_content() ;
+			$event_block .= '</h>'; 
+
 			if ($can_edit) {
 				$event_block .= '
-			<button id="pf-event-delete-button-' . $post_id_event . '" class="button green">删除活动</button>
+			<br/><button id="pf-event-delete-button-' . $post_id_event . '" class="button green">删除活动</button>
 			<script type="text/javascript">
 				(function($) {
 							"use strict";
