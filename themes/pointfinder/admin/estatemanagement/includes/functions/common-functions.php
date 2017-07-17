@@ -7,6 +7,201 @@
 * Author: Webbu Design
 * Please do not modify below functions.
 ***********************************************************************************************************************************/
+function pf_current_user_can_edit_post($the_post_id) {
+	$can_edit = false;
+	if (is_user_logged_in()) {
+		$can_edit=current_user_can('edit_others_posts');
+		if (!$can_edit) {
+			global $wpdb;
+			$user_id = $wpdb->get_var( $wpdb->prepare("SELECT post_author FROM $wpdb->posts where ID = %d", $the_post_id));
+			$can_edit = ($user_id == get_current_user_id());
+		}
+	}
+	$can_edit = true;
+	return $can_edit;
+}
+function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
+	if ($dropzone) {
+	$str = '<link rel="stylesheet" id="theme-dropzone-css"  href="' . get_theme_root_uri() . '/pointfinder/css/dropzone.min.css?ver=1.0" media="all" />
+    <script type="text/javascript" src="' . get_theme_root_uri() . '/pointfinder/js/dropzone.min.js?ver=4.0"></script>';
+	}
+	return $str . '
+<div class="pfsubmit-title pfsubmit-inner-sub-image">上传图片,为了更好展示图片，请您横向拍摄图片</div>
+
+		<section class="pfsubmit-inner pfitemimgcontainer pferrorcontainer pfsubmit-inner-sub-image">
+		<div class="pfuploadedimages"></div>
+		<section class="pfsubmit-inner-sub">
+		<div id="pfdropzoneupload" class="dropzone">
+			<div class="dz-default dz-message">
+				<span><br>你可以最多上传 <div class="pfuploaddrzonenum">' . $pf_count . '</div> 张图片 (最大' . $pf_size . 'MB 每张图片) </span>
+			</div>
+		</div>
+		<input class="pfuploadimagesrc" name="pfuploadimagesrc" id="pfuploadimagesrc" type="hidden">' . $str . '
+
+															<script type="text/javascript">
+															(function($) {
+															"use strict";
+																$(function(){
+																	
+																	$.drzoneuploadlimit = '. $pf_count . ';
+																	var myDropzone = new Dropzone("div#pfdropzoneupload", {
+																		url: theme_scriptspf.ajaxurl,
+																		params: {
+																	      action: "pfget_imageupload",
+																				security: "' . wp_create_nonce('pfget_imageupload') . '",
+																	    },
+																		autoProcessQueue: true,
+																		acceptedFiles:"image/*",
+																		maxFilesize: ' . $pf_size . ',
+																		maxFiles: ' . $pf_count . ',
+																		parallelUploads:1,
+																		uploadMultiple: false,
+																		addRemoveLinks:true, 
+																		dictDefaultMessage: "<br/>你可以最多上传 <div class=\'pfuploaddrzonenum\'>{0}</div> 张图片 (最大' . $pf_size . 'MB 每张图片) ".format($.drzoneuploadlimit),
+																		dictFallbackMessage: "Your browser does not support drag and drop file upload",
+																		dictInvalidFileType: "Unsupported file type",
+																		dictFileTooBig: "File size is too big. (Max file size: ' . $pf_size . 'mb)",
+																		dictCancelUpload: "",
+																		dictRemoveFile: "Remove",
+																		dictMaxFilesExceeded: "Max file exceeded",
+																		clickable: "#pf-ajax-fileuploadformopen"
+																	});
+																	
+																	Dropzone.autoDiscover = false;
+																	
+																	var uploadeditems = new Array();
+
+																	myDropzone.on("success", function(file,responseText) {
+																		var obj = [];
+																		$.each(responseText, function(index, element) {
+																			obj[index] = element;
+																		});
+																		
+																			if (obj.process == "up" && obj.id.length != 0) {
+																				file._removeLink.id = obj.id;
+																				uploadeditems.push(obj.id);
+																				$("#pfuploadimagesrc").val(uploadeditems);
+																			}
+																			 
+																		
+																	});
+
+												function getOrientation(file, callback) {
+													var reader = new FileReader();
+													reader.onload = function(event) {
+														var view = new DataView(event.target.result);
+														if (view.getUint16(0, false) != 0xFFD8) return callback(-2);
+														var length = view.byteLength,
+																offset = 2;
+														while (offset < length) {
+															var marker = view.getUint16(offset, false);
+															offset += 2;
+															if (marker == 0xFFE1) {
+																if (view.getUint32(offset += 2, false) != 0x45786966) {
+																	return callback(-1);
+																}
+																var little = view.getUint16(offset += 6, false) == 0x4949;
+																offset += view.getUint32(offset + 4, little);
+																var tags = view.getUint16(offset, little);
+																offset += 2;
+																for (var i = 0; i < tags; i++)
+																	if (view.getUint16(offset + (i * 12), little) == 0x0112)
+																		return callback(view.getUint16(offset + (i * 12) + 8, little));
+															}
+															else if ((marker & 0xFF00) != 0xFF00) break;
+															else offset += view.getUint16(offset, false);
+														}
+														return callback(-1);
+													};
+													reader.readAsArrayBuffer(file.slice(0, 64 * 1024));
+												};
+
+
+												myDropzone.on("addedfile", function(origFile) {
+																getOrientation(origFile, function(orientation) {
+																				var reader = new FileReader();
+																				reader.addEventListener("load", function(event) {
+																								var origImg = new Image();
+																								origImg.src = event.target.result;
+																								origImg.addEventListener("load", function(event) {
+																												var w = event.target.width;
+																												var h = event.target.height;
+
+																												if ([5,6,7,9].indexOf(orientation) > -1) {
+																																var t = w; w = h; h = t;
+																												}
+																												if (w > h ) {
+																												} else {
+																																alert("为了保证显示效果，请选择横向的图片。如果您用手机拍摄图片，请横向拍摄图片");
+																																myDropzone.removeFile(origFile);
+																												}
+																								});
+																				});
+																				reader.readAsDataURL(origFile);
+																 });
+												});
+
+
+
+																	myDropzone.on("totaluploadprogress",function(uploadProgress,totalBytes,totalBytesSent){
+																		
+																		if (uploadProgress > 0 ) {
+																			$("#pf-ajax-uploaditem-button").val("Please Wait for Image Upload...");
+																			$("#pf-ajax-uploaditem-button").attr("disabled", true);
+																		}
+																		if(totalBytes == 0) {
+																			$("#pf-ajax-uploaditem-button").attr("disabled", false);
+																			$("#pf-ajax-uploaditem-button").val("提交");
+																		}
+																	});
+																	 	
+																			myDropzone.on("removedfile", function(file) {
+																			    if (file.upload.progress != 0) {
+																					if(file._removeLink.id.length != 0){
+																						var removeditem = file._removeLink.id;
+																						removeditem.replace(\'"\', "");
+																						$.ajax({
+																						    type: "POST",
+																						    dataType: "json",
+																						    url: theme_scriptspf.ajaxurl,
+																						    data: { 
+																						        action: "pfget_imageupload",
+																				      			security: "730d743d09",
+																				      			iid:removeditem
+																						    }
+																						});
+																						for(var i = uploadeditems.length; i--;) {
+																					          if(uploadeditems[i] == removeditem) {
+																					              uploadeditems.splice(i, 1);
+																					          }
+																					      }
+																						
+																						$("#pfuploadimagesrc").val(uploadeditems);
+
+																						$("#pf-ajax-uploaditem-button").attr("disabled", false);
+																						$("#pf-ajax-uploaditem-button").val("提交");
+																					}
+																			    }
+																			});
+																			
+
+																			myDropzone.on("queuecomplete",function(file){
+																				$("#pf-ajax-uploaditem-button").attr("disabled", false);
+																				$("#pf-ajax-uploaditem-button").val("提交");
+																			});
+																		 	
+																});
+																
+															})(jQuery);
+															</script>
+															
+															<a id="pf-ajax-fileuploadformopen" class="button pfmyitempagebuttonsex dz-clickable" style="width:100%"><i class="pfadmicon-glyph-512"></i> 手机拍照上传图片</a>
+			</section>
+		</section>
+	';
+}
+
+
 function edit_posts_join_paged($join_paged_statement, $add_feature = false) {
 	global $wpdb;
 	if ($add_feature) {
@@ -223,6 +418,12 @@ function pf_get_termID(&$args) {
 							if (is_array($termid)) {
 								$termid = $termid[0];
 							}
+							$arr = get_term_children($termid, 'pointfinderltypes');
+							$str = $termid;
+							foreach ($arr as $id) {
+								$str .= ',' . $id;
+							}
+							$termid = $str;
 					}
 			}
 	}
