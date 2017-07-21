@@ -20,12 +20,12 @@ if ($can_edit) {
 	<div class="pftcmcontainer golden-forms hidden-print pf-itempagedetail-element">
 		<div class="pfitempagecontainerheader" id="event">添加最新活动:</div>
 			<section>
-					<input name="event_title" class="input" placeholder="活动标题" type="text" >
+					<input name="event_title" id="event_title" class="input" placeholder="活动标题" type="text" >
 			</section>
 			<section>
-					<textarea name="event_content" class="textarea" placeholder="活动内容" ></textarea>
+					<textarea name="event_content" id="event_content" class="textarea" placeholder="活动内容" ></textarea>
 			</section>
-			<?php echo pf_get_upload_image_section($pf_count, $pf_size, true);?>
+			<?php echo pf_get_upload_image_section($pf_count, $pf_size, true, $the_post_id);?>
 			<input name='itemid' type="hidden" value='<?php echo $the_post_id?>'/>
 			<input type="submit" class="button green" value='提交活动' text="提交活动"/>
 		</div>
@@ -42,18 +42,15 @@ if ($can_edit) {
 							$('#myform').validate({ 
 									errorClass: "my-error-class",
 									rules: {
-											event_title: {
-													required: true,
-											},
-											event_content: {
-													required: true,
-													minlength: 5
-											}
 									},
 									submitHandler: function (form) { 
-											var datastring = $("#myform").serialize();
-											$.pfEventwithAjax(datastring);
+										if (($("#event_title").val() =='' || $("#event_content").val() =='') && $("#pfuploadimagesrc").val() =='') {
+											alert('请您输入活动标题活动内容，或上传图片');	
 											return false;
+										}
+										var datastring = $("#myform").serialize();
+										$.pfEventwithAjax(datastring);
+									return false;
 									},
 							});
 					});
