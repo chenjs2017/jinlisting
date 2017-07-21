@@ -236,6 +236,10 @@ function pf_ajax_modalsystemhandler(){
         
       }
     break;
+		case 'imageform':
+					$msg = pf_paginated_gallery($vars);	
+          echo json_encode( array( 'process'=>true, 'mes'=>$msg));
+					break;
 
 		case 'eventform':
 			$delete_id = isset($vars['delete-event-id']) ? $vars['delete-event-id'] : '';
@@ -244,25 +248,35 @@ function pf_ajax_modalsystemhandler(){
 				echo json_encode( array( 'process'=>true, 'mes'=>$delete_id));
 			}else {
 				$item_id = isset($vars['itemid']) ? $vars['itemid'] : '';
-				$arg = array(
-					 'post_type'    => 'pointfinderevents',
-					 'post_title'    => esc_html($vars['event_title']),
-					 'post_content'  => esc_html($vars['event_content']),
-					 'post_status'   => 'publish',
-				);
-				if (is_user_logged_in()) {
-					$arg['post_author'] = get_current_user_id();
-				}
-				$post_id = wp_insert_post($arg);
-				add_post_meta($post_id, 'webbupointfinder_event_itemid', $item_id);
-				$images = isset($vars['pfuploadimagesrc']) ? $vars['pfuploadimagesrc'] : '';
-				if ($images != '') {
-					$uploadimages = pfstring2BasicArray($vars['pfuploadimagesrc']);
-					foreach ($uploadimages as $uploadimage) {
-						add_post_meta($item_id, 'webbupointfinder_item_images', $uploadimage);
+				if ($item_id == '') {
+					echo json_encode( array( 'process'=>false, 'mes'=>'no item_id,wrong parameter'));
+				}else {
+					$title = isset($vars['event_title']) ?  esc_html($vars['event_title']) : '';
+					$content = isset($vars['event_content']) ? esc_html($vars['event_content']) : '';
+					if (!empty($title) && !empty($content)) {
+						$arg = array(
+							 'post_type'    => 'pointfinderevents',
+							 'post_title'    => $title,
+							 'post_content'  => $content,
+							 'post_status'   => 'publish',
+						);
+						if (is_user_logged_in()) {
+							$arg['post_author'] = get_current_user_id();
+						}
+						$post_id = wp_insert_post($arg);
+						add_post_meta($post_id, 'webbupointfinder_event_itemid', $item_id);
 					}
+
+					$images = isset($vars['pfuploadimagesrc']) ? $vars['pfuploadimagesrc'] : '';
+					if ($images != '') {
+						$uploadimages = pfstring2BasicArray($vars['pfuploadimagesrc']);
+						foreach ($uploadimages as $uploadimage) {
+							add_post_meta($item_id, 'webbupointfinder_item_images', $uploadimage);
+							wp_update_post(array( 'ID' => $uploadimage, 'post_parent' => $item_id));
+						}
+					}
+					echo json_encode( array( 'process'=>true, 'mes'=>'success'));
 				}
-				echo json_encode( array( 'process'=>true, 'mes'=>$post_id));
 			}
 		break;
 
