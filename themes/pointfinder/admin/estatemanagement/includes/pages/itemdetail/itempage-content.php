@@ -570,20 +570,25 @@ echo '<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12" jstcache="0">
 					*Start: Description 2
 					**/
 						if($value['status'] == 1){
-
+							//jchen : put some images here, corrosponding to Detail in pf configuration
 							$tabinside .= '<div class="ui-tab'.$i.'">';
-
-							if ($value['fimage'] == 1) {
-								$tabinside .= pf_itemdetail_thirdcols1(pfitempage_fimage_block(),pfitempage_description_block2());
-							}elseif ($value['fimage'] == 2) {
-								$tabinside .= pf_itemdetail_thirdcolxs1(pfitempage_description_block2(),pfitempage_fimage_block());
-							}else{
-								$tabinside .= pfitempage_description_block2();
-							}
-
+							$vars = array('itemid'=>$the_post_id, 'galleryPage'=>1); 
+							$tabinside .= pf_paginated_gallery($vars);
 							$tabinside .= '</div>';
-
-							/* Desc */
+							$tabinside .= '
+							<link rel="stylesheet" href="' . Get_template_directory_uri() . '/admin/core/css/bootstrap-3.3.2.min.css"></script>
+							<link rel="stylesheet" href="' . Get_template_directory_uri() . '/admin/core/css/ekko-lightbox.min.css"></script>
+							<script src="' . Get_template_directory_uri() . '/admin/core/js/bootstrap-3.3.2.min.js"></script>
+							<script src="' . Get_template_directory_uri() . '/admin/core/js/ekko-lightbox.js"></script>
+							<script>
+							(function($) {
+								$(document).on(\'click\', \'[data-toggle="lightbox"]\', function(event) {
+										event.preventDefault();
+										$(this).ekkoLightbox();
+								});
+								})(jQuery);
+							</script>
+											';
 						}		
 					/** 
 					*End: Description  2
