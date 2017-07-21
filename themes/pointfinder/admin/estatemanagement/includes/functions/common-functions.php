@@ -7,6 +7,142 @@
 * Author: Webbu Design
 * Please do not modify below functions.
 ***********************************************************************************************************************************/
+
+function pf_paginated_gallery($vars) {
+	/* Outputs a gallery of attachments with pagination
+	Most of this code is lifted from the standard gallery function - with a few tweeks for pagination
+	*/
+	static $instance = 0;
+	$instance++;
+	
+	$imagesPerPage = 15;
+	
+	// Define some default options
+	$options = array(
+		'order'=> 'ASC', 
+		'orderby'=> 'menu_order ID',
+		'itemtag'=> 'dl',
+		'icontag'=> 'dt', 
+		'columns'=> 5, 
+		'size'=> 'thumbnail', 
+		'perpage'=> $imagesPerPage, 
+		'link'=>'attachment', 
+		'show_edit_links'=>'Y', 
+		'use_shortcode'=>'gallery', 
+		'exclude'=>''
+	);
+	
+	$itemid = isset($vars['itemid']) ? $vars['itemid'] : '';	
+	if ($itemid == '') {
+		return '';	
+	}
+	$currentPage = intval($vars['galleryPage']);
+	if ( empty($currentPage) || $currentPage<=0 ) $currentPage=1;
+	
+	// Start by getting the attachments
+	$attachments = get_children(array(
+		'post_parent'=> $itemid, 
+		'post_status'=>'inherit', 
+		'post_type'=> 'attachment', 
+		'post_mime_type'=>'image', 
+		'order'=> $options['order'], 
+		'orderby'=> $options['orderby'], 
+		'exclude'=> $options['exclude'],
+		'paged'=>$currentPage,
+		'posts_per_page' => $imagesPerPage,
+	));
+		// Start by getting the attachments
+	$attachment_ids = get_children(array(
+		'post_parent'=> $itemid, 
+		'post_status'=>'inherit', 
+		'post_type'=> 'attachment', 
+		'post_mime_type'=>'image', 
+		'order'=> $options['order'], 
+		'orderby'=> $options['orderby'], 
+		'exclude'=> $options['exclude'],
+	));
+
+	// If we don't have any attachments - output nothing
+	if ( empty($attachments) ) return '';
+	
+	// Work out how many pages we need and what page we are currently on
+	$imageCount = count($attachment_ids);
+	$pageCount = ceil($imageCount / $imagesPerPage);
+	
+	
+	$maxImage = $currentPage * $imagesPerPage;
+	$minImage = ($currentPage-1) * $imagesPerPage;
+
+	if ($pageCount > 1) {
+		$gplist= '<div class="gallery_pages_list">'.__('Pages').'&nbsp; ';
+		for ( $j=1; $j<= $pageCount; $j++) {
+			if ( $j==$currentPage )
+				$gplist .= '[<strong class="current_gallery_page_num"> '.$j.' </strong>]&nbsp; ';
+			else
+				$gplist .= '[ <a onclick="jQuery.pfGetImagewithAjax(\'itemid=' . $itemid . '&galleryPage='.$j.'\');">'.$j.'</a> ]&nbsp; ';
+		}
+		$gplist .= '</div>';
+	}
+	else{
+		$gplist= '';
+	}
+	
+	$itemtag = tag_escape($options['itemtag']);
+	$columns = intval($options['columns']);
+	$itemwidth = $options['columns'] > 0 ? floor(100/$options['columns']) : 100;
+	$float = is_rtl() ? 'right' : 'left';
+	$icontag = $options['icontag'];
+	$id = $options['id'];
+	$size = $options['size'];
+	
+	$selector = "gallery-{$instance}";
+
+	$gallery_style = $gallery_div = '';
+	if ( apply_filters( 'use_default_gallery_style', true ) )
+		$gallery_style = "
+		<style type='text/css'>
+			#{$selector} {
+				margin: auto;
+			}
+			#{$selector} .gallery-item {
+				float: {$float};
+				margin-top: 10px;
+				text-align: center;
+				width: {$itemwidth}%;
+			}
+			#{$selector} img {
+				border: 2px solid #cfcfcf;
+			}
+			#{$selector} .gallery-caption {
+				margin-left: 0;
+			}
+		</style>
+		<!-- see gallery_shortcode() in wp-includes/media.php -->";
+	$size_class = sanitize_html_class( $size );
+	$gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
+	$output = apply_filters( 'gallery_style', $gallery_style . "\n\t\t" . $gallery_div );
+	
+	$i = 0;
+	$k = 0;
+	foreach ( $attachments as $id => $attachment ) {
+	//		$link = isset($options['link']) && 'file' == $options['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+			//print_r($attachment);
+			$link =  wp_get_attachment_link($id, $size, false, false);
+			$link = str_replace('<a','<a data-toggle="lightbox" data-gallery="example-gallery"', $link); 
+			$output .= "<{$itemtag} class='gallery-item'>";
+			$output .= "
+				<{$icontag} class='gallery-icon'>
+					$link
+				</{$icontag}>";
+			$output .= "</{$itemtag}>";
+			if ( $columns > 0 && ++$i % $columns == 0 )
+				$output .= '<br style="clear: both" />';
+	}
+	$output .= "\n<br style='clear: both;' />$gplist\n</div>\n";
+	$output = '<div class="imageGallery" id="imageGallery">' . $output . '</div>';	
+	return $output;
+}
+
 function pf_current_user_can_edit_post($the_post_id) {
 	$can_edit = false;
 	if (is_user_logged_in()) {
@@ -20,7 +156,7 @@ function pf_current_user_can_edit_post($the_post_id) {
 	return $can_edit;
 }
 
-function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
+function pf_get_upload_image_section($pf_count, $pf_size, $dropzone, $postid) {
 	if ($dropzone) {
 	$str = '<link rel="stylesheet" id="theme-dropzone-css"  href="' . get_theme_root_uri() . '/pointfinder/css/dropzone.min.css?ver=1.0" media="all" />
     <script type="text/javascript" src="' . get_theme_root_uri() . '/pointfinder/js/dropzone.min.js?ver=4.0"></script>';
@@ -36,7 +172,7 @@ function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
 				<span><br>你可以最多上传 <div class="pfuploaddrzonenum">' . $pf_count . '</div> 张图片 (最大' . $pf_size . 'MB 每张图片) </span>
 			</div>
 		</div>
-		<input class="pfuploadimagesrc" name="pfuploadimagesrc" id="pfuploadimagesrc" type="hidden">' . $str . '
+		<input class="pfuploadimagesrc" name="pfuploadimagesrc" id="pfuploadimagesrc" type="hidden">
 
 															<script type="text/javascript">
 															(function($) {
@@ -49,6 +185,7 @@ function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
 																		params: {
 																	      action: "pfget_imageupload",
 																				security: "' . wp_create_nonce('pfget_imageupload') . '",
+																				id:"' . $postid . '",
 																	    },
 																		autoProcessQueue: true,
 																		acceptedFiles:"image/*",
@@ -66,11 +203,9 @@ function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
 																		dictMaxFilesExceeded: "Max file exceeded",
 																		clickable: "#pf-ajax-fileuploadformopen"
 																	});
-																	
 																	Dropzone.autoDiscover = false;
 																	
 																	var uploadeditems = new Array();
-
 																	myDropzone.on("success", function(file,responseText) {
 																		var obj = [];
 																		$.each(responseText, function(index, element) {
@@ -82,8 +217,6 @@ function pf_get_upload_image_section($pf_count, $pf_size, $dropzone) {
 																				uploadeditems.push(obj.id);
 																				$("#pfuploadimagesrc").val(uploadeditems);
 																			}
-																			 
-																		
 																	});
 
 												function getOrientation(file, callback) {
