@@ -54,7 +54,10 @@ get_header();
 					
 					$setup3_pointposttype_pt1 = PFSAIssetControl('setup3_pointposttype_pt1','','pfitemfinder');
 					$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
-					
+					$show_event = isset($_GET['show_event']) ? $_GET['show_event'] : '';
+					if ($show_event != '') {
+						$args['show_event'] = 1;
+					}
 
 					if(isset($_GET['pfsearch-filter']) && $_GET['pfsearch-filter']!=''){$pfg_orderbyx = esc_attr($_GET['pfsearch-filter']);}else{$pfg_orderbyx = '';}
 					if(isset($_POST['pfg_order']) && $_POST['pfg_order']!=''){$pfg_orderx = esc_attr($_POST['pfg_order']);}else{$pfg_orderx = '';}
@@ -74,7 +77,7 @@ get_header();
 						$args['orderby'] = array('meta_value_num' => 'DESC');
 						$args['posts_per_page'] = $pfg_numberx;
 					}
-
+					
 					if(isset($args['meta_query']) == false || isset($args['meta_query']) == NULL){
 						$args['meta_query'] = array();
 					}	
@@ -401,7 +404,6 @@ get_header();
 		        echo '<div class="pf-container"><div class="pf-row clearfix">';
 		        	if ($setup_item_searchresults_sidebarpos == 3) {
 		        		echo '<div class="col-lg-12"><div class="pf-page-container">';
-
 							echo do_shortcode('[pf_itemgrid2 filters="'.$filters_text.'" manualargs="'.$manualargs.'" orderby="" sortby="" items="'.$setup42_authorpagedetails_defaultppptype.'" cols="'.$setup22_searchresults_defaultlistingtype.'" itemboxbg="'.$setup22_searchresults_background2.'" grid_layout_mode="'.$setup42_authorpagedetails_grid_layout_mode.'" ne="'.$pfne.'" ne2="'.$pfne2.'" sw="'.$pfsw.'" sw2="'.$pfsw2.'" infinite_scroll="'.$stp22_infscrl_s.'" infinite_scroll_lm="'.$stp22_infscrl_s2.'" ]' );
 
 
