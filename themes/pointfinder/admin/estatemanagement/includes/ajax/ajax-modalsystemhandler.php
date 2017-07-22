@@ -259,12 +259,14 @@ function pf_ajax_modalsystemhandler(){
 							 'post_title'    => $title,
 							 'post_content'  => $content,
 							 'post_status'   => 'publish',
+							 'post_parent'  => $item_id,
 						);
 						if (is_user_logged_in()) {
 							$arg['post_author'] = get_current_user_id();
 						}
 						$post_id = wp_insert_post($arg);
 						add_post_meta($post_id, 'webbupointfinder_event_itemid', $item_id);
+//						wp_update_post(array( 'ID' => $post_id, 'post_parent' => $item_id));
 					}
 
 					$images = isset($vars['pfuploadimagesrc']) ? $vars['pfuploadimagesrc'] : '';
