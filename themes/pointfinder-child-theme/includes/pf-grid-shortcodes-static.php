@@ -3,7 +3,7 @@
 require_once('location_check.php');
 function pf_itemgrid2_func_new( $atts ) {
   extract( shortcode_atts( array(
-    'listingtype' => '',
+  'listingtype' => '',
 	'itemtype' => '',
 	'conditions' => '',
 	'locationtype' => '',
@@ -129,38 +129,38 @@ function pf_itemgrid2_func_new( $atts ) {
 			$pfg_keyword = $_GET['pfsearch-filter-keyword'];
 			unset($_GET['pfsearch-filter-keyword']);
 		}else{$pfg_keyword = '';}
+
 		if ( is_front_page() ) {
-	        $pfg_paged = (esc_sql(get_query_var('page'))) ? esc_sql(get_query_var('page')) : 1;   
-	    } else {
-	        $pfg_paged = (esc_sql(get_query_var('paged'))) ? esc_sql(get_query_var('paged')) : 1; 
-	    }
+	    $pfg_paged = (esc_sql(get_query_var('page'))) ? esc_sql(get_query_var('page')) : 1;   
+	  } else {
+	    $pfg_paged = (esc_sql(get_query_var('paged'))) ? esc_sql(get_query_var('paged')) : 1; 
+	  }
 
 		if (isset($_GET['pageIndex'])) {
 			$pfg_paged = $_GET['pageIndex'];
 			unset($_GET['pageIndex']);
 			unset($_GET['lastPageIndex']);
 		}
-
-		$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
 		
+		$args = array( 'post_type' => $setup3_pointposttype_pt1, 'post_status' => 'publish');
+		$show_event = isset($_GET['show_event']) ? $_GET['show_event'] : '';
+		if ($show_event != '') {
+			$args['show_event'] = 1;
+		}
 		if($pfgetdata['posts_in']!=''){
 			$args['post__in'] = pfstring2BasicArray($pfgetdata['posts_in']);
-
 		}
-
 
 		if($pfgetdata['tag']!=''){
 			$args['tag_id'] = $pfgetdata['tag'];
 
 		}
 
-
 		if($pfgetdata['authormode'] != 0){
 			if (!empty($pfgetdata['author'])) {
 				$args['author'] = $pfgetdata['author'];
 			}
 		}
-
 
 		$st22srlinknw = PFSAIssetControl('st22srlinknw','','0');
 		$targetforitem = '';
@@ -302,12 +302,8 @@ function pf_itemgrid2_func_new( $atts ) {
 				if($pfg_orderby == 'date' || $pfg_orderby == 'distance' || $pfg_orderby =='recommend' || $pfg_orderby =='relevant'){
 					
 					$args['orderby'] = array($pfg_orderby => $pfg_order);
-//					$args['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
-//					$args['meta_key'] = $meta_key_featured;
 					
 					if (!empty($pfgetdata['manual_args'])) {
-//						$args['meta_key'] = $meta_key_featured;
-//						$pfgetdata['manual_args']['orderby'] = array('meta_value_num' => 'DESC' , $pfg_orderby => $pfg_order);
 						$pfgetdata['manual_args']['orderby'] = array($pfg_orderby => $pfg_order);
 					}
 
@@ -374,12 +370,6 @@ function pf_itemgrid2_func_new( $atts ) {
 					$temp = $pfgetdata['manual_args'];
 					$pfg_keyword = isset($temp['search_prod_title']) ? $temp['search_prod_title'] : '' ;
 				}
-		//		echo 'jschen:=====' . $temp['search_prod_title'];
-				//echo 'jchen, see manual args';
-				//print_r(;
-			//	echo 'prod title = ' . $pfgetdate['manual_args']['search_prod_title'];
-				//	$pfg_keyword == isset($pfgetdata['manual_args']->search_prod_title) ? $pfgetdata['manual_args']->search_prod_title : '';	
-				
 			}
 			
 			if($pfg_paged != ''){
@@ -461,33 +451,7 @@ function pf_itemgrid2_func_new( $atts ) {
         $tax_id= $term_parent;
     }
 
-/*
-    if (($tax_id<>'114')&&($taxonomy<>'pointfinderlocations')) {
-        $location = get_location();
-        if ($location == 'sf') {
-            $term_ids = array(1308);
-        }
-        else if ($location == 'dallas') {
-            $term_ids = array(1454);
-        }
-        else if ($location == 'atlanta') {
-            $term_ids = array(1455);
-        }
-
-        else {
-            $term_ids = array(243, 34);
-        }
-
-
-        $args['tax_query'][] = array(
-            'taxonomy' => 'pointfinderlocations',
-            'field' => 'id',
-            'terms' => $term_ids,
-            'operator' => 'IN'
-        );
-    }
-*/
-			if (!empty($pfgetdata['manual_args'])) {
+		if (!empty($pfgetdata['manual_args'])) {
 				$args = $pfgetdata['manual_args'];
 			}	
 			
@@ -1022,8 +986,24 @@ function pf_itemgrid2_func_new( $atts ) {
 											$ItemDetailArr['featured_image'] = $template_directory_uri.'/images/noimg.png';
 										}
 										$ItemDetailArr['if_title'] = get_the_title($pfitemid);
-										$ItemDetailArr['if_excerpt'] = get_the_excerpt($pfitemid);
-										$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
+										$argsevent = array(
+											'post_type' => 'pointfinderevents',
+											'posts_per_page' => 1,
+											'paged' => 1,
+											'post_status' => 'publish',
+											'meta_key' => 'webbupointfinder_event_itemid',
+											'meta_value' => $pfitemid,
+											'orderby' => 'ID',
+											'order' => 'DESC'
+										);
+										$the_query = new WP_Query( $argsevent );
+										if($the_query->have_posts()) {
+											$the_query->the_post();
+											$ItemDetailArr['if_excerpt'] = get_the_title() ;
+											wp_reset_postdata();
+										}
+
+									$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
 										$ItemDetailArr['if_address'] = esc_html(pf_get_address_with_distance($pfitemid));
 										$ItemDetailArr['featured_video'] =  get_post_meta( $pfitemid, 'webbupointfinder_item_video', true );
 									/* End: Setup Featured Image */
@@ -1191,10 +1171,17 @@ function pf_itemgrid2_func_new( $atts ) {
 													$addresscount = (strlen($ItemDetailArr['if_address'])<=$limit_chr ) ? '' : '...' ;
 													$address_text = mb_substr($ItemDetailArr['if_address'], 0, $limit_chr ,'UTF-8').$addresscount;
 
+													$excerptcount = strlen($ItemDetailArr['if_excerpt']);
+													$excerptcount = (strlen($ItemDetailArr['if_excerpt'])<=$limit_chr ) ? '' : '...' ;
+													$excerpt_text = mb_substr($ItemDetailArr['if_excerpt'], 0, $limit_chr ,'UTF-8').$excerptcount;
+													$excerpt_text = '<font color="red"><strong>' . $excerpt_text . '</strong></font>';
+						
+						/*
 													$excerpt_text = mb_substr($ItemDetailArr['if_excerpt'], 0, ($limit_chr*$setup22_searchresults_hide_excerpt_rl),'UTF-8').$addresscount;
 													if (strlen($ItemDetailArr['if_excerpt']) > ($limit_chr*$setup22_searchresults_hide_excerpt_rl)) {
 														$excerpt_text .= '...';
 													}
+													*/
 													
 													/* Title and address area */
 
