@@ -565,7 +565,7 @@ function pf_get_termID(&$args) {
 	
 function pf_build_sql(&$args) {
 			global $wpdb;
-//		echo '<br/>jschendebug:'; print_r($args);
+//			echo '<br/>jchendebug:'; print_r($args);
 
 			$keyword = pf_get_keyword($args);
 /*
@@ -595,6 +595,11 @@ function pf_build_sql(&$args) {
 			foreach ($metafields as $k => $v) {
 				$sql .= " inner join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	";	
 			}
+			$show_event = $args['show_event'];
+			if ($show_event == 1) {
+				$sql .= " inner join $wpdb->posts as e on p.id=e.post_parent and e.post_type='pointfinderevents' ";
+			}
+
 			$sql .=	" where (1=1) ";
 
 			if ($termid != '') {
@@ -609,11 +614,9 @@ function pf_build_sql(&$args) {
 											) 
 								 ";
 */
-			$sql .="
-								AND p.post_type = '". $args['post_type']."' 
-								AND (p.post_status = '". $args['post_status']."') 
-							";
-		
+			$sql .=" AND (p.post_status = '". $args['post_status']."') ";
+			$sql .=" AND (p.post_type = '". $args['post_type']."') ";
+
 			if ($keyword != '') {
 				$sql .= " and (" .  pf_get_fulltext_field($keyword) .  ")";
 			}
@@ -634,7 +637,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-//			echo '<br/>jschendebug:' . $sql . '<br/>';
+//			echo '<br/>jchendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 
