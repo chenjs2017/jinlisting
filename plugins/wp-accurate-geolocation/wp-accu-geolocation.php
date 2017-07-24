@@ -100,7 +100,8 @@ function agl_request_callback() {
 	$response = array(
 			'lat' => isset($_POST['lat']) ? $_POST['lat'] : '',
 			'lon' => isset($_POST['lon']) ? $_POST['lon'] : '',
-			'addr' => isset($_POST['addr']) ? $_POST['addr'] : ''
+			'addr' => isset($_POST['addr']) ? $_POST['addr'] : '',
+			'gps' => 'true'
 		);
 	if($response ['lat'] !='' && $response['lon'] != '') {
 		$_SESSION['agl-values'] = $response;
@@ -138,13 +139,22 @@ function agl_delete_data() {
 function agl_get_php_callback() {
 	$agl_params = get_option( 'agl_settings' );
 	$ask =	$agl_params['is_ask_onload'];
-	if(isset($_COOKIE['agl-values'])) {
-		$ask = 'false';
-	}elseif(isset($_SESSION['agl-values'])) {
-		$ask = 'false';
+	$vals = null;
+
+	if(isset($_SESSION['agl-values'])) {
+		$vals = $_SESSION['agl-values'];
+	}elseif(isset($_COOKIE['agl-values'])) {
+		$vals = $_COOKIE['agl-values'];
+		$vals = stripslashes($vals) ;
+		$vals = json_decode($vals, true);
+		$_SESSION['agl-values'] = $vals;
 	}
+	if (!empty($vals) && $vals['gps'] == 'true') {
+		$ask = 'false';	
+	}
+
 	$params = array(
-		'is_ask_onload' => $ask,
+		'is_ask_onload' => $ask
 	);
 	exit( json_encode( $params ) );
 }

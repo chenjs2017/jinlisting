@@ -66,10 +66,10 @@ function aglInitialise() {
 		 	getAddressFromLatLang(position.coords.latitude, position.coords.longitude);
 		});
 	} else {
-		jQuery.getJSON('https://ipapi.co/json', function(data){
-			var addr = data.city +',' +  data.region + ',' + data.country;
-			aglPostData(data.latitude, data.longitude, addr);		
-    });	
+			jQuery.getJSON('https://ipapi.co/json', function(data){
+				var addr = data.city +',' +  data.region + ',' + data.country;
+				aglPostData(data.latitude, data.longitude, addr);		
+			});	
 		}
 }
 function setCookie(cname, cvalue) {
@@ -163,7 +163,7 @@ function aglGetPhpParams() {
  	ajax.done(function (response, textStatus, jqXHR) {		
  	    aglPhpParams = response;		
  	}); ajax.fail(function (jqXHR, textStatus, errorThrown) {		
- 	    alert('No data available!');		
+ 	    //alert('No data available!');		
  	});		
  }
 
