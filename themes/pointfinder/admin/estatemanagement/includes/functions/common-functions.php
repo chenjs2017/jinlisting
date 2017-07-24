@@ -661,6 +661,13 @@ function pf_check_location(&$vals) {
 
 function pf_get_location() {
   $cookie = isset($_COOKIE['agl-values']) ? $_COOKIE['agl-values'] : '';
+
+	if (isset($_SESSION['agl-values'])) {
+		$vals = $_SESSION['agl-values'];
+		if (pf_check_location($vals)) {
+			return $vals;
+		}
+	}
 	if ($cookie !='') {
 		$cookie = stripslashes($cookie) ;
 		$vals = json_decode($cookie, true);
@@ -669,12 +676,6 @@ function pf_get_location() {
 		}
 	}
 	
-	if (isset($_SESSION['agl-values'])) {
-		$vals = $_SESSION['agl-values'];
-		if (pf_check_location($vals)) {
-			return $vals;
-		}
-	}
 
 	if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
       $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
