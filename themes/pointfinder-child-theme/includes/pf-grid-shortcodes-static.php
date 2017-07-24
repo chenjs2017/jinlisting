@@ -622,7 +622,6 @@ function pf_itemgrid2_func_new( $atts ) {
 					$vals = pf_get_location();
 					$wpflistdata .= '
 					<div>
-						<SPAN STYLE="font-family: Courier New;font-size:18px" >Find</Span>
             <label class="lbl-ui gdlocations" style="width:70%;" >
 						<input type="text" value="'. $pfg_keyword .'" placeholder="输入关键字" name="pfsearch-filter-keyword" id="pfsearch-filter-keyword" style="height:30px;width:100%" />
 						</label>
@@ -630,9 +629,8 @@ function pf_itemgrid2_func_new( $atts ) {
 					</div> 
 
 					<div>
-						<SPAN STYLE="font-family: Courier New;font-size:18px" >Near</Span>
             <label class="lbl-ui gdlocations" style="width:70%;" >
-             	<input id="aglAddress" style="height:30px;width:100%;" value="'. $vals['addr'] . '"  placeholder="输入位置或点击右侧定位按钮" autocomplete="off" type="text">
+             	<input id="aglAddress" style="height:30px;width:100%;" value="Near:   '. $vals['addr'] . '"  placeholder="输入位置或点击右侧定位按钮" autocomplete="off" type="text">
              	<a class="button" id="aglId"><img src="'.get_template_directory_uri().'/images/geoicon.svg" width="16px" height="16px" class="pf-search-locatemebut" alt="'.esc_html__('Locate me!','pointfindert2d').'">
 									<div class="pf-search-locatemebutloading"></div>
 							</a>
