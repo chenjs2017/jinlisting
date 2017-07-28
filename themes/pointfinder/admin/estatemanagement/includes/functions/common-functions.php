@@ -639,7 +639,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-			echo '<br/>jchendebug:' . $sql . '<br/>';
+	//		echo '<br/>jchendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 
