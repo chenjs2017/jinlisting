@@ -595,7 +595,7 @@ function pf_build_sql(&$args) {
 			$sql .=	" INNER JOIN $wpdb->term_relationships AS tt1 ON (p.ID = tt1.object_id) ";
 */
 			foreach ($metafields as $k => $v) {
-				$sql .= " inner join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	";	
+				$sql .= " left join $wpdb->postmeta as " . $k . " on(p.id=". $k .".post_id and " . $k . ".meta_key='" . $k . "')	";	
 			}
 			$show_event = $args['show_event'];
 			if ($show_event == 1) {
@@ -639,7 +639,7 @@ function pf_build_sql(&$args) {
 			
 			$page = isset($args['paged']) ? $args['paged'] : 1;
 			$sql .= " LIMIT " . ($page - 1) * $posts. ", " . $posts;
-//			echo '<br/>jchendebug:' . $sql . '<br/>';
+			echo '<br/>jchendebug:' . $sql . '<br/>';
 	return $sql;			
 }
 
