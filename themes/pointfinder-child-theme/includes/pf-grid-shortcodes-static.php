@@ -1004,6 +1004,8 @@ function pf_itemgrid2_func_new( $atts ) {
 									$ItemDetailArr['if_link'] = get_permalink($pfitemid);;
 										$ItemDetailArr['if_address'] = esc_html(pf_get_address_with_distance($pfitemid));
 										$ItemDetailArr['featured_video'] =  get_post_meta( $pfitemid, 'webbupointfinder_item_video', true );
+										
+
 									/* End: Setup Featured Image */
 									/* Start: Setup Details */
 
@@ -1173,6 +1175,14 @@ function pf_itemgrid2_func_new( $atts ) {
 													$excerptcount = (strlen($ItemDetailArr['if_excerpt'])<=$limit_chr ) ? '' : '...' ;
 													$excerpt_text = mb_substr($ItemDetailArr['if_excerpt'], 0, $limit_chr ,'UTF-8').$excerptcount;
 													$excerpt_text = '<font color="red"><strong>' . $excerpt_text . '</strong></font>';
+
+/*
+													$rating_text = '';
+													$rating = (int) $ItemDetailArr['rating'];
+													for($i = 0 ; $i < $rating; $i++) {
+														$rating_text .= '<i class="pfadmicon-glyph-377"></i>';
+													}
+													*/
 						
 						/*
 													$excerpt_text = mb_substr($ItemDetailArr['if_excerpt'], 0, ($limit_chr*$setup22_searchresults_hide_excerpt_rl),'UTF-8').$addresscount;
@@ -1193,13 +1203,14 @@ function pf_itemgrid2_func_new( $atts ) {
 											                        if ($review_system_statuscheck == 1) {
 											                        	if ($setup22_searchresults_hide_re == 0) {
 
-											                        		$reviews = pfcalculate_total_review($pfitemid);
+																									$reviews = get_post_meta( $pfitemid, 'webbupointfinder_review_rating', true );
 
-											                        		if (!empty($reviews['totalresult'])) {
+											                        		if (!empty($reviews)) {
 											                        			$wpflistdata_output .= '<li class="pflist-reviewstars">';
-											                        			$rev_total_res = round($reviews['totalresult']);
+											                        			$rev_total_res = round($reviews);
 											                        			$wpflistdata_output .= '<div class="pfrevstars-wrapper-review">';
-											                        			$wpflistdata_output .= ' <div class="pfrevstars-review">';
+											                        			$wpflistdata_output .= ' <div style="color: #FFB400; font-size: 17px;">';
+																									//	$wpflistdata_output .= ' <div class="pf-rev-stars">';
 											                        				for ($ri=0; $ri < $rev_total_res; $ri++) { 
 											                        					$wpflistdata_output .= '<i class="pfadmicon-glyph-377"></i>';
 											                        				}
@@ -1258,6 +1269,12 @@ function pf_itemgrid2_func_new( $atts ) {
 															<div class="pflist-excerpt pflist-subitem" '.$pfboptx_text.'>'.$excerpt_text.'</div>
 														';
 														}
+
+/*
+														$wpflistdata_output .= '
+															<div class="pflist-rating pflist-subitem" '.$pfboptx_text.'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$rating_text.'</div>
+															';
+															*/
 
 														if ((!empty($output_data_content) || !empty($output_data_priceval))) {
 															if (!empty($pf1colfix)) {
