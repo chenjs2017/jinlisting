@@ -273,7 +273,7 @@ function pf_ajax_modalsystemhandler(){
 					if ($images != '') {
 						$uploadimages = pfstring2BasicArray($vars['pfuploadimagesrc']);
 						foreach ($uploadimages as $uploadimage) {
-							add_post_meta($item_id, 'webbupointfinder_item_images', $uploadimage);
+					//		add_post_meta($item_id, 'webbupointfinder_item_images', $uploadimage);
 							wp_update_post(array( 'ID' => $uploadimage, 'post_parent' => $item_id));
 						}
 					}
@@ -386,12 +386,21 @@ function pf_ajax_modalsystemhandler(){
 
             $ratingarray = array();
 
+						$total = 0;
             for ($i=0; $i <= $vars['revcrno']; $i++) { 
               $ratingarray[$i] = $vars['rating'.$i];
+							$total += (int)$ratingarry[$i];
             }
+						$average = $total / $i;
 
             add_post_meta($post_id, 'webbupointfinder_review_rating', json_encode($ratingarray));
 
+						$return_results = pfcalculate_total_review($vars['itemid']);
+						if (!get_post_meta($vars['itemid'], 'webbupointfinder_review_rating')) {
+            	add_post_meta($vars['itemid'], 'webbupointfinder_review_rating', $return_results['totalresult'] );
+						} else {
+            	update_post_meta($vars['itemid'], 'webbupointfinder_review_rating', $return_results['totalresult'] );
+						}
 
             if ($setup11_reviewsystem_revstatus == 1) {
               $total_results_exit = pfcalculate_total_review_ot($vars['itemid']);
