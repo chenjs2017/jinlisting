@@ -414,7 +414,7 @@ src="https://www.facebook.com/tr?id=1777841339155093&ev=PageView&noscript=1"
 										if ( !is_user_logged_in() ){
 										?>
 										<li class="pf-login-register" id="pf-login-trigger-button-mobi"><a href="#"><i class="pfadmicon-glyph-584"></i> <?php  echo esc_html__('Login','pointfindert2d')?></a></li>
-										<li class="pf-login-register" id="pf-register-trigger-button-mobi"><a href="#"><i class="pfadmicon-glyph-365"></i> <?php  echo esc_html__('Register','pointfindert2d')?></a></li>
+										<li class="pf-login-register" id="pf-register-trigger-button-mobi"><a href="/wp-login.php?action=register"><i class="pfadmicon-glyph-365"></i> <?php  echo esc_html__('Register','pointfindert2d')?></a></li>
 										<li class="pf-login-register" id="pf-lp-trigger-button-mobi"><a href="#"><i class="pfadmicon-glyph-889"></i><?php  echo esc_html__('Forgot Password','pointfindert2d')?></a></li>
 										<?php 
 										}else {
