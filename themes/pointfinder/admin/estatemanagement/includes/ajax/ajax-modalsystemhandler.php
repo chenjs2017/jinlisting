@@ -404,20 +404,24 @@ function pf_ajax_modalsystemhandler(){
 
             add_post_meta($post_id, 'webbupointfinder_review_rating', json_encode($ratingarray));
 
+/*
 						$return_results = pfcalculate_total_review($vars['itemid']);
 						if (!get_post_meta($vars['itemid'], 'webbupointfinder_item_review_rating')) {
             	add_post_meta($vars['itemid'], 'webbupointfinder_item_review_rating', $return_results['totalresult'] );
 						} else {
             	update_post_meta($vars['itemid'], 'webbupointfinder_review_rating', $return_results['totalresult'] );
 						}
+						*/
 
             if ($setup11_reviewsystem_revstatus == 1) {
               $total_results_exit = pfcalculate_total_review_ot($vars['itemid']);
               
               if (!empty($total_results_exit)) {
                 update_post_meta( $vars['itemid'], "webbupointfinder_item_reviewcount", $total_results_exit['totalresult']);
+                update_post_meta( $vars['itemid'], "webbupointfinder_item_reviewnumber", $total_results_exit['totalnumber']);
               } else {
                 update_post_meta( $vars['itemid'], "webbupointfinder_item_reviewcount", 0);
+                update_post_meta( $vars['itemid'], "webbupointfinder_item_reviewnumber", 0);
               }
             }
 

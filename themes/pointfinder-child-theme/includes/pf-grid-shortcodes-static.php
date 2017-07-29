@@ -309,7 +309,7 @@ function pf_itemgrid2_func_new( $atts ) {
 
 				}else{
 					$args['meta_key']='webbupointfinder_item_'.$pfg_orderby;
-					if ($pfg_orderby =='reviewcount' || $pfg_orderby =='review_rating') {
+					if ($pfg_orderby =='reviewcount' || $pfg_orderby =='reviewnumber') {
 						$pfg_order = 'desc';
 						$args['orderby']= array('meta_value_num' => $pfg_order);
 					}else {
@@ -580,15 +580,16 @@ function pf_itemgrid2_func_new( $atts ) {
 								}
 								</script>
 								';							
-								$pfgform_values3 = array('recommend', 'distance','date', 'review_rating');
+								$pfgform_values3 = array('recommend', 'distance','date');
 								$pfgform_values3_texts = array('recommend'=>'推荐优先', 
 									'distance'=>'距离近至远',
-									'date'=>'最新更新','pointfindert2d',
-									'review_rating' => '评分高至低');
+									'date'=>'最新更新','pointfindert2d');
 								
 								if ($review_system_statuscheck == 1) {
 									array_push($pfgform_values3, 'reviewcount');
-									$pfgform_values3_texts['reviewcount'] = esc_html__('评论多至少','pointfindert2d');
+									$pfgform_values3_texts['reviewcount'] = esc_html__('评分高至低','pointfindert2d');
+									array_push($pfgform_values3, 'reviewnumber');
+									$pfgform_values3_texts['reviewnumber'] = esc_html__('评论多至少','pointfindert2d');
 								}
 								
 								if ($pfg_keyworfdsfdsfdsfsdf !='') {
@@ -1202,7 +1203,7 @@ function pf_itemgrid2_func_new( $atts ) {
 											                        if ($review_system_statuscheck == 1) {
 											                        	if ($setup22_searchresults_hide_re == 0) {
 
-																									$reviews = get_post_meta( $pfitemid, 'webbupointfinder_item_review_rating', true );
+																									$reviews = get_post_meta( $pfitemid, 'webbupointfinder_item_reviewcount', true );
 
 											                        		if (!empty($reviews)) {
 											                        			$wpflistdata_output .= '<li class="pflist-reviewstars">';

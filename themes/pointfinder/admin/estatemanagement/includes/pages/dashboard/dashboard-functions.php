@@ -435,6 +435,7 @@
 			$post_id = wp_insert_post($arg);
 			$old_status_featured = false;
 			update_post_meta( $post_id, "webbupointfinder_item_reviewcount", 0);
+			update_post_meta( $post_id, "webbupointfinder_item_reviewnumber", 0);
 		}
 
 

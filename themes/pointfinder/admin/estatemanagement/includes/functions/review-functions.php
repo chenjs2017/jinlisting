@@ -213,7 +213,9 @@ function pfcalculate_total_review_ot($pid){
 
 		$review_number = count($reviews);
 
-		$return_results = array('totalresult'=> round(($review_total/$review_number),1));
+		$return_results = array('totalresult'=> round(($review_total/$review_number),1),
+			'totalnumber' => $review_number
+			);
 
 		return $return_results;
 

@@ -294,8 +294,10 @@ function pointfinder_before_delete_post( $postid ){
 				 $total_results_exit = pfcalculate_total_review_ot($item_id);
 				 if (!empty($total_results_exit)) {
 				 	update_post_meta( $item_id, "webbupointfinder_item_reviewcount", $total_results_exit['totalresult']);
+				 	update_post_meta( $item_id, "webbupointfinder_item_reviewnumber", $total_results_exit['totalnumber']);
 				 } else {
 				 	update_post_meta( $item_id, "webbupointfinder_item_reviewcount", 0);
+				 	update_post_meta( $item_id, "webbupointfinder_item_reviewnumber", 0);
 				 }
 	
 			}
