@@ -565,7 +565,10 @@ print_r($pfgetdata);
 										$args['orderby'] = array('meta_value_num' => 'DESC' , 'date' => 'DESC');
 										$simple_title = '最新更新的商家';
 									}else {
+										$count = $args['posts_per_page'];
+										$slice = array_slice($id_arr, $count);
 										$args['post__in'] = $id_arr;
+										$is_history = 1;
 										$simple_title = '您的浏览历史';
 									}
 									$is_simple = true;
@@ -1318,6 +1321,19 @@ print_r($pfgetdata);
 //				echo '-------jchen print ---------';
 //				print_r($args);		
 				$loop = new WP_Query( $args );
+
+				//jchen, re-oder $loop->posts;
+
+				function orderby( $a, $b ) {
+					$id_arr = pf_get_id_from_history_arr('post');
+			    $apos   = array_search( $a->ID, $id_arr);
+			    $bpos   = array_search( $b->ID, $id_arr);
+			    return ( $apos < $bpos ) ? -1 : 1;
+				}
+				if($is_history) {
+					usort( $loop->posts, "orderby" );
+				}
+
 				//jchen remove filter
 				remove_filter('posts_orderby', 'edit_posts_orderby');
 				remove_filter('posts_join_paged','edit_posts_join_paged');
