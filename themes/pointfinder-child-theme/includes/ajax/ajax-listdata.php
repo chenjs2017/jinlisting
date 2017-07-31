@@ -298,7 +298,6 @@ function pf_ajax_list_items_new(){
 				*/
 					if(isset($_POST['dt']) && $_POST['dt']!=''){$pfgetdata = $_POST['dt'];}
 
-print_r($pfgetdata);
 					if(is_array($pfgetdata)){
 
 						$pfformvars = array();
@@ -544,6 +543,19 @@ print_r($pfgetdata);
 								);
 							}
 						}
+						//jchen move here
+							if($pfg_number != ''){
+								$args['posts_per_page'] = $pfg_number;
+							}else{
+								if($pfgetdata['items'] != ''){
+									$args['posts_per_page'] = $pfgetdata['items'];
+								}else{
+									$args['posts_per_page'] = $setup22_searchresults_defaultppptype;
+								}
+							}
+							if($pfg_paged != ''){$args['paged'] = $pfg_paged;}
+						//end jschen
+
 
 						$pfg_authormode = $pfgetdata['authormode'];
 						$pfg_agentmode = $pfgetdata['agentmode'];
@@ -566,8 +578,8 @@ print_r($pfgetdata);
 										$simple_title = '最新更新的商家';
 									}else {
 										$count = $args['posts_per_page'];
-										$slice = array_slice($id_arr, $count);
-										$args['post__in'] = $id_arr;
+										$slice = array_slice($id_arr,0, $count);
+										$args['post__in'] = $slice;
 										$is_history = 1;
 										$simple_title = '您的浏览历史';
 									}
@@ -575,16 +587,25 @@ print_r($pfgetdata);
 									break;
 								case -2:
 									//recommend or nearest
-									$id_arr = pf_get_id_from_history_arr('term');
+									$term_arr = pf_get_id_from_history_arr('term');
 									unset($args['post__in']);	
-									if(sizeof($id_arr) > 0) {
-                      $args['tax_query'][]= array(
-                          'taxonomy' =>'pointfinderltypes',
-                          'field' => 'id',
-                          'terms' => $id_arr[0],
-                          'operator' => 'IN'
-                      );	
-											$simple_title = '根据您的浏览历史推荐';
+									if(sizeof($term_arr) > 0) {
+                    $args['tax_query'] = array(
+                      'taxonomy' =>'pointfinderltypes',
+                      'field' => 'id',
+                      'terms' => $term_arr,
+                      'operator' => 'IN'
+                    );	
+
+		                $id_arr = pf_get_id_from_history_arr('post');
+										$args['post__not_in'] = $id_arr;
+										$simple_title = '根据您的浏览历史推荐';
+										$is_recommend = 1;
+										/*
+										if (isset($pfgetdata['cols'])) {
+											$args['posts_per_page'] = $pfgetdata['cols'];
+										}
+										*/
 									}else {
 											$simple_title = '您身边的商家';
 									}
@@ -676,7 +697,9 @@ print_r($pfgetdata);
 						$pfitemboxbg = ' style="background-color:'.$pfgetdata['itemboxbg'].';"';
 						$pfheaderfilters = ($pfgetdata['filters']=='true') ? '' : 'false' ;
 
-						if($pfgetdata['cols'] != '' && $pfgrid == ''){$pfgrid = 'grid'.$pfgetdata['cols'];}
+						if($pfgetdata['cols'] != '' && $pfgrid == ''){
+							$pfgrid = 'grid'.$pfgetdata['cols'];
+						}
 
 						/* Changed values by user (Order / Sort / paging number) */
 							if($pfg_orderby != ''){
@@ -731,7 +754,7 @@ print_r($pfgetdata);
 								}
 							}
 						
-						
+					/*jchen move up, before apply history and recommend	
 							if($pfg_number != ''){
 								$args['posts_per_page'] = $pfg_number;
 							}else{
@@ -741,8 +764,11 @@ print_r($pfgetdata);
 									$args['posts_per_page'] = $setup22_searchresults_defaultppptype;
 								}
 							}
+							echo 'post per page =';
+							echo $args['posts_per_page'];
 							
 							if($pfg_paged != ''){$args['paged'] = $pfg_paged;}
+							*/
 
 						/* Show only Featured items filter */
 							if($pfgetdata['featureditems'] == 'yes' && $pfgetdata['featureditemshide'] != 'yes'){
@@ -1325,13 +1351,40 @@ print_r($pfgetdata);
 				//jchen, re-oder $loop->posts;
 
 				function orderby( $a, $b ) {
+					
 					$id_arr = pf_get_id_from_history_arr('post');
+//					print_r($id_arr);
 			    $apos   = array_search( $a->ID, $id_arr);
 			    $bpos   = array_search( $b->ID, $id_arr);
 			    return ( $apos < $bpos ) ? -1 : 1;
 				}
 				if($is_history) {
 					usort( $loop->posts, "orderby" );
+				}elseif($is_recommend) {
+				/*
+					echo 'is_recommend';
+					$term_arr = pf_get_id_from_history_arr('term');
+					print_r($term_arr);
+					$cols = isset($pfgetdata['cols']) ? $pfgetdata['cols']: 4;
+					print_r($cols);
+
+					foreach($term_arr as $termid) {
+						echo 'termid=' . $termid;
+						$ps = get_posts(array(
+						  //'numberposts' => $cols,
+						  'tax_query' => array(
+					  		array(
+                      'taxonomy' =>'pointfinderltypes',
+                      'field' => 'id',
+                      'terms' => $termid,
+                      'operator' => 'IN'
+                    )	
+					  	)
+							));
+							print_r ($ps);
+						$loop->posts []= $ps;
+					}
+					*/
 				}
 
 				//jchen remove filter
@@ -1340,7 +1393,7 @@ print_r($pfgetdata);
 				
 				/*
 				Check Results
-					//print_r($loop->query).PHP_EOL;
+					////jkkjkprint_r($loop->query).PHP_EOL;
 					echo $loop->request.PHP_EOL;
 					echo $loop->found_posts.PHP_EOL;
 				*/
