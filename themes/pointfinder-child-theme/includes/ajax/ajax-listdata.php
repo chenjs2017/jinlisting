@@ -1357,7 +1357,6 @@ function pf_ajax_list_items_new(){
             	$wpflistdata .='<ul class="pfitemlists-content-elements '.$pfgrid_output.'" data-layout-mode="'.$grid_layout_mode.'">';
             /* End: Grid List Area - HEAD (HTML) */
 			/* Start: Loop for grid List */
-//				echo '-------jchen print ---------';
 //				print_r($args);		
 				$loop = new WP_Query( $args );
 
@@ -1383,7 +1382,6 @@ function pf_ajax_list_items_new(){
 					////jkkjkprint_r($loop->query).PHP_EOL;
 					echo $loop->found_posts.PHP_EOL;
 				*/
-					echo $loop->request.PHP_EOL;
 				if($loop->post_count > 0){
 						while ( $loop->have_posts() ) : $loop->the_post();
 						$post_id = get_the_id();
@@ -1704,7 +1702,7 @@ function pf_ajax_list_items_new(){
 				}
 				$wpflistdata .= '</ul>';
 
-				if($loop->found_posts == 0){
+				if(!$is_simple && $loop->found_posts == 0){
 					/* No Record Found Area */
 		            $wpflistdata .= '<div class="golden-forms">';
 		            $wpflistdata .= '<div class="notification warning" id="pfuaprofileform-notify-warning"><p>';
