@@ -585,29 +585,42 @@ function pf_ajax_list_items_new(){
 									}
 									$is_simple = true;
 									break;
+
 								case -2:
+								case -3:
+								case -4:
+								case -5:
 									//recommend or nearest
+
 									$term_arr = pf_get_id_from_history_arr('term');
-									unset($args['post__in']);	
-									if(sizeof($term_arr) > 0) {
-                    $args['tax_query'] = array(
+									$term_arr_size = sizeof($term_arr);
+
+									$termIndex = $pfgetdata['posts_in'];
+									$termIndex = -2 - $termIndex;
+
+									if($term_arr_size > $termIndex) {
+										//recommend
+										unset($args['post__in']);	
+		              	$id_arr = pf_get_id_from_history_arr('post');
+										$args['post__not_in'] = $id_arr;
+
+										$termId = $term_arr[$termIndex];
+                    $args['tax_query'] []= array(
                       'taxonomy' =>'pointfinderltypes',
                       'field' => 'id',
-                      'terms' => $term_arr,
+                      'terms' => $termId,
                       'operator' => 'IN'
                     );	
 
-		                $id_arr = pf_get_id_from_history_arr('post');
-										$args['post__not_in'] = $id_arr;
-										$simple_title = '根据您的浏览历史推荐';
-										$is_recommend = 1;
-										/*
-										if (isset($pfgetdata['cols'])) {
-											$args['posts_per_page'] = $pfgetdata['cols'];
+
+										if ($termIndex == 0) {
+											$simple_title = '根据您的浏览历史推荐';
 										}
-										*/
-									}else {
-											$simple_title = '您身边的商家';
+										$is_recommend = 1;
+									}elseif($termIndex == 0) {
+										//no recommend, nearest
+										unset($args['post__in']);	
+										$simple_title = '您身边的商家';
 									}
 									//order by featured and distance
 									add_filter('posts_orderby', 'edit_posts_orderby');
@@ -1360,33 +1373,7 @@ function pf_ajax_list_items_new(){
 				}
 				if($is_history) {
 					usort( $loop->posts, "orderby" );
-				}elseif($is_recommend) {
-				/*
-					echo 'is_recommend';
-					$term_arr = pf_get_id_from_history_arr('term');
-					print_r($term_arr);
-					$cols = isset($pfgetdata['cols']) ? $pfgetdata['cols']: 4;
-					print_r($cols);
-
-					foreach($term_arr as $termid) {
-						echo 'termid=' . $termid;
-						$ps = get_posts(array(
-						  //'numberposts' => $cols,
-						  'tax_query' => array(
-					  		array(
-                      'taxonomy' =>'pointfinderltypes',
-                      'field' => 'id',
-                      'terms' => $termid,
-                      'operator' => 'IN'
-                    )	
-					  	)
-							));
-							print_r ($ps);
-						$loop->posts []= $ps;
-					}
-					*/
-				}
-
+				}				
 				//jchen remove filter
 				remove_filter('posts_orderby', 'edit_posts_orderby');
 				remove_filter('posts_join_paged','edit_posts_join_paged');
@@ -1394,11 +1381,11 @@ function pf_ajax_list_items_new(){
 				/*
 				Check Results
 					////jkkjkprint_r($loop->query).PHP_EOL;
-					echo $loop->request.PHP_EOL;
 					echo $loop->found_posts.PHP_EOL;
 				*/
+					echo $loop->request.PHP_EOL;
 				if($loop->post_count > 0){
-					while ( $loop->have_posts() ) : $loop->the_post();
+						while ( $loop->have_posts() ) : $loop->the_post();
 						$post_id = get_the_id();
 					
 						/* Start: Prepare Item Elements */
