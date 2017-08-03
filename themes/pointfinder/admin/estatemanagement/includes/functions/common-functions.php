@@ -8,6 +8,26 @@
 * Please do not modify below functions.
 ***********************************************************************************************************************************/
 
+function register_user($username, $email, $password) {
+	if (username_exists( $username ) ) {
+		$icon_processout = 485;
+  	return esc_html__('这个用户名已经被占用' . $username, 'pointfindert2d');
+	}elseif (email_exists($email)) {
+  	return esc_html__('这个邮件已经被占用' . $email ,'pointfindert2d');
+	}elseif (strlen($password) < 6) {
+  	return esc_html__('密码不能少于6位' . $vars['item_membership'] ,'pointfindert2d');
+	}
+  $user_id = wp_create_user( $username, $password, $email );
+	$message_reply = pointfinder_mailsystem_mailsender(
+  	array(
+  		'toemail' => $email,
+          'predefined' => 'registration',
+          'data' => array('password' => $password,'username'=>$username),
+  	)
+  );
+	return array('userid' => $user_id);
+}
+
 function pf_paginated_gallery($vars) {
 	/* Outputs a gallery of attachments with pagination
 	Most of this code is lifted from the standard gallery function - with a few tweeks for pagination

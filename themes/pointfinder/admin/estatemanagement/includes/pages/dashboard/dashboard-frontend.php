@@ -1386,7 +1386,7 @@ if ( ! class_exists( 'PF_Frontend_Fields' ) ){
 										**/
 										} //end of is_editor
 										$user_id = get_current_user_id();
-										$msg = '为了保证发布信息的质量，所有信息需要经过审核后才能发布。如果您是<a href="/wp-login.php?action=register" style="color:blue">注册</a>用户，您可以在‘信息列表’中查看自己已经发布的信息。如果您是匿名用户，我们的编辑人员会在通过信息审核后，把信息的链接通过邮件发送给您';
+										$msg = '为了保证发布信息的质量，所有信息需要经过审核后才能发布。如果您是注册会员，您可以在‘信息列表’中查看自己已经发布的信息。如果您是匿名用户，我们的编辑人员会在通过信息审核后，把信息的链接通过邮件发送给您';
 										if ($user_id>0) {
 												global $current_user;
 												$msg= '欢迎您归来' . $current_user->nickname ;	
@@ -1422,26 +1422,62 @@ if ( ! class_exists( 'PF_Frontend_Fields' ) ){
 													//jschen added telephoe
 												if ($user_id == 0)
 												{
-														
 													$this->PFValidationCheckWrite(1,'请输入电话','item_phone');
 													$this->FieldOutput .= '
 													<section class="pfsubmit-inner-sub">
 								                        <label for="item_phone" class="lbl-text">'.esc_html__('联系电话','pointfindert2d').':</label>
 								                        <label class="lbl-ui">
 								                        	<input type="text" name="item_phone" id="item_phone" class="input" value=""/>';
-												          $this->FieldOutput .= '</label> </section>';
+												  $this->FieldOutput .= '</label> </section>';
 
+													
 													$this->PFValidationCheckWrite(1,'请输入电子邮件','item_email');
 													$this->FieldOutput .= '
 													<section class="pfsubmit-inner-sub">
 								                        <label for="item_email" class="lbl-text">'.esc_html__('电子邮件','pointfindert2d').':</label>
 								                        <label class="lbl-ui">
 								                        	<input type="text" name="item_email" id="item_email" class="input" value=""/>';
-												          $this->FieldOutput .= '</label> </section>';
+												  $this->FieldOutput .= '</label> </section>';
 
-													}
-													$this->FieldOutput .= '<input type="hidden" name="item_url" id="item_url" value="'.html_entity_decode( urldecode($_GET['url'])) . '"/>';
+													$this->FieldOutput .= '
+													<section class="pfsubmit-inner-sub"> <label for="item_password" class="lbl-text">
+								                        	<input type="checkbox" name="item_membership" id="item_membership" />
+								                       '.esc_html__('注册为会员','pointfindert2d').'</label>';
+												  $this->FieldOutput .= ' </section>';
+
 												
+													$this->FieldOutput .= '
+													<section id="sectionPassword" class="pfsubmit-inner-sub" style="display:none">
+								                        <label for="item_password" class="lbl-text">'.esc_html__('请输入密码','pointfindert2d').':</label>
+								                        <label class="lbl-ui">
+								                        	<input type="password" name="item_password" id="item_password" class="input" value=""/>';
+												  $this->FieldOutput .= '</label> </section>';
+												  $this->FieldOutput .= '
+												<script type="text/javascript">
+												(function($) {
+													$(document).ready(function(){
+															$(\'#item_membership\').click(function(){
+																if($(\'#item_membership\').attr(\'checked\')=="checked"){
+																	$(\'#sectionPassword\').show()
+																}else {
+																	$(\'#sectionPassword\').hide()
+																}
+															});
+													});
+												})(jQuery);
+												</script>
+													';
+												
+													$this->FieldOutput .= '
+													<section id="sectionPassword" class="pfsubmit-inner-sub" >
+								                        <label for="item_wechat" class="lbl-text">'.esc_html__('请输入微信号(可选)','pointfindert2d').':</label>
+								                        <label class="lbl-ui">
+								                        	<input type="text" name="item_wechat" id="item_wechat" class="input" value=""/>';
+												  $this->FieldOutput .= '</label> </section>';
+	
+
+													$this->FieldOutput .= '<input type="hidden" name="item_url" id="item_url" value="'.html_entity_decode( urldecode($_GET['url'])) . '"/>';
+												}
 
 												/**
 												*Desc

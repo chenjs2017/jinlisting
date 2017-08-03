@@ -234,15 +234,46 @@ function pf_ajax_itemsystem(){
     *Start: New/Edit Item Form Request
     **/ 
 
+			$error_occur = 0;
       if(isset($_POST) && $_POST!='' && count($_POST)>0){
 				//jschen added, no login as anonymous
 					if ($user_id==0) {
-						$user_id=PFASSIssetControl('as_anonymous_id','',1);;
-
-						$vars['item_desc'] = '来自：' . $vars['item_url'] . '<br/>联系电话：'. $vars['item_phone'] .'<br/>电子邮件:'. $vars['item_email'] .'<p>内容:</p>'. $vars['item_desc'];
-
+						$username=$vars['item_phone'];
+						$email = $vars['item_email'];
+						$password = $vars['item_password'];
+						if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+               $errorval .= esc_html__('email格式不合法','pointfindert2d');
+               $error_occur = 1;
+						}elseif(strlen($username) < 10 || !preg_match("/^[0-9]+$/", $username)) {
+               $errorval .= esc_html__('电话格式不合法','pointfindert2d');
+               $error_occur = 1;
+						}
+						
+						if ($error_occur == 0) {
+							if ($vars['item_membership'] != 'on') {
+								$user_id=PFASSIssetControl('as_anonymous_id','',1);;
+							}else {
+								$result = register_user($username, $email, $password);								
+								if (isset($result['userid'])) {
+									$user_id=$result['userid'];
+									 wp_set_auth_cookie($user_id);
+								} else {
+									$icon_processout = 485;
+									$errorval .= esc_html__($result,'pointfindert2d');
+									$error_occur = 1;
+								}
+							}
+						}
+						if ($error_occur == 0) {
+							$vars['item_desc'] = '来自：' . $vars['item_url'] 
+								. '<br/>联系电话：'. $vars['item_phone'] 
+								. '<br/>电子邮件:'. $vars['item_email'] 
+								. '<br/>微信:' . $vars['item_wechat'] 
+								. '<p>内容:</p>'. $vars['item_desc'];
+						}
 					}
-          if($user_id != 0){
+
+          if($error_occur != 1){
             if($vars['action'] == 'pfget_edititem'){
               
               
@@ -295,10 +326,7 @@ function pf_ajax_itemsystem(){
                 )
               );   
             }
-          }else{
-              $icon_processout = 485;
-              $errorval .= esc_html__('Please login again to upload/edit item (Invalid UserID).','pointfindert2d');
-          }   
+          }  
       }
 
       if (is_array($returnval) && !empty($returnval)) {
@@ -322,13 +350,10 @@ function pf_ajax_itemsystem(){
   $setup4_membersettings_dashboard = PFSAIssetControl('setup4_membersettings_dashboard','','');
   $setup4_membersettings_dashboard_link = get_permalink($setup4_membersettings_dashboard);
   $pfmenu_perout = PFPermalinkCheck();
-	$back_url = html_entity_decode($vars['item_url']);
-	if ($back_url == '') 
-	{
+	if ($user_id != PFASSIssetControl('as_anonymous_id','',1) ) {
   	$pfreturn_url = $setup4_membersettings_dashboard_link.$pfmenu_perout.'ua=myitems';
-	}
-	else {
-  	$pfreturn_url = $back_url;
+	}else {
+		$pfreturn_url = html_entity_decode($vars['item_url']);
 	}
 
   $output_html = '';
