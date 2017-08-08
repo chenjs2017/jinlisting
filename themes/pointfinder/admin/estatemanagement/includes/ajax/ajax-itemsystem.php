@@ -244,11 +244,8 @@ function pf_ajax_itemsystem(){
 						if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                $errorval .= esc_html__('email格式不合法','pointfindert2d');
                $error_occur = 1;
-						}elseif(strlen($username) < 10 || !preg_match("/^[0-9]+$/", $username)) {
-               $errorval .= esc_html__('电话格式不合法','pointfindert2d');
-               $error_occur = 1;
-						}
-						
+						}						
+
 						if ($error_occur == 0) {
 							if ($vars['item_membership'] != 'on') {
 								$user_id=PFASSIssetControl('as_anonymous_id','',1);;
