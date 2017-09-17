@@ -565,27 +565,7 @@ function pointfinder_custom_pointStyles_newsys( $term_id, $taxonomy ) {
 
 
 	foreach ($listing_meta as $key => $value) {
-		if ($key == $term_id ){
-	    global $wpdb;
-			
-			if( $value['merge_sub_listing'] == 1) {
-					$sql = "insert into $wpdb->term_relationships (object_id,term_taxonomy_id,term_order)
-								select distinct object_id," . $term_id .",0 from $wpdb->term_relationships 
-								where term_taxonomy_id in 
-								( select term_id from $wpdb->term_taxonomy  where parent=" . $term_id ."  
-									or parent in (select term_id from $wpdb->term_taxonomy where parent=" . $term_id .") ) 
-								and object_id not in(select object_id from $wpdb->term_relationships where term_taxonomy_id=". $term_id .")";
-					error_log('jchen:'. $sql);
-	      	$count = $wpdb->query($sql);
-			}
-			if( $value['change_to_tag'] == 1) {
-	      	$count = $wpdb->query( "update  $wpdb->term_taxonomy set taxonomy='post_tag' where term_id=" . $term_id );
-			}
-			if( $value['change_sub_to_tag'] == 1) {
-	      	$count = $wpdb->query( "update  $wpdb->term_taxonomy set taxonomy='post_tag' where parent=" . $term_id );
-			}
-		}
-		
+
 		$cpoint_type = (isset($value['cpoint_type']))?$value['cpoint_type']:0;
 		
 		if (!empty($cpoint_type)) {

@@ -85,37 +85,6 @@ $pf_extra_taxonomyfields = array();
 					'std'  => 0,
 				),
 				array(
-					'name' => esc_html__('改为Tag','pointfindert2d'),
-					'id'   => 'change_to_tag',
-					'type' => 'radio',
-					'options' => array(
-						'0' => esc_html__('不变','pointfindert2d'),
-						'1' => esc_html__('改为Tag','pointfindert2d'),
-						),
-					'std'  => 0,
-				),
-					array(
-					'name' => esc_html__('合并子分类','pointfindert2d'),
-					'id'   => 'merge_sub_listing',
-					'type' => 'radio',
-					'options' => array(
-						'0' => esc_html__('不变','pointfindert2d'),
-						'1' => esc_html__('合并','pointfindert2d'),
-						),
-					'std'  => 0,
-				),
-				array(
-					'name' => esc_html__('子分类改成tag','pointfindert2d'),
-					'id'   => 'change_sub_to_tag',
-					'type' => 'radio',
-					'options' => array(
-						'0' => esc_html__('不变','pointfindert2d'),
-						'1' => esc_html__('合并','pointfindert2d'),
-						),
-					'std'  => 0,
-				),
-
-			array(
 					'name' => esc_html__('Icon Image','pointfindert2d'),
 					'id'   => 'cpoint_bgimage',
 					'type' => 'image',
